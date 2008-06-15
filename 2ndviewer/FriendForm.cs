@@ -106,7 +106,12 @@ namespace _2ndviewer
         {
             int index = listBox1.SelectedIndex;
             if (index <= -1) return;
-            client_.Avatars.RequestAvatarProperties(friend_array_[index].UUID);
+            using (ProfileForm profileForm = new ProfileForm())
+            {
+                profileForm.SetClient(client_);
+                profileForm.SetAvatarID(friend_array_[index].UUID);
+                profileForm.ShowDialog();
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
