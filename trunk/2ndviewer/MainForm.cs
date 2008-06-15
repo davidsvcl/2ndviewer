@@ -52,7 +52,8 @@ namespace _2ndviewer
 //            client_.Objects.OnObjectPropertiesFamily += new ObjectManager.ObjectPropertiesFamilyCallback(Objects_OnObjectPropertiesFamily);
             client_.Friends.OnFriendOnline += new FriendsManager.FriendOnlineEvent(Friends_OnFriendOnline);
             client_.Friends.OnFriendOffline += new FriendsManager.FriendOfflineEvent(Friends_OnFriendOffline);
-            client_.Avatars.OnAvatarProperties += new AvatarManager.AvatarPropertiesCallback(Avatars_OnAvatarProperties);
+            // ProfileFormへ移動
+            //client_.Avatars.OnAvatarProperties += new AvatarManager.AvatarPropertiesCallback(Avatars_OnAvatarProperties);
             client_.Groups.OnCurrentGroups += new GroupManager.CurrentGroupsCallback(Groups_OnCurrentGroups);
             client_.Network.OnEventQueueRunning += new NetworkManager.EventQueueRunningCallback(Network_OnEventQueueRunning);
 
@@ -323,12 +324,13 @@ namespace _2ndviewer
             friendForm_.refresh();
         }
 
-        void Avatars_OnAvatarProperties(LLUUID avatarID, Avatar.AvatarProperties properties)
-        {
-            chatForm_.SystemMessage("\r\n" + properties.AboutText);
-            chatForm_.SystemMessage("\r\n" + properties.ProfileURL);
-            chatForm_.SystemMessage("\r\n" + properties.BornOn);
-        }
+        // ProfileFormへ移動
+        //void Avatars_OnAvatarProperties(LLUUID avatarID, Avatar.AvatarProperties properties)
+        //{
+        //    chatForm_.SystemMessage("\r\n" + properties.AboutText);
+        //    chatForm_.SystemMessage("\r\n" + properties.ProfileURL);
+        //    chatForm_.SystemMessage("\r\n" + properties.BornOn);
+        //}
 
         void Groups_OnCurrentGroups(Dictionary<LLUUID, Group> groups)
         {
