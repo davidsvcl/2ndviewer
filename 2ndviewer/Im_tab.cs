@@ -24,5 +24,16 @@ namespace _2ndviewer
             if (left.fromAgentID_ != right.fromAgentID_) return true;
             else return false;
         }
+        public override bool Equals(Object o)
+        {
+            Im_tab other = o as Im_tab;
+            if (this.fromAgentID_ == other.fromAgentID_) return true;
+            else return false;
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
     }
 }
