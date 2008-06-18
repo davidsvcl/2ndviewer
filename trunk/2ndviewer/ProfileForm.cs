@@ -21,6 +21,9 @@ namespace _2ndviewer
         private delegate void PropertiesUpdateDelegate(LLUUID avatarID, Avatar.AvatarProperties properties);
         AssetManager.ImageReceivedCallback ImageReceivedCallback;
 
+        private delegate void SetAvatarTextDelegate(string avatar);
+        private delegate void SetPartnerTextDelegate(string partner);
+
         public ProfileForm()
         {
             InitializeComponent();
@@ -32,6 +35,7 @@ namespace _2ndviewer
         void IDisposable.Dispose()
         {
             client_.Avatars.OnAvatarProperties -= Avatars_OnAvatarProperties;
+            client_.Avatars.OnAvatarNames -= Avatars_OnAvatarNames;
             client_.Assets.OnImageReceived -= ImageReceivedCallback;
         }
 
@@ -52,8 +56,37 @@ namespace _2ndviewer
             client_.Avatars.OnAvatarProperties += new AvatarManager.AvatarPropertiesCallback(Avatars_OnAvatarProperties);
             client_.Avatars.RequestAvatarProperties(avatarID_);
 
+            client_.Avatars.OnAvatarNames += new AvatarManager.AvatarNamesCallback(Avatars_OnAvatarNames);
+            client_.Avatars.RequestAvatarName(avatarID_);
+
             ImageReceivedCallback = new AssetManager.ImageReceivedCallback(Assets_OnImageReceived);
             client_.Assets.OnImageReceived += ImageReceivedCallback;
+        }
+
+        void Avatars_OnAvatarNames(Dictionary<LLUUID, string> names)
+        {
+            foreach (KeyValuePair<LLUUID, string> kvp in names)
+            {
+                //System.Diagnostics.Trace.WriteLine("key;"+kvp.Key);
+                //System.Diagnostics.Trace.WriteLine("value;" + kvp.Value);
+                if (kvp.Key == avatarID_)
+                {
+                    BeginInvoke(new SetAvatarTextDelegate(SetAvatarText), new object[] { kvp.Value });
+                }
+                else
+                {
+                    BeginInvoke(new SetPartnerTextDelegate(SetPartnerText), new object[] { kvp.Value });
+                }
+            }
+        }
+
+        private void SetAvatarText(string avatar)
+        {
+            name_textBox.Text = avatar;
+        }
+        private void SetPartnerText(string partner)
+        {
+            partner_textBox.Text = partner;
         }
 
         void Avatars_OnAvatarProperties(LLUUID avatarID, Avatar.AvatarProperties properties)
@@ -62,9 +95,14 @@ namespace _2ndviewer
             object[] arg = { avatarID, properties };
             Invoke(dlg, arg);
         }
+
         private void PropertiesUpdate(LLUUID avatarID, Avatar.AvatarProperties properties)
         {
             firstlist_textBox.Text = properties.FirstLifeText;
+            if (properties.Partner != LLUUID.Zero)
+            {
+                client_.Avatars.RequestAvatarName(properties.Partner);
+            }
             //properties.Partner
             //partner_textBox.Text =
             about_textBox.Text = properties.AboutText;
@@ -80,7 +118,13 @@ namespace _2ndviewer
                 flImageID_ = properties.FirstLifeImage;
                 client_.Assets.RequestImage(properties.FirstLifeImage, ImageType.Normal);
             }
-       }
+        }
+
+        private void view_button_Click(object sender, EventArgs e)
+        {
+            webBrowser1.Navigate(web_textBox.Text);
+        }
+
         void Assets_OnImageReceived(ImageDownload image, AssetTexture assetTexture)
         {
             libsecondlife.Image img;
@@ -94,11 +138,6 @@ namespace _2ndviewer
         private void label1_Click(object sender, EventArgs e)
         {
 
-        }
-
-        private void view_button_Click(object sender, EventArgs e)
-        {
-            webBrowser1.Navigate(web_textBox.Text);
         }
     }
 }

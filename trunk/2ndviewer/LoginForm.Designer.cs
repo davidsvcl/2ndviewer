@@ -150,6 +150,8 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "LoginForm";
             this.Shown += new System.EventHandler(this.LoginForm_Shown);
             this.groupBox1.ResumeLayout(false);
