@@ -348,8 +348,18 @@ namespace _2ndviewer
                 {
                     if (0 == chat_textBox.Text.IndexOf('/'))
                     {
-                        int index = chat_textBox.Text.IndexOf(' ');
-                        string channel_str = chat_textBox.Text.Substring(1, index);
+                        int index;
+                        string channel_str;
+                        try
+                        {
+                            index = chat_textBox.Text.IndexOf(' ');
+                            channel_str = chat_textBox.Text.Substring(1, index);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("channel chat format is \"/channelnumber strings\"");
+                            return;
+                        }
                         int channel = int.Parse(channel_str);
                         string text = chat_textBox.Text.Substring(index + 1, chat_textBox.Text.Length - index - 1);
                         client_.Self.Chat(text, channel, ChatType.Normal);
