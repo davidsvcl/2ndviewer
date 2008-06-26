@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI;
 using libsecondlife;
+using IronPython.Hosting;
 
 namespace _2ndviewer
 {
@@ -16,6 +17,7 @@ namespace _2ndviewer
     {
         private SecondLife client_;
         private MovementForm movementForm_;
+        private PythonEngine pe_;
         private string nickName_;
         private string news4vip_;
         System.Collections.Generic.List<Im_tab> uuid_array_;
@@ -37,11 +39,18 @@ namespace _2ndviewer
             uuid_array_ = new System.Collections.Generic.List<Im_tab>();
             news4vip_subs_ = new System.Collections.Generic.List<string>();
             rnd_ = new Random();
+            pe_ = new PythonEngine();
         }
 
         public void SetClient(SecondLife client)
         {
             client_ = client;
+            pe_.Globals.Add("client",client_);
+            string dummy = "dummy";
+            pe_.Globals.Add("message", dummy);
+            LLUUID dummyuuid = LLUUID.Zero;
+            pe_.Globals.Add("fromAgentID",dummyuuid);
+            pe_.Globals.Add("sessionID",dummyuuid);
         }
 
         public void SetMovementForm(MovementForm movementForm)
@@ -52,6 +61,8 @@ namespace _2ndviewer
         public void SetNickName(string nickname)
         {
             nickName_ = nickname;
+            pe_.Globals.Add("nickname", nickName_);
+            pe_.Globals.Add("fromname", nickName_);
         }
         public void SetNews4Vip(string url)
         {
@@ -266,6 +277,19 @@ namespace _2ndviewer
                     }
                 }
             }
+            try
+            {
+                pe_.Globals.Remove("message");
+                pe_.Globals.Add("message", message);
+                pe_.Globals.Remove("fromname");
+                pe_.Globals.Add("fromname", fromName);
+                pe_.ExecuteFile("scripts\\OnChat.py");
+            }
+            catch (Exception e)
+            {
+                //System.Diagnostics.Trace.WriteLine(e);
+                SystemMessage("PythonError(scripts\\OnChat.py):\r\n" + e.ToString());
+            }
             Speech(message);
             WriteLineDelegate dlg = new WriteLineDelegate(WriteLine);
             string[] arg = { msg };
@@ -328,6 +352,23 @@ namespace _2ndviewer
                 Invoke(atdlg, atdlgarg);
             }
 
+            try
+            {
+                pe_.Globals.Remove("message");
+                pe_.Globals.Add("message", message);
+                pe_.Globals.Remove("fromname");
+                pe_.Globals.Add("fromname", fromName);
+                pe_.Globals.Remove("fromAgentID");
+                pe_.Globals.Add("fromAgentID", fromAgentID);
+                pe_.Globals.Remove("sessionID");
+                pe_.Globals.Add("sessionID", sessionID);
+                pe_.ExecuteFile("scripts\\OnIMChat.py");
+            }
+            catch (Exception e)
+            {
+                //System.Diagnostics.Trace.WriteLine(e);
+                SystemMessage("PythonError(scripts\\OnIMChat.py):\r\n" + e.ToString());
+            }
             Speech(fromName + " " + message);
             string msg = "\r\n" + "<IM>" + fromName + ":" + message;
             if (movementForm_.chatlog_checkBox.Checked)
@@ -371,7 +412,7 @@ namespace _2ndviewer
                 }
                 else {
                     Im_tab im = uuid_array_[i - 1];
-                    client_.Self.InstantMessage(im.fromAgentID_, chat_textBox.Text,im.sessionID_);
+                    client_.Self.InstantMessage(im.fromAgentID_, chat_textBox.Text, im.sessionID_);
                     string msg;
                     msg = im.textBox_.Text + "\r\n" + client_.Self.Name + ":" + chat_textBox.Text;
                     if (movementForm_.chatlog_checkBox.Checked)
