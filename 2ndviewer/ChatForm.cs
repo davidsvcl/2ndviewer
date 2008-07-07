@@ -61,7 +61,9 @@ namespace _2ndviewer
         public void SetNickName(string nickname)
         {
             nickName_ = nickname;
+            pe_.Globals.Remove("nickname");
             pe_.Globals.Add("nickname", nickName_);
+            pe_.Globals.Remove("fromname");
             pe_.Globals.Add("fromname", nickName_);
         }
         public void SetNews4Vip(string url)
