@@ -48,6 +48,7 @@ namespace _2ndviewer
             pe_.Globals.Add("client",client_);
             string dummy = "dummy";
             pe_.Globals.Add("message", dummy);
+            pe_.Globals.Add("chat_textbox", dummy);
             LLUUID dummyuuid = LLUUID.Zero;
             pe_.Globals.Add("fromAgentID",dummyuuid);
             pe_.Globals.Add("sessionID",dummyuuid);
@@ -386,6 +387,19 @@ namespace _2ndviewer
         {
             if (e.KeyCode == Keys.Enter)
             {
+                e.SuppressKeyPress = true;
+                try
+                {
+                    pe_.Globals.Remove("chat_textbox");
+                    pe_.Globals.Add("chat_textbox", chat_textBox.Text);
+                    pe_.ExecuteFile("scripts\\OnKeyDownEnter.py");
+                    chat_textBox.Text = pe_.EvaluateAs<string>("chat_textbox");
+                }
+                catch (Exception exc)
+                {
+                    //System.Diagnostics.Trace.WriteLine(e);
+                    SystemMessage("PythonError(scripts\\OnChatKeyDownEnter.py):\r\n" + exc.ToString());
+                }
                 int i = tabControl1.SelectedIndex;
                 if (i <= 0)
                 {
