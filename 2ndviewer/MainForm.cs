@@ -47,6 +47,10 @@ namespace _2ndviewer
             client_.Network.OnConnected += new NetworkManager.ConnectedCallback(Network_OnConnected);
             client_.Network.OnDisconnected += new NetworkManager.DisconnectedCallback(Network_OnDisconnected);
             client_.Self.OnInstantMessage += new AgentManager.InstantMessageCallback(Self_OnInstantMessage);
+            client_.Self.OnTeleport += new AgentManager.TeleportCallback(Self_OnTeleport);
+            client_.Self.OnScriptDialog += new AgentManager.ScriptDialogCallback(Self_OnScriptDialog);
+            client_.Self.OnScriptQuestion += new AgentManager.ScriptQuestionCallback(Self_OnScriptQuestion);
+            client_.Self.OnAlertMessage += new AgentManager.AlertMessage(Self_OnAlertMessage);
             client_.Objects.OnObjectUpdated += new ObjectManager.ObjectUpdatedCallback(Objects_OnObjectUpdated);
 //            client_.Objects.OnNewPrim += new ObjectManager.NewPrimCallback(Objects_OnNewPrim);
 //            client_.Objects.OnObjectPropertiesFamily += new ObjectManager.ObjectPropertiesFamilyCallback(Objects_OnObjectPropertiesFamily);
@@ -197,6 +201,95 @@ namespace _2ndviewer
                 default:
                     break;
             }
+        }
+
+        private void Self_OnTeleport(string message, AgentManager.TeleportStatus status, AgentManager.TeleportFlags flags)
+        {
+            //chatForm_.SystemMessage(message);
+            if (status == AgentManager.TeleportStatus.Finished)
+            {
+                client_.Self.RequestBalance();
+                client_.Appearance.SetPreviousAppearance(false);
+                string mes = "";
+                mes += "SIM:" + client_.Network.CurrentSim.Name;
+                mes += "<" + ((int)client_.Self.SimPosition.X).ToString();
+                mes += "," + ((int)client_.Self.SimPosition.Y).ToString();
+                mes += "," + ((int)client_.Self.SimPosition.Z).ToString();
+                mes += ">";
+                chatForm_.SystemMessage(mes);
+            }
+        }
+
+        private void Self_OnScriptDialog(string message, string objectName, LLUUID imageID, LLUUID objectID, string firstName, string lastName, int chatChannel, List<string> buttons)
+        {
+            //throw new NotImplementedException();
+            chatForm_.SystemMessage("dialog message:" + message);
+            chatForm_.SystemMessage("channel:" + chatChannel);
+            string mes = "";
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                mes += buttons[i] + ",";
+            }
+            chatForm_.SystemMessage("buttons:" + mes);
+            chatForm_.SystemMessage("button click command is \"/" + chatChannel + " button\"");
+            //client_.Self.Chat("buttonname", chatChannel, ChatType.Normal);
+        }
+
+        private void Self_OnScriptQuestion(Simulator simulator, LLUUID taskID, LLUUID itemID, string objectName, string objectOwner, ScriptPermission questions)
+        {
+            System.Diagnostics.Trace.WriteLine("OnScriptQuestion");
+            string mes = objectOwner + "s object " + objectName + " ";
+            switch (questions)
+            {
+                case ScriptPermission.None:
+                    mes += "None";
+                    break;
+                case ScriptPermission.Debit:
+                    mes += "Debit";
+                    break;
+                case ScriptPermission.TakeControls:
+                    mes += "TakeControls";
+                    break;
+                case ScriptPermission.RemapControls:
+                    mes += "RemapControls";
+                    break;
+                case ScriptPermission.TriggerAnimation:
+                    mes += "TriggerAnimation";
+                    break;
+                case ScriptPermission.Attach:
+                    mes += "Attach";
+                    break;
+                case ScriptPermission.ReleaseOwnership:
+                    mes += "ReleaseOwnership";
+                    break;
+                case ScriptPermission.ChangeLinks:
+                    mes += "ChangeLinks";
+                    break;
+                case ScriptPermission.ChangeJoints:
+                    mes += "ChangeJoints";
+                    break;
+                case ScriptPermission.ChangePermissions:
+                    mes += "ChangePermissions";
+                    break;
+                case ScriptPermission.TrackCamera:
+                    mes += "TrackCamera";
+                    break;
+                case ScriptPermission.ControlCamera:
+                    mes += "ControlCamera";
+                    break;
+                default:
+                    mes += "...";
+                    break;
+            }
+            if (MessageBox.Show(mes, "Script Question", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                client_.Self.ScriptQuestionReply(simulator, itemID, taskID, questions);
+            }
+        }
+
+        private void Self_OnAlertMessage(string message)
+        {
+            chatForm_.SystemMessage("\r\n<Alert>" + message);
         }
 
         private void SetStatusText(string message)
