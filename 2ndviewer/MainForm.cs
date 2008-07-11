@@ -289,7 +289,7 @@ namespace _2ndviewer
 
         private void Self_OnAlertMessage(string message)
         {
-            chatForm_.SystemMessage("\r\n<Alert>" + message);
+            if (!message.StartsWith("Autopilot canceled")) chatForm_.SystemMessage("<Alert>" + message);
         }
 
         private void SetStatusText(string message)
