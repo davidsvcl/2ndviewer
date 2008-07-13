@@ -34,6 +34,8 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.touch_button = new System.Windows.Forms.Button();
+            this.sit_button = new System.Windows.Forms.Button();
             this.refresh_button = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel1.SuspendLayout();
@@ -72,6 +74,7 @@
             this.textBox1.BackgroundImage = null;
             this.textBox1.Font = null;
             this.textBox1.Name = "textBox1";
+            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // label1
             // 
@@ -87,9 +90,33 @@
             this.panel2.AccessibleName = null;
             resources.ApplyResources(this.panel2, "panel2");
             this.panel2.BackgroundImage = null;
+            this.panel2.Controls.Add(this.touch_button);
+            this.panel2.Controls.Add(this.sit_button);
             this.panel2.Controls.Add(this.refresh_button);
             this.panel2.Font = null;
             this.panel2.Name = "panel2";
+            // 
+            // touch_button
+            // 
+            this.touch_button.AccessibleDescription = null;
+            this.touch_button.AccessibleName = null;
+            resources.ApplyResources(this.touch_button, "touch_button");
+            this.touch_button.BackgroundImage = null;
+            this.touch_button.Font = null;
+            this.touch_button.Name = "touch_button";
+            this.touch_button.UseVisualStyleBackColor = true;
+            this.touch_button.Click += new System.EventHandler(this.touch_button_Click);
+            // 
+            // sit_button
+            // 
+            this.sit_button.AccessibleDescription = null;
+            this.sit_button.AccessibleName = null;
+            resources.ApplyResources(this.sit_button, "sit_button");
+            this.sit_button.BackgroundImage = null;
+            this.sit_button.Font = null;
+            this.sit_button.Name = "sit_button";
+            this.sit_button.UseVisualStyleBackColor = true;
+            this.sit_button.Click += new System.EventHandler(this.sit_button_Click);
             // 
             // refresh_button
             // 
@@ -142,5 +169,7 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button refresh_button;
         private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.Button sit_button;
+        private System.Windows.Forms.Button touch_button;
     }
 }

@@ -124,6 +124,12 @@
   <data name="label1.Text" xml:space="preserve">
     <value>検索</value>
   </data>
+  <data name="touch_button.Text" xml:space="preserve">
+    <value>触れる</value>
+  </data>
+  <data name="sit_button.Text" xml:space="preserve">
+    <value>座る</value>
+  </data>
   <data name="refresh_button.Text" xml:space="preserve">
     <value>更新</value>
   </data>
