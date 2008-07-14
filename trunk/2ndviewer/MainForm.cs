@@ -23,6 +23,7 @@ namespace _2ndviewer
         public MinimapForm minimapForm_;
         public MovementForm movementForm_;
         public ObjectForm objectForm_;
+        public AvatarForm avatarForm_;
         public SecondLife client_;
         private delegate void SetStatusTextDelegate(string str);
         private int firstOne;
@@ -118,6 +119,13 @@ namespace _2ndviewer
             groupForm_.SetClient(client_);
             groupForm_.TabText = "Group";
             groupForm_.Show(panel_, WeifenLuo.WinFormsUI.Docking.DockState.Document);
+
+            avatarForm_ = new AvatarForm();
+            avatarForm_.SetClient(client_);
+            avatarForm_.SetChatForm(chatForm_);
+            avatarForm_.SetMovementForm(movementForm_);
+            avatarForm_.TabText = "Avatars";
+            avatarForm_.Show(panel_, WeifenLuo.WinFormsUI.Docking.DockState.Document);
 
             debugForm_ = new DebugForm();
             debugForm_.TabText = "Debug";
