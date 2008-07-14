@@ -65,7 +65,7 @@ namespace _2ndviewer
 
         private void searchObjects(string searchString)
         {
-            float radius = float.Parse("10");
+            float radius = float.Parse("20");
             object_array_.Clear();
             this.listBox1.Items.Clear();
 
