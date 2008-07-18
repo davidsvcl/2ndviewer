@@ -50,7 +50,7 @@ namespace _2ndviewer
                 delegate(Avatar avatar)
                 {
                     LLVector3 pos = avatar.Position;
-                    return ((pos != LLVector3.Zero) && (LLVector3.Dist(pos, location) < radius));
+                    return true;// ((pos != LLVector3.Zero) && (LLVector3.Dist(pos, location) < radius));
                 }
 
             );
