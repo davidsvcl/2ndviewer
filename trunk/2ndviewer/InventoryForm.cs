@@ -120,7 +120,7 @@ namespace _2ndviewer
             myitem = client_.Inventory.FetchItem(inventoryItems, client_.Self.AgentID, 1000);
             try
             {
-                client_.Appearance.Attach(myitem as libsecondlife.InventoryItem, libsecondlife.AttachmentPoint.Default);
+                client_.Appearance.Attach(myitem as libsecondlife.InventoryItem, point);
             }
             catch
             {
