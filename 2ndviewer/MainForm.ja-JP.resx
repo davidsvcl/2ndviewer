@@ -130,6 +130,21 @@
   <data name="fileToolStripMenuItem.Text" xml:space="preserve">
     <value>ファイル(&amp;F)</value>
   </data>
+  <data name="addLandmarkToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>172, 22</value>
+  </data>
+  <data name="addLandmarkToolStripMenuItem.Text" xml:space="preserve">
+    <value>ランドマークを追加(&amp;A)</value>
+  </data>
+  <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>169, 6</value>
+  </data>
+  <data name="landmarkToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 20</value>
+  </data>
+  <data name="landmarkToolStripMenuItem.Text" xml:space="preserve">
+    <value>ランドマーク(&amp;L)</value>
+  </data>
   <data name="optionToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>129, 22</value>
   </data>

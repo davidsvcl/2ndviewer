@@ -143,6 +143,12 @@
       <DependentUpon>InventoryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="InventoryItem.cs" />
+    <Compile Include="LandmarkForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LandmarkForm.Designer.cs">
+      <DependentUpon>LandmarkForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -293,6 +299,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InventoryForm.resx">
       <DependentUpon>InventoryForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LandmarkForm.ja-JP.resx">
+      <DependentUpon>LandmarkForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LandmarkForm.resx">
+      <DependentUpon>LandmarkForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="LoginForm.en-US.resx">
