@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 
 using WeifenLuo.WinFormsUI;
 using libsecondlife;
@@ -15,6 +16,8 @@ namespace _2ndviewer
     public partial class MainForm : Form
     {
         public WeifenLuo.WinFormsUI.Docking.DockPanel panel_;
+        private XmlDocument xmldoc_;
+        private XmlElement rootNode_;
         public ChatForm chatForm_;
         public DebugForm debugForm_;
         public FriendForm friendForm_;
@@ -28,6 +31,7 @@ namespace _2ndviewer
         private delegate void SetStatusTextDelegate(string str);
         private int firstOne;
         private string last_getAvatarName;
+        private System.Collections.Generic.List<LandmarkList> landmark_array_;
 
         public MainForm()
         {
@@ -43,6 +47,10 @@ namespace _2ndviewer
             panel_.Dock = System.Windows.Forms.DockStyle.Fill;
             panel_.BringToFront();
             ResumeLayout();
+
+            landmark_array_ = new System.Collections.Generic.List<LandmarkList>();
+            xmldoc_ = new XmlDocument();
+            makeLandmark();
 
             client_ = new SecondLife();
             client_.Network.OnConnected += new NetworkManager.ConnectedCallback(Network_OnConnected);
@@ -152,6 +160,14 @@ namespace _2ndviewer
         {
             if (MessageBox.Show(StringResource.exitMessage, "Exit", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
+                try
+                {
+                    xmldoc_.Save("landmark.xml");
+                }
+                catch
+                {
+                    MessageBox.Show("landmark.xml save error!");
+                }
             }
             else
             {
@@ -463,6 +479,82 @@ namespace _2ndviewer
             Close();
         }
 
+        private void addLandmarkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LandmarkForm landmarkForm = new LandmarkForm();
+            landmarkForm.name_textBox.Text = "Mandatory";
+            landmarkForm.simname_textBox.Text = client_.Network.CurrentSim.Name;
+            landmarkForm.x_textBox.Text = ((int)client_.Self.SimPosition.X).ToString();
+            landmarkForm.y_textBox.Text = ((int)client_.Self.SimPosition.Y).ToString();
+            landmarkForm.z_textBox.Text = ((int)client_.Self.SimPosition.Z).ToString();
+            landmarkForm.memo_textBox.Text = "";
+            if (DialogResult.OK == landmarkForm.ShowDialog(this))
+            {
+                XmlNode myNode = xmldoc_.CreateNode(XmlNodeType.Element, "location", "");
+                XmlAttribute attr_title = xmldoc_.CreateAttribute("title");
+                attr_title.Value = landmarkForm.name_textBox.Text;
+                myNode.Attributes.Append(attr_title);
+                rootNode_.AppendChild(myNode);
+                XmlNode locNode = xmldoc_.CreateNode(XmlNodeType.Element, "sim", "");
+                locNode.InnerText = landmarkForm.simname_textBox.Text;
+                myNode.AppendChild(locNode);
+                XmlNode xNode = xmldoc_.CreateNode(XmlNodeType.Element, "RegionX", "");
+                xNode.InnerText = landmarkForm.x_textBox.Text;
+                myNode.AppendChild(xNode);
+                XmlNode yNode = xmldoc_.CreateNode(XmlNodeType.Element, "RegionY", "");
+                yNode.InnerText = landmarkForm.y_textBox.Text;
+                myNode.AppendChild(yNode);
+                XmlNode zNode = xmldoc_.CreateNode(XmlNodeType.Element, "RegionZ", "");
+                zNode.InnerText = landmarkForm.x_textBox.Text;
+                myNode.AppendChild(zNode);
+                XmlNode textNode = xmldoc_.CreateNode(XmlNodeType.Element, "text", "");
+                textNode.InnerText = landmarkForm.memo_textBox.Text;
+                myNode.AppendChild(textNode);
+
+                LandmarkList landmark = new LandmarkList();
+                landmark.name = landmarkForm.name_textBox.Text;
+                landmark.simName = landmarkForm.simname_textBox.Text;
+                landmark.x = float.Parse(landmarkForm.x_textBox.Text);
+                landmark.y = float.Parse(landmarkForm.y_textBox.Text);
+                landmark.z = float.Parse(landmarkForm.z_textBox.Text);
+                landmark_array_.Add(landmark);
+
+                ToolStripMenuItem item = new ToolStripMenuItem();
+                item.Text = landmarkForm.name_textBox.Text;
+                item.Click += new EventHandler(landmark_Click);
+                landmarkToolStripMenuItem.DropDownItems.Add(item);
+            }
+
+        }
+
+        void landmark_Click(object sender, EventArgs e)
+        {
+            //MessageBox.Show(sender.ToString());
+            LandmarkList landmark = null;
+            for (int i = 0; i < landmark_array_.Count; i++)
+            {
+                if (landmark_array_[i].name == sender.ToString())
+                {
+                    landmark = landmark_array_[i];
+                    break;
+                }
+            }
+            if (landmark == null) return;
+            System.Threading.Thread process = new System.Threading.Thread(
+                delegate()
+                {
+                    try
+                    {
+                        client_.Self.Teleport(landmark.simName, new LLVector3(landmark.x, landmark.y, landmark.z));
+                    }
+                    catch
+                    {
+                        MessageBox.Show(StringResource.failedTeleport, "Error");
+                    }
+                });
+            process.Start();
+        }
+
         private void optionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OptionForm optionForm = new OptionForm();
@@ -485,5 +577,84 @@ namespace _2ndviewer
             aboutForm.ShowDialog(this);
         }
 
+        private void makeLandmarkItem(XmlNode itemNode, System.Windows.Forms.ToolStripMenuItem folderItem)
+        {
+            ToolStripMenuItem item = new ToolStripMenuItem();
+            item.Text = itemNode.Attributes["title"].Value;
+
+            LandmarkList landmark = new LandmarkList();
+            landmark.name = itemNode.Attributes["title"].Value;
+
+            foreach (XmlNode top_node in itemNode.ChildNodes)
+            {
+                if (top_node.Name == "sim")
+                {
+                    System.Diagnostics.Trace.WriteLine(top_node.InnerText);
+                    //item.Text = top_node.InnerText;
+                    landmark.simName = top_node.InnerText;
+                }
+                if (top_node.Name == "RegionX")
+                {
+                    landmark.x = float.Parse(top_node.InnerText);
+                }
+                if (top_node.Name == "RegionY")
+                {
+                    landmark.y = float.Parse(top_node.InnerText);
+                }
+                if (top_node.Name == "RegionZ")
+                {
+                    landmark.z = float.Parse(top_node.InnerText);
+                }
+            }
+
+            landmark_array_.Add(landmark);
+            item.Click += new EventHandler(landmark_Click);
+            folderItem.DropDownItems.Add(item);
+        }
+
+        private void makeLandmarkFolder(XmlNode rootNode, System.Windows.Forms.ToolStripMenuItem folderItem)
+        {
+            foreach (XmlNode top_node in rootNode.ChildNodes)
+            {
+                if (top_node.Name == "location")
+                {
+                    makeLandmarkItem(top_node, folderItem);
+                }
+                else
+                {
+                    ToolStripMenuItem newFolderItem = new ToolStripMenuItem();
+                    newFolderItem.Text = top_node.Attributes["title"].Value;                    
+                    folderItem.DropDownItems.Add(newFolderItem);
+                    makeLandmarkFolder(top_node, newFolderItem);
+                }
+            }
+        }
+
+        private void makeLandmark()
+        {
+            try
+            {
+                xmldoc_.Load("landmark.xml");
+
+                rootNode_ = xmldoc_.DocumentElement;
+                makeLandmarkFolder(rootNode_, landmarkToolStripMenuItem);
+            }
+            catch
+            {
+                MessageBox.Show("landmark.xml open error!");
+            }
+        }
+    }
+
+    class LandmarkList
+    {
+        public LandmarkList()
+        {
+        }
+        public string name;
+        public string simName;
+        public float x;
+        public float y;
+        public float z;
     }
 }

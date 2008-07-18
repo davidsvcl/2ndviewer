@@ -32,6 +32,9 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.landmarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addLandmarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,6 +55,7 @@
             this.menuStrip1.Font = null;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.landmarkToolStripMenuItem,
             this.toolToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Name = "menuStrip1";
@@ -76,6 +80,35 @@
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeyDisplayString = null;
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // landmarkToolStripMenuItem
+            // 
+            this.landmarkToolStripMenuItem.AccessibleDescription = null;
+            this.landmarkToolStripMenuItem.AccessibleName = null;
+            resources.ApplyResources(this.landmarkToolStripMenuItem, "landmarkToolStripMenuItem");
+            this.landmarkToolStripMenuItem.BackgroundImage = null;
+            this.landmarkToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addLandmarkToolStripMenuItem,
+            this.toolStripSeparator1});
+            this.landmarkToolStripMenuItem.Name = "landmarkToolStripMenuItem";
+            this.landmarkToolStripMenuItem.ShortcutKeyDisplayString = null;
+            // 
+            // addLandmarkToolStripMenuItem
+            // 
+            this.addLandmarkToolStripMenuItem.AccessibleDescription = null;
+            this.addLandmarkToolStripMenuItem.AccessibleName = null;
+            resources.ApplyResources(this.addLandmarkToolStripMenuItem, "addLandmarkToolStripMenuItem");
+            this.addLandmarkToolStripMenuItem.BackgroundImage = null;
+            this.addLandmarkToolStripMenuItem.Name = "addLandmarkToolStripMenuItem";
+            this.addLandmarkToolStripMenuItem.ShortcutKeyDisplayString = null;
+            this.addLandmarkToolStripMenuItem.Click += new System.EventHandler(this.addLandmarkToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.AccessibleDescription = null;
+            this.toolStripSeparator1.AccessibleName = null;
+            resources.ApplyResources(this.toolStripSeparator1, "toolStripSeparator1");
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
             // 
             // toolToolStripMenuItem
             // 
@@ -185,5 +218,8 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripMenuItem toolToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem landmarkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addLandmarkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
