@@ -23,6 +23,7 @@ namespace _2ndviewer
         System.Collections.Generic.List<Im_tab> uuid_array_;
         Random rnd_;
         System.Collections.Generic.List<string> news4vip_subs_;
+        private bool translate_;
 
         private delegate void WriteLineDelegate(string str);
         private delegate void AddTabDelegate(Im_tab im_tab, string fromName, string message);
@@ -32,12 +33,14 @@ namespace _2ndviewer
         private delegate void LindenOfficialBlogDelegate(string name);
         private delegate void SlmameDelegate(string name);
         private delegate void News4VipDelegate(string name);
+        private delegate void TranslateDelegate(string fromname, string message);
 
         public ChatForm()
         {
             InitializeComponent();
             uuid_array_ = new System.Collections.Generic.List<Im_tab>();
             news4vip_subs_ = new System.Collections.Generic.List<string>();
+            translate_ = false;
             rnd_ = new Random();
             pe_ = new PythonEngine();
         }
@@ -158,7 +161,8 @@ namespace _2ndviewer
             if (movementForm_.chatlog_checkBox.Checked) {
                 System.IO.File.AppendAllText(System.IO.Directory.GetCurrentDirectory()+"\\chat.txt", msg);
             }
-            if (fromName != client_.Self.Name) {
+            if (fromName != client_.Self.Name)
+            {
                 if (message.StartsWith(nickName_+"コマンド"))
                 {
                     client_.Self.Chat(nickName_+","+nickName_+"おいで,"+nickName_+"とまれ,"+nickName_+"踊れ,"+nickName_+"ポーズ一覧,"+nickName_+"123(ポーズ),"+nickName_+"おちつけ,"+nickName_+"ニュース,リンデン,ソラマメ,VIP", 0, ChatType.Normal);
@@ -279,6 +283,22 @@ namespace _2ndviewer
                         }
                     }
                 }
+                if (translate_ == true)
+                {
+                    TranslateDelegate transdlg = new TranslateDelegate(Translate);
+                    string[] transarg = { fromName, message };
+                    Invoke(transdlg, transarg);
+                }
+            }
+            if (message.StartsWith(nickName_ + "翻訳やめ"))
+            {
+                translate_ = false;
+                client_.Self.Chat("翻訳をやめます", 0, ChatType.Normal);
+            }
+            else if (message.StartsWith(nickName_ + "翻訳"))
+            {
+                translate_ = true;
+                client_.Self.Chat("翻訳を開始します", 0, ChatType.Normal);
             }
             try
             {
@@ -619,6 +639,66 @@ namespace _2ndviewer
                 client_.Self.Chat("エラー:" + e.Message, 0, ChatType.Normal);
             }
 
+        }
+        private void Translate(string fromname, string message)
+        {
+            try
+            {
+                bool isJapanese = false;
+                if (System.Text.RegularExpressions.Regex.IsMatch(message, "\\p{IsHiragana}"))
+                {
+                    isJapanese = true;
+                }
+                if (System.Text.RegularExpressions.Regex.IsMatch(message, "\\p{IsKatakana}"))
+                {
+                    isJapanese = true;
+                }
+                if (System.Text.RegularExpressions.Regex.IsMatch(message, "\\p{IsCJKUnifiedIdeographs}"))
+                {
+                    isJapanese = true;
+                }
+
+                string translateURL;
+                if (isJapanese)
+                {
+                    translateURL = "http://translate.livedoor.com/get/?trns_type=2,1&k=translate&ie=utf8&src_text=" + System.Web.HttpUtility.UrlEncode(message);
+                }
+                else
+                {
+                    translateURL = "http://translate.livedoor.com/get/?trns_type=1,2&k=translate&ie=utf8&src_text=" + System.Web.HttpUtility.UrlEncode(message);
+                }
+                //translateURL = "http://www.excite.co.jp/world/english/?wb_lp=ENJA&before=hi";
+                //translateURL = "http://www.excite.co.jp/world/english/?wb_lp=JAEN&before=" + System.Web.HttpUtility.UrlEncode("");
+                System.Net.HttpWebRequest request = null;
+                System.Net.HttpWebResponse response = null;
+                request = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create(translateURL);
+                request.Timeout = 5000;
+                request.ReadWriteTimeout = 20000;
+                response = (System.Net.HttpWebResponse)request.GetResponse();
+                //response.ContentEncoding = System.Text.Encoding.GetEncoding("shift-jis");
+                System.IO.Stream str = response.GetResponseStream();
+                System.IO.StreamReader sr = new System.IO.StreamReader(str, System.Text.Encoding.GetEncoding("utf-8"));
+                string text = sr.ReadToEnd();
+
+                System.Text.RegularExpressions.Regex regAfter = new System.Text.RegularExpressions.Regex(
+                        "<textarea [^>].*tar_text.*>(?<text>.*?)</textarea>", System.Text.RegularExpressions.RegexOptions.None);
+                System.Text.RegularExpressions.Match m = regAfter.Match(text);
+                m = regAfter.Match(text);
+                string after = "";
+                while (m.Success)
+                {
+                    string field = m.Groups["text"].Value;
+                    if (field.Length > 0) after = field;
+                    m = m.NextMatch();
+                }
+                int index = fromname.IndexOf(' ');
+                fromname = fromname.Substring(0, index);
+                client_.Self.Chat(fromname + " said: " + after, 0, ChatType.Normal);
+            }
+            catch (Exception e)
+            {
+                client_.Self.Chat("エラー:" + e.Message, 0, ChatType.Normal);
+            }
         }
     }
 }
