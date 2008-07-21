@@ -18,18 +18,4 @@
   </folder>
   <folder title="ショップ">
   </folder>
-  <location title="ゆな実験場">
-    <sim>Scion Cinema</sim>
-    <RegionX>154</RegionX>
-    <RegionY>118</RegionY>
-    <RegionZ>154</RegionZ>
-    <text>スカイ</text>
-  </location>
-  <location title="BadGirls">
-    <sim>Badlands</sim>
-    <RegionX>166</RegionX>
-    <RegionY>150</RegionY>
-    <RegionZ>166</RegionZ>
-    <text>負荷テスト</text>
-  </location>
 </landmark>
