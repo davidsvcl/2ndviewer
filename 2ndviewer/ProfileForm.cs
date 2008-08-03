@@ -7,18 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
     public partial class ProfileForm : Form, IDisposable
     {
-        private SecondLife client_;
-        private LLUUID avatarID_;
-        private LLUUID slImageID_;
-        private LLUUID flImageID_;
+        private GridClient client_;
+        private UUID avatarID_;
+        private UUID slImageID_;
+        private UUID flImageID_;
 
-        private delegate void PropertiesUpdateDelegate(LLUUID avatarID, Avatar.AvatarProperties properties);
+        private delegate void PropertiesUpdateDelegate(UUID avatarID, Avatar.AvatarProperties properties);
         AssetManager.ImageReceivedCallback ImageReceivedCallback;
 
         private delegate void SetAvatarTextDelegate(string avatar);
@@ -41,12 +41,12 @@ namespace _2ndviewer
 
         #endregion
 
-        public void SetClient(SecondLife client)
+        public void SetClient(GridClient client)
         {
             client_ = client;
         }
 
-        public void SetAvatarID(LLUUID uuid)
+        public void SetAvatarID(UUID uuid)
         {
             avatarID_ = uuid;
         }
@@ -63,9 +63,9 @@ namespace _2ndviewer
             client_.Assets.OnImageReceived += ImageReceivedCallback;
         }
 
-        void Avatars_OnAvatarNames(Dictionary<LLUUID, string> names)
+        void Avatars_OnAvatarNames(Dictionary<UUID, string> names)
         {
-            foreach (KeyValuePair<LLUUID, string> kvp in names)
+            foreach (KeyValuePair<UUID, string> kvp in names)
             {
                 //System.Diagnostics.Trace.WriteLine("key;"+kvp.Key);
                 //System.Diagnostics.Trace.WriteLine("value;" + kvp.Value);
@@ -89,17 +89,17 @@ namespace _2ndviewer
             partner_textBox.Text = partner;
         }
 
-        void Avatars_OnAvatarProperties(LLUUID avatarID, Avatar.AvatarProperties properties)
+        void Avatars_OnAvatarProperties(UUID avatarID, Avatar.AvatarProperties properties)
         {
             PropertiesUpdateDelegate dlg = new PropertiesUpdateDelegate(PropertiesUpdate);
             object[] arg = { avatarID, properties };
             Invoke(dlg, arg);
         }
 
-        private void PropertiesUpdate(LLUUID avatarID, Avatar.AvatarProperties properties)
+        private void PropertiesUpdate(UUID avatarID, Avatar.AvatarProperties properties)
         {
             firstlist_textBox.Text = properties.FirstLifeText;
-            if (properties.Partner != LLUUID.Zero)
+            if (properties.Partner != UUID.Zero)
             {
                 client_.Avatars.RequestAvatarName(properties.Partner);
             }
@@ -108,12 +108,12 @@ namespace _2ndviewer
             about_textBox.Text = properties.AboutText;
             web_textBox.Text = properties.ProfileURL;
             born_textBox.Text = properties.BornOn;
-            if (properties.ProfileImage != LLUUID.Zero)
+            if (properties.ProfileImage != UUID.Zero)
             {
                 slImageID_ = properties.ProfileImage;
                 client_.Assets.RequestImage(properties.ProfileImage, ImageType.Normal);
             }
-            if (properties.FirstLifeImage != LLUUID.Zero)
+            if (properties.FirstLifeImage != UUID.Zero)
             {
                 flImageID_ = properties.FirstLifeImage;
                 client_.Assets.RequestImage(properties.FirstLifeImage, ImageType.Normal);
@@ -127,11 +127,20 @@ namespace _2ndviewer
 
         void Assets_OnImageReceived(ImageDownload image, AssetTexture assetTexture)
         {
-            libsecondlife.Image img;
+            OpenMetaverse.Imaging.ManagedImage img;
+            Image bitmap;
             if (image.Success)
             {
-                if(image.ID == slImageID_) pictureBox1.Image = OpenJPEGNet.OpenJPEG.DecodeToImage(image.AssetData, out img);
-                else if (image.ID == flImageID_) pictureBox2.Image = OpenJPEGNet.OpenJPEG.DecodeToImage(image.AssetData, out img);
+                if (image.ID == slImageID_)
+                {
+                    OpenMetaverse.Imaging.OpenJPEG.DecodeToImage(image.AssetData, out img, out bitmap);
+                    pictureBox1.Image = bitmap;
+                }
+                else if (image.ID == flImageID_)
+                {
+                    OpenMetaverse.Imaging.OpenJPEG.DecodeToImage(image.AssetData, out img, out bitmap);
+                    pictureBox2.Image = bitmap;
+                }
             }
         }
 

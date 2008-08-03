@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Xml;
 
 using WeifenLuo.WinFormsUI;
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
@@ -27,7 +27,7 @@ namespace _2ndviewer
         public MovementForm movementForm_;
         public ObjectForm objectForm_;
         public AvatarForm avatarForm_;
-        public SecondLife client_;
+        public GridClient client_;
         private delegate void SetStatusTextDelegate(string str);
         private int firstOne;
         private string last_getAvatarName;
@@ -52,7 +52,7 @@ namespace _2ndviewer
             xmldoc_ = new XmlDocument();
             makeLandmark();
 
-            client_ = new SecondLife();
+            client_ = new GridClient();
             client_.Network.OnConnected += new NetworkManager.ConnectedCallback(Network_OnConnected);
             client_.Network.OnDisconnected += new NetworkManager.DisconnectedCallback(Network_OnDisconnected);
             client_.Self.OnInstantMessage += new AgentManager.InstantMessageCallback(Self_OnInstantMessage);
@@ -207,7 +207,7 @@ namespace _2ndviewer
                     }
                 case InstantMessageDialog.GroupInvitation:
                     {
-                        client_.Self.InstantMessage(client_.Self.Name, im.FromAgentID, string.Empty, im.IMSessionID, InstantMessageDialog.GroupInvitationAccept, InstantMessageOnline.Offline, client_.Self.SimPosition, LLUUID.Zero, new byte[0]);
+                        client_.Self.InstantMessage(client_.Self.Name, im.FromAgentID, string.Empty, im.IMSessionID, InstantMessageDialog.GroupInvitationAccept, InstantMessageOnline.Offline, client_.Self.SimPosition, UUID.Zero, new byte[0]);
                         break;
                     }
                 case InstantMessageDialog.RequestTeleport:
@@ -244,7 +244,7 @@ namespace _2ndviewer
             }
         }
 
-        private void Self_OnScriptDialog(string message, string objectName, LLUUID imageID, LLUUID objectID, string firstName, string lastName, int chatChannel, List<string> buttons)
+        private void Self_OnScriptDialog(string message, string objectName, UUID imageID, UUID objectID, string firstName, string lastName, int chatChannel, List<string> buttons)
         {
             //throw new NotImplementedException();
             chatForm_.SystemMessage("dialog message:" + message);
@@ -259,7 +259,7 @@ namespace _2ndviewer
             //client_.Self.Chat("buttonname", chatChannel, ChatType.Normal);
         }
 
-        private void Self_OnScriptQuestion(Simulator simulator, LLUUID taskID, LLUUID itemID, string objectName, string objectOwner, ScriptPermission questions)
+        private void Self_OnScriptQuestion(Simulator simulator, UUID taskID, UUID itemID, string objectName, string objectOwner, ScriptPermission questions)
         {
             System.Diagnostics.Trace.WriteLine("OnScriptQuestion");
             string mes = objectOwner + "s object " + objectName + " ";
@@ -339,9 +339,9 @@ namespace _2ndviewer
                     {
                         minimapForm_.printMap(false);
                     }
-                    LLVector3 pos = av.Position;
+                    Vector3 pos = av.Position;
                     float distance = 20.0f;
-                    if (LLVector3.Dist(pos, client_.Self.SimPosition) < distance)
+                    if (Vector3.Distance(pos, client_.Self.SimPosition) < distance)
                     {
                         if (debugForm_ != null)
                         {
@@ -377,13 +377,13 @@ namespace _2ndviewer
             client_.Network.CurrentSim.ObjectsPrimitives.TryGetValue(update.LocalID, out prim);
             if (prim != null)
             {
-                LLVector3 pos = prim.Position;
+                Vector3 pos = prim.Position;
                 float distance = 10.0f;
-                if (LLVector3.Dist(pos, client_.Self.SimPosition) < distance)
+                if (Vector3.Distance(pos, client_.Self.SimPosition) < distance)
                 {
                     if (movementForm_.sit_on_ == true)
                     {
-                        client_.Self.RequestSit(prim.ID, LLVector3.Zero);
+                        client_.Self.RequestSit(prim.ID, Vector3.Zero);
                         client_.Self.Sit();
                     }
                 }
@@ -397,13 +397,13 @@ namespace _2ndviewer
                 }
                 if (av == null) return;
                 if (av.Name == movementForm_.followName_) {
-                    LLVector3 pos = av.Position;
+                    Vector3 pos = av.Position;
                     float followDistance = 0.5f;
                     if (movementForm_.boxing_ == true)
                     {
                         movementForm_.boxing();
                     }
-                    if (LLVector3.Dist(pos, client_.Self.SimPosition) > followDistance)
+                    if (Vector3.Distance(pos, client_.Self.SimPosition) > followDistance)
                     {
                         int followRegionX = (int)(regionHandle >> 32);
                         int followRegionY = (int)(regionHandle & 0xFFFFFFFF);
@@ -442,14 +442,14 @@ namespace _2ndviewer
         }
 
         // ProfileFormへ移動
-        //void Avatars_OnAvatarProperties(LLUUID avatarID, Avatar.AvatarProperties properties)
+        //void Avatars_OnAvatarProperties(UUID avatarID, Avatar.AvatarProperties properties)
         //{
         //    chatForm_.SystemMessage("\r\n" + properties.AboutText);
         //    chatForm_.SystemMessage("\r\n" + properties.ProfileURL);
         //    chatForm_.SystemMessage("\r\n" + properties.BornOn);
         //}
 
-        void Groups_OnCurrentGroups(Dictionary<LLUUID, Group> groups)
+        void Groups_OnCurrentGroups(Dictionary<UUID, Group> groups)
         {
             groupForm_.Groups_ = groups;
             Invoke(new MethodInvoker(groupForm_.UpdateGroups));
@@ -545,7 +545,7 @@ namespace _2ndviewer
                 {
                     try
                     {
-                        client_.Self.Teleport(landmark.simName, new LLVector3(landmark.x, landmark.y, landmark.z));
+                        client_.Self.Teleport(landmark.simName, new Vector3(landmark.x, landmark.y, landmark.z));
                     }
                     catch
                     {

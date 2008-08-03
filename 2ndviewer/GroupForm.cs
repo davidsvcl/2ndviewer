@@ -8,14 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI;
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
     public partial class GroupForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
-        private SecondLife client_;
-        public Dictionary<LLUUID, Group> Groups_;
+        private GridClient client_;
+        public Dictionary<UUID, Group> Groups_;
 
         public GroupForm()
         {
@@ -23,7 +23,7 @@ namespace _2ndviewer
             leave_button.Enabled = false;
         }
 
-        public void SetClient(SecondLife client)
+        public void SetClient(GridClient client)
         {
             client_ = client;
         }

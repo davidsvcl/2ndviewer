@@ -8,13 +8,13 @@ using System.Text;
 using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI;
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
     public partial class AvatarForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
-        private SecondLife client_;
+        private GridClient client_;
         private ChatForm chatForm_;
         private MovementForm movementForm_;
         System.Collections.Generic.List<Avatar> avatar_array_ = new System.Collections.Generic.List<Avatar>();
@@ -24,7 +24,7 @@ namespace _2ndviewer
             InitializeComponent();
         }
 
-        public void SetClient(SecondLife client)
+        public void SetClient(GridClient client)
         {
             client_ = client;
         }
@@ -45,12 +45,12 @@ namespace _2ndviewer
             avatar_array_.Clear();
             this.listBox1.Items.Clear();
 
-            LLVector3 location = client_.Self.SimPosition;
+            Vector3 location = client_.Self.SimPosition;
             List<Avatar> avatars = client_.Network.CurrentSim.ObjectsAvatars.FindAll(
                 delegate(Avatar avatar)
                 {
-                    LLVector3 pos = avatar.Position;
-                    return true;// ((pos != LLVector3.Zero) && (LLVector3.Dist(pos, location) < radius));
+                    Vector3 pos = avatar.Position;
+                    return true;// ((pos != Vector3.Zero) && (Vector3.Dist(pos, location) < radius));
                 }
 
             );

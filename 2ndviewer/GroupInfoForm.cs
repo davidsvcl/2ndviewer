@@ -7,16 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
     public partial class GroupInfoForm : Form ,IDisposable
     {
-        private SecondLife client_;
+        private GridClient client_;
         private Group group_;
 
-        GroupProfile profile_ = new GroupProfile();
+        Group profile_ = new Group();
 
         GroupManager.GroupProfileCallback GroupProfileCallback;
         AssetManager.ImageReceivedCallback ImageReceivedCallback;
@@ -52,7 +52,7 @@ namespace _2ndviewer
 
         #endregion
 
-        public void SetClient(SecondLife client)
+        public void SetClient(GridClient client)
         {
             client_ = client;
         }
@@ -62,19 +62,21 @@ namespace _2ndviewer
             group_ = group;
         }
 
-        void Groups_OnGroupProfile(GroupProfile group)
+        void Groups_OnGroupProfile(Group group)
         {
             profile_ = group;
-            if (group_.InsigniaID != LLUUID.Zero) client_.Assets.RequestImage(group_.InsigniaID, ImageType.Normal, 113000.0f, 0);
+            if (group_.InsigniaID != UUID.Zero) client_.Assets.RequestImage(group_.InsigniaID, ImageType.Normal, 113000.0f, 0);
             if(InvokeRequired)BeginInvoke(new MethodInvoker(UpdateProfile));
         }
 
         void Assets_OnImageReceived(ImageDownload image, AssetTexture assetTexture)
         {
-            libsecondlife.Image img;
+            OpenMetaverse.Imaging.ManagedImage img;
+            Image bitmap;
             if (image.Success)
             {
-                pictureBox.Image = OpenJPEGNet.OpenJPEG.DecodeToImage(image.AssetData, out img);
+                OpenMetaverse.Imaging.OpenJPEG.DecodeToImage(image.AssetData, out img, out bitmap);
+                pictureBox.Image = bitmap;
             }
         }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
@@ -14,7 +14,7 @@ namespace _2ndviewer
         }
         public int indent_;
         public string Name_;
-        public LLUUID uuid_;
+        public UUID uuid_;
         public bool folder_;
     }
 }

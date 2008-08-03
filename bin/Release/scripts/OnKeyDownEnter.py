@@ -3,8 +3,8 @@
 
 import clr
 
-#clr.AddReferenceByPartialName("libsecondlife")
-#from libsecondlife import *
+#clr.AddReferenceByPartialName("OpenMetaverse")
+#from OpenMetaverse import *
 
 clr.AddReference("System")
 from System import *

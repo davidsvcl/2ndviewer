@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
     class Im_tab
     {
-        public LLUUID fromAgentID_;
-        public LLUUID sessionID_;
+        public UUID fromAgentID_;
+        public UUID sessionID_;
         public System.Windows.Forms.TabPage tabPage_;
         public System.Windows.Forms.TextBox textBox_;
 

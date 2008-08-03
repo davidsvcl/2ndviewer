@@ -8,13 +8,13 @@ using System.Text;
 using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI;
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
     public partial class MinimapForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
-        private SecondLife client_;
+        private GridClient client_;
         private string oldSim_;
         private System.Drawing.Image mMapImage;
         public int filter_selected;
@@ -26,7 +26,7 @@ namespace _2ndviewer
             filter_selected = 0;
         }
 
-        public void SetClient(SecondLife client)
+        public void SetClient(GridClient client)
         {
             client_ = client;
         }
@@ -69,7 +69,7 @@ namespace _2ndviewer
             catch {
             }
             // avatars
-            System.Collections.Generic.List<LLVector3> avatars = client_.Network.CurrentSim.AvatarPositions;
+            System.Collections.Generic.List<Vector3> avatars = client_.Network.CurrentSim.AvatarPositions;
             for (int i = 0; i < avatars.Count; i++)
             {
                 Rectangle rect = new Rectangle((int)Math.Round(avatars[i].X,0) -2, 255 -((int)Math.Round(avatars[i].Y,0) -2), 4, 4);

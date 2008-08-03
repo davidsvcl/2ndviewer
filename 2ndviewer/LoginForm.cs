@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
     public partial class LoginForm : Form
     {
-        private SecondLife client_;
+        private GridClient client_;
         private delegate void LogonSuccessDelegate();
         private delegate void LogonFailedDelegate(string message);
 
@@ -22,7 +22,7 @@ namespace _2ndviewer
             InitializeComponent();
         }
 
-        public void SetClient(SecondLife client)
+        public void SetClient(GridClient client)
         {
             client_ = client;
             client_.Network.OnLogin += new NetworkManager.LoginCallback(Network_OnLogin);

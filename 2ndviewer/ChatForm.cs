@@ -8,14 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI;
-using libsecondlife;
+using OpenMetaverse;
 using IronPython.Hosting;
 
 namespace _2ndviewer
 {
     public partial class ChatForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
-        private SecondLife client_;
+        private GridClient client_;
         private MovementForm movementForm_;
         private PythonEngine pe_;
         private string nickName_;
@@ -45,14 +45,14 @@ namespace _2ndviewer
             pe_ = new PythonEngine();
         }
 
-        public void SetClient(SecondLife client)
+        public void SetClient(GridClient client)
         {
             client_ = client;
             pe_.Globals.Add("client",client_);
             string dummy = "dummy";
             pe_.Globals.Add("message", dummy);
             pe_.Globals.Add("chat_textbox", dummy);
-            LLUUID dummyuuid = LLUUID.Zero;
+            UUID dummyuuid = UUID.Zero;
             pe_.Globals.Add("fromAgentID",dummyuuid);
             pe_.Globals.Add("sessionID",dummyuuid);
         }
@@ -112,11 +112,11 @@ namespace _2ndviewer
             uuid_array_.Add(im_tab);
         }
 
-        public void StartIM(LLUUID toAgentID, string toName)
+        public void StartIM(UUID toAgentID, string toName)
         {
             Im_tab im_tab = new Im_tab();
             im_tab.fromAgentID_ = toAgentID;
-            im_tab.sessionID_ = LLUUID.Random();
+            im_tab.sessionID_ = UUID.Random();
 
             im_tab.tabPage_ = new TabPage();
             im_tab.tabPage_.Name = toName;
@@ -154,7 +154,7 @@ namespace _2ndviewer
             movementForm_.follow_checkBox.Checked = check;
             movementForm_.follow_textBox.Text = name;
         }
-        public void Self_OnChat(string message, ChatAudibleLevel audible, ChatType type, ChatSourceType sourceType, string fromName, LLUUID id, LLUUID ownerid, LLVector3 position)
+        public void Self_OnChat(string message, ChatAudibleLevel audible, ChatType type, ChatSourceType sourceType, string fromName, UUID id, UUID ownerid, Vector3 position)
         {
             if (message.Length <= 0) return;
             string msg = "\r\n" + fromName + ":" + message;
@@ -347,7 +347,7 @@ namespace _2ndviewer
             Invoke(dlg, arg);
         }
 
-        public void IMChat(string message, string fromName, LLUUID fromAgentID, LLUUID sessionID)
+        public void IMChat(string message, string fromName, UUID fromAgentID, UUID sessionID)
         {
             if (message.Length <= 0) return;
 

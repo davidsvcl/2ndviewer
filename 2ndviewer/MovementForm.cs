@@ -8,13 +8,13 @@ using System.Text;
 using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI;
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
     public partial class MovementForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
-        private SecondLife client_;
+        private GridClient client_;
         public bool follow_on_;
         public bool sit_on_;
         public string followName_;
@@ -39,7 +39,7 @@ namespace _2ndviewer
 
         }
 
-        public void SetClient(SecondLife client)
+        public void SetClient(GridClient client)
         {
             client_ = client;
         }
@@ -145,7 +145,7 @@ namespace _2ndviewer
                 float x = float.Parse(loc[0]);
                 float y = float.Parse(loc[1]);
                 float z = float.Parse(loc[2]);
-                client_.Self.Teleport(sim_name, new LLVector3(x, y, z));
+                client_.Self.Teleport(sim_name, new Vector3(x, y, z));
             }
             catch {
                 MessageBox.Show(StringResource.failedTeleport, "Error");

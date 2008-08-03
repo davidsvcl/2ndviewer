@@ -8,13 +8,13 @@ using System.Text;
 using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI;
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
     public partial class FriendForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
-        private SecondLife client_;
+        private GridClient client_;
         private ChatForm chatForm_;
         System.Collections.Generic.List<FriendList> friend_array_;
         private delegate void refreshListDelegate(string str);
@@ -25,7 +25,7 @@ namespace _2ndviewer
             friend_array_ = new System.Collections.Generic.List<FriendList>();
         }
 
-        public void SetClient(SecondLife client)
+        public void SetClient(GridClient client)
         {
             client_ = client;
         }

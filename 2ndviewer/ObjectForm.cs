@@ -8,14 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI;
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
     public partial class ObjectForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
-        private SecondLife client_;
-        private Dictionary<LLUUID, Primitive> PrimsWaiting = new Dictionary<LLUUID, Primitive>();
+        private GridClient client_;
+        private Dictionary<UUID, Primitive> PrimsWaiting = new Dictionary<UUID, Primitive>();
         System.Threading.AutoResetEvent AllPropertiesReceived = new System.Threading.AutoResetEvent(false);
         System.Collections.Generic.List<Primitive> object_array_ = new System.Collections.Generic.List<Primitive>();
 
@@ -24,7 +24,7 @@ namespace _2ndviewer
             InitializeComponent();
         }
 
-        public void SetClient(SecondLife client)
+        public void SetClient(GridClient client)
         {
             client_ = client;
             client_.Objects.OnObjectProperties += new ObjectManager.ObjectPropertiesCallback(Objects_OnObjectProperties);
@@ -69,13 +69,13 @@ namespace _2ndviewer
             object_array_.Clear();
             this.listBox1.Items.Clear();
 
-            LLVector3 location = client_.Self.SimPosition;
+            Vector3 location = client_.Self.SimPosition;
             List<Primitive> prims = client_.Network.CurrentSim.ObjectsPrimitives.FindAll(
                 delegate(Primitive prim)
                 {
-                    LLVector3 pos = prim.Position;
+                    Vector3 pos = prim.Position;
                     //System.Diagnostics.Trace.WriteLine(prim.LocalID);
-                    return ((prim.ParentID == 0) && (pos != LLVector3.Zero) && (LLVector3.Dist(pos, location) < radius));
+                    return ((prim.ParentID == 0) && (pos != Vector3.Zero) && (Vector3.Distance(pos, location) < radius));
                     //return (prim.ParentID == 0);
                 }
             );
@@ -94,7 +94,7 @@ namespace _2ndviewer
             }
             if (!complete)
             {
-                foreach (LLUUID uuid in PrimsWaiting.Keys)
+                foreach (UUID uuid in PrimsWaiting.Keys)
                 {
                     System.Diagnostics.Trace.WriteLine(uuid);
                 }
@@ -130,7 +130,7 @@ namespace _2ndviewer
         {
             int index = listBox1.SelectedIndex;
             if (index <= -1) return;
-            client_.Self.RequestSit(object_array_[index].ID, LLVector3.Zero);
+            client_.Self.RequestSit(object_array_[index].ID, Vector3.Zero);
             client_.Self.Sit();
         }
 

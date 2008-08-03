@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using libsecondlife;
+using OpenMetaverse;
 
 namespace _2ndviewer
 {
@@ -11,7 +11,7 @@ namespace _2ndviewer
     {
         public FriendList() {
         }
-        public LLUUID UUID;
+        public UUID UUID;
         public string Name;
     }
 }
