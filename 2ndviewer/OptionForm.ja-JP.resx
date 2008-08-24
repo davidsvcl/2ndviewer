@@ -139,4 +139,14 @@
   <data name="news4vip_textBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>154, 19</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="confirm_checkBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="confirm_checkBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>179, 16</value>
+  </data>
+  <data name="confirm_checkBox.Text" xml:space="preserve">
+    <value>確認メッセージボックスを表示する</value>
+  </data>
 </root>

@@ -35,6 +35,7 @@
             this.nickname_textBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.news4vip_textBox = new System.Windows.Forms.TextBox();
+            this.confirm_checkBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // button1
@@ -93,6 +94,16 @@
             this.news4vip_textBox.Font = null;
             this.news4vip_textBox.Name = "news4vip_textBox";
             // 
+            // confirm_checkBox
+            // 
+            this.confirm_checkBox.AccessibleDescription = null;
+            this.confirm_checkBox.AccessibleName = null;
+            resources.ApplyResources(this.confirm_checkBox, "confirm_checkBox");
+            this.confirm_checkBox.BackgroundImage = null;
+            this.confirm_checkBox.Font = null;
+            this.confirm_checkBox.Name = "confirm_checkBox";
+            this.confirm_checkBox.UseVisualStyleBackColor = true;
+            // 
             // OptionForm
             // 
             this.AccessibleDescription = null;
@@ -100,6 +111,7 @@
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = null;
+            this.Controls.Add(this.confirm_checkBox);
             this.Controls.Add(this.news4vip_textBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.nickname_textBox);
@@ -125,5 +137,6 @@
         public System.Windows.Forms.TextBox nickname_textBox;
         private System.Windows.Forms.Label label2;
         public System.Windows.Forms.TextBox news4vip_textBox;
+        public System.Windows.Forms.CheckBox confirm_checkBox;
     }
 }

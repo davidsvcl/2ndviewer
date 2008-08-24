@@ -132,11 +132,20 @@
   <data name="&gt;&gt;button1.Name" xml:space="preserve">
     <value>button1</value>
   </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;news4vip_textBox.Name" xml:space="preserve">
     <value>news4vip_textBox</value>
   </data>
+  <data name="&gt;&gt;checkBox1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;confirm_checkBox.Name" xml:space="preserve">
+    <value>confirm_checkBox</value>
+  </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="&gt;&gt;button2.Parent" xml:space="preserve">
     <value>$this</value>
@@ -148,12 +157,15 @@
   <data name="button1.Location" type="System.Drawing.Point, System.Drawing">
     <value>124, 231</value>
   </data>
-  <data name="button2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
+  <data name="&gt;&gt;news4vip_textBox.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="checkBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;checkBox1.Name" xml:space="preserve">
+    <value>checkBox1</value>
   </data>
   <data name="label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -161,8 +173,14 @@
   <data name="&gt;&gt;label2.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Avator's Nickname</value>
+  <data name="news4vip_textBox.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="button2.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;confirm_checkBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Option</value>
@@ -171,13 +189,16 @@
     <value>75, 12</value>
   </data>
   <data name="&gt;&gt;button1.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
+  </data>
+  <data name="checkBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>14, 56</value>
   </data>
   <data name="&gt;&gt;button2.Name" xml:space="preserve">
     <value>button2</value>
   </data>
-  <data name="news4vip_textBox.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
+  <data name="&gt;&gt;checkBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;button1.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -188,17 +209,14 @@
   <data name="&gt;&gt;nickname_textBox.Name" xml:space="preserve">
     <value>nickname_textBox</value>
   </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>101, 12</value>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
   </data>
-  <data name="&gt;&gt;label1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="checkBox1.Text" xml:space="preserve">
+    <value>Confirmation MessageBox</value>
   </data>
   <data name="nickname_textBox.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
-  </data>
-  <data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
   </data>
   <data name="news4vip_textBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>160, 19</value>
@@ -206,8 +224,11 @@
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 34</value>
   </data>
+  <data name="checkBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>158, 16</value>
+  </data>
   <data name="&gt;&gt;nickname_textBox.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="label2.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -219,25 +240,31 @@
     <value>292, 266</value>
   </data>
   <data name="&gt;&gt;button2.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="&gt;&gt;label1.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
+  <data name="news4vip_textBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>93, 31</value>
+  </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 9</value>
   </data>
-  <data name="news4vip_textBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>93, 31</value>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Avator's Nickname</value>
   </data>
   <data name="&gt;&gt;news4vip_textBox.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;news4vip_textBox.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;confirm_checkBox.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="&gt;&gt;nickname_textBox.Parent" xml:space="preserve">
     <value>$this</value>
@@ -245,8 +272,14 @@
   <data name="button1.Text" xml:space="preserve">
     <value>OK</value>
   </data>
-  <data name="&gt;&gt;button2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;checkBox1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="confirm_checkBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>14, 56</value>
+  </data>
+  <data name="&gt;&gt;confirm_checkBox.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="&gt;&gt;news4vip_textBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -254,8 +287,8 @@
   <data name="label1.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
-  <data name="button2.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+  <data name="&gt;&gt;button2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="button1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -266,11 +299,23 @@
   <data name="&gt;&gt;label2.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 12</value>
+  <data name="checkBox1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="button2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>101, 12</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>OptionForm</value>
+  </data>
+  <data name="confirm_checkBox.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
   </data>
   <data name="button2.Location" type="System.Drawing.Point, System.Drawing">
     <value>205, 231</value>
