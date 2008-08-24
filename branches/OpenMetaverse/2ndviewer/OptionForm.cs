@@ -18,6 +18,10 @@ namespace _2ndviewer
             if (regkey == null) return;
             nickname_textBox.Text = (string)regkey.GetValue("nickName");
             news4vip_textBox.Text = (string)regkey.GetValue("news4vip");
+            if (1 == (int)regkey.GetValue("confirmMessageBox", 1))
+            {
+                confirm_checkBox.Checked = true;
+            }
         }
     }
 }

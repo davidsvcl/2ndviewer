@@ -32,6 +32,7 @@ namespace _2ndviewer
         private int firstOne;
         private string last_getAvatarName;
         private System.Collections.Generic.List<LandmarkList> landmark_array_;
+        public int confirm_messageBox;
 
         public MainForm()
         {
@@ -88,6 +89,7 @@ namespace _2ndviewer
                     Microsoft.Win32.RegistryKey regkey_w = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\2ndviewer");
                     regkey_w.SetValue("news4vip", news4vip);
                 }
+                confirm_messageBox = (int)regkey.GetValue("confirmMessageBox", 1);
             }
             else
             {
@@ -97,6 +99,9 @@ namespace _2ndviewer
 
                 news4vip = StringResource.defaultNews4VipUrl;
                 regkey_w.SetValue("news4vip", news4vip);
+
+                confirm_messageBox = 1;
+                regkey_w.SetValue("confirmMessageBox",1);
             }
 
             movementForm_ = new MovementForm();
@@ -202,15 +207,27 @@ namespace _2ndviewer
                     }
                 case InstantMessageDialog.FriendshipOffered:
                     {
+                        if (confirm_messageBox == 1)
+                        {
+                            if (MessageBox.Show(im.FromAgentName, "Friendship Offered", MessageBoxButtons.YesNo) != DialogResult.Yes) break;
+                        }
                         client_.Friends.AcceptFriendship(im.FromAgentID, im.IMSessionID);
                         break;
                     }
                 case InstantMessageDialog.GroupInvitation:
                     {
+                        if (confirm_messageBox == 1)
+                        {
+                            if (MessageBox.Show("from:" + im.FromAgentName + " message:" + im.Message, "Group Invite", MessageBoxButtons.YesNo) != DialogResult.Yes) break;
+                        }
                         client_.Self.InstantMessage(client_.Self.Name, im.FromAgentID, string.Empty, im.IMSessionID, InstantMessageDialog.GroupInvitationAccept, InstantMessageOnline.Offline, client_.Self.SimPosition, UUID.Zero, new byte[0]);
                         break;
                     }
                 case InstantMessageDialog.RequestTeleport:
+                    if (confirm_messageBox == 1)
+                    {
+                        if (MessageBox.Show("from:" + im.FromAgentName + " message:" + im.Message, "Request Teleport", MessageBoxButtons.YesNo) != DialogResult.Yes) break;
+                    }
                     client_.Self.TeleportLureRespond(im.FromAgentID, true);
                     break;
                 case InstantMessageDialog.GroupNotice:
@@ -568,6 +585,13 @@ namespace _2ndviewer
                     chatForm_.SetNickName(optionForm.nickname_textBox.Text);
                     chatForm_.SetNews4Vip(optionForm.news4vip_textBox.Text);
                 }
+                if (optionForm.confirm_checkBox.Checked) {
+                    confirm_messageBox = 1;
+                }
+                else {
+                    confirm_messageBox = 0;
+                }
+                regkey.SetValue("confirmMessageBox", confirm_messageBox);
             }
         }
 
