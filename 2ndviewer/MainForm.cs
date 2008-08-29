@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -115,6 +115,7 @@ namespace _2ndviewer
             chatForm_.SetNickName(nickName);
             chatForm_.SetNews4Vip(news4vip);
             chatForm_.TabText = "Chat";
+            panel_.DockBottomPortion = 0.43;
             chatForm_.Show(panel_, WeifenLuo.WinFormsUI.Docking.DockState.DockBottom);
             client_.Self.OnChat += new AgentManager.ChatCallback(chatForm_.Self_OnChat);
 
