@@ -39,6 +39,7 @@ namespace _2ndviewer
         }
         private void login_button_Click(object sender, EventArgs e)
         {
+            this.Enabled = false;
             Microsoft.Win32.RegistryKey regkey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\2ndviewer");
             regkey.SetValue("firstName", firstName_textBox.Text);
             regkey.SetValue("lastName", lastName_textBox.Text);
@@ -77,6 +78,7 @@ namespace _2ndviewer
         private void LogonFailed(string message)
         {
             MessageBox.Show(message, StringResource.failedLogin, MessageBoxButtons.OK);
+            this.Enabled = true;
         }
 
         void Network_OnLogin(LoginStatus login, string message)
