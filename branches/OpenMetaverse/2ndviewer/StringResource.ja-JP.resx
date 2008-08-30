@@ -153,4 +153,7 @@
   <data name="onlineMessage" xml:space="preserve">
     <value>はオンラインです</value>
   </data>
+  <data name="titleIsNull" xml:space="preserve">
+    <value>タイトルを入力してください</value>
+  </data>
 </root>
