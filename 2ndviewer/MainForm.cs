@@ -29,6 +29,7 @@ namespace _2ndviewer
         public AvatarForm avatarForm_;
         public SecondLife client_;
         private delegate void SetStatusTextDelegate(string str);
+        private delegate void ShowScriptDialogDelegate(string message, int chatChannel, List<string> buttons);
         private int firstOne;
         private string last_getAvatarName;
         private System.Collections.Generic.List<LandmarkList> landmark_array_;
@@ -275,6 +276,17 @@ namespace _2ndviewer
             chatForm_.SystemMessage("buttons:" + mes);
             chatForm_.SystemMessage("button click command is \"/" + chatChannel + " button\"");
             //client_.Self.Chat("buttonname", chatChannel, ChatType.Normal);
+            ShowScriptDialogDelegate dlg = new ShowScriptDialogDelegate(ShowScriptDialog);
+            object[] dlgarg = {message, chatChannel, buttons};
+            Invoke(dlg, dlgarg);
+        }
+
+        private void ShowScriptDialog(string message, int chatChannel, List<string> buttons)
+        {
+            ScriptDialog scriptDialog = new ScriptDialog();
+            scriptDialog.SetClient(client_);
+            scriptDialog.SetObjects(message, chatChannel, buttons);
+            scriptDialog.Show(this);
         }
 
         private void Self_OnScriptQuestion(Simulator simulator, LLUUID taskID, LLUUID itemID, string objectName, string objectOwner, ScriptPermission questions)
@@ -681,5 +693,59 @@ namespace _2ndviewer
         public float x;
         public float y;
         public float z;
+    }
+
+    class ScriptDialog : Form
+    {
+        private SecondLife client_;
+        private int chatChannel;
+        public ScriptDialog()
+        {
+            this.Text = "Script";
+        }
+        public void SetClient(SecondLife client)
+        {
+            client_ = client;
+        }
+        public void SetObjects(string message, int chatChannel, List<string> buttons)
+        {
+            this.chatChannel = chatChannel;
+
+            Label label = new Label();
+            label.Text = message;
+            label.Bounds = new Rectangle(10, 10, 100, 20);
+            Controls.Add(label);
+
+            int y = 35;
+            int x = 10;
+            bool flag = false;
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                Button b = new Button();
+                b.Text = buttons[i];
+                b.Bounds = new Rectangle(x, y, 90, 25);
+                b.Click += new EventHandler(button_Click);
+                Controls.Add(b);
+                if (flag == false)
+                {
+                    flag = true;
+                    x = 110;
+                }
+                else
+                {
+                    flag = false;
+                    x = 10;
+                    y += 30;
+                }
+            }
+
+        }
+        void button_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Trace.WriteLine(sender.ToString());
+            Button b = (Button)sender;
+            client_.Self.Chat(b.Text, chatChannel, ChatType.Normal);
+            Close();
+        }
     }
 }
