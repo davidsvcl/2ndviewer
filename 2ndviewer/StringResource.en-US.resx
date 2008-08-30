@@ -153,4 +153,7 @@
   <data name="onlineMessage" xml:space="preserve">
     <value> is online</value>
   </data>
+  <data name="titleIsNull" xml:space="preserve">
+    <value>Please enter the title</value>
+  </data>
 </root>

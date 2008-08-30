@@ -167,5 +167,14 @@ namespace _2ndviewer {
                 return ResourceManager.GetString("onlineMessage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Please enter the title に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string titleIsNull {
+            get {
+                return ResourceManager.GetString("titleIsNull", resourceCulture);
+            }
+        }
     }
 }

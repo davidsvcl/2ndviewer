@@ -34,6 +34,10 @@
             this.button2 = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.select_button = new System.Windows.Forms.Button();
+            this.add_button = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.title_textBox = new System.Windows.Forms.TextBox();
+            this.clear_button = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBox1
@@ -88,6 +92,45 @@
             this.select_button.UseVisualStyleBackColor = true;
             this.select_button.Click += new System.EventHandler(this.select_button_Click);
             // 
+            // add_button
+            // 
+            this.add_button.AccessibleDescription = null;
+            this.add_button.AccessibleName = null;
+            resources.ApplyResources(this.add_button, "add_button");
+            this.add_button.BackgroundImage = null;
+            this.add_button.Font = null;
+            this.add_button.Name = "add_button";
+            this.add_button.UseVisualStyleBackColor = true;
+            this.add_button.Click += new System.EventHandler(this.add_button_Click);
+            // 
+            // label1
+            // 
+            this.label1.AccessibleDescription = null;
+            this.label1.AccessibleName = null;
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.Font = null;
+            this.label1.Name = "label1";
+            // 
+            // title_textBox
+            // 
+            this.title_textBox.AccessibleDescription = null;
+            this.title_textBox.AccessibleName = null;
+            resources.ApplyResources(this.title_textBox, "title_textBox");
+            this.title_textBox.BackgroundImage = null;
+            this.title_textBox.Font = null;
+            this.title_textBox.Name = "title_textBox";
+            // 
+            // clear_button
+            // 
+            this.clear_button.AccessibleDescription = null;
+            this.clear_button.AccessibleName = null;
+            resources.ApplyResources(this.clear_button, "clear_button");
+            this.clear_button.BackgroundImage = null;
+            this.clear_button.Font = null;
+            this.clear_button.Name = "clear_button";
+            this.clear_button.UseVisualStyleBackColor = true;
+            this.clear_button.Click += new System.EventHandler(this.clear_button_Click);
+            // 
             // AAForm
             // 
             this.AccessibleDescription = null;
@@ -95,6 +138,10 @@
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = null;
+            this.Controls.Add(this.clear_button);
+            this.Controls.Add(this.title_textBox);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.add_button);
             this.Controls.Add(this.select_button);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.button2);
@@ -116,5 +163,9 @@
         public System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Button select_button;
+        private System.Windows.Forms.Button add_button;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox title_textBox;
+        private System.Windows.Forms.Button clear_button;
     }
 }
