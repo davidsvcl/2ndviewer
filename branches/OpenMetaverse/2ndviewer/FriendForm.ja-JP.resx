@@ -118,25 +118,25 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>147, 70</value>
+  </data>
+  <data name="button1.Text" xml:space="preserve">
+    <value>更新</value>
+  </data>
   <data name="iMToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>152, 22</value>
+    <value>146, 22</value>
   </data>
   <data name="teleportToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>152, 22</value>
+    <value>146, 22</value>
   </data>
   <data name="teleportToolStripMenuItem.Text" xml:space="preserve">
     <value>テレポートを送る</value>
   </data>
   <data name="profile_ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>152, 22</value>
+    <value>146, 22</value>
   </data>
   <data name="profile_ToolStripMenuItem.Text" xml:space="preserve">
     <value>プロフィール</value>
-  </data>
-  <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>153, 92</value>
-  </data>
-  <data name="button1.Text" xml:space="preserve">
-    <value>更新</value>
   </data>
 </root>
