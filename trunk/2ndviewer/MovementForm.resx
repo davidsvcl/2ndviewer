@@ -120,17 +120,24 @@
   <data name="&gt;&gt;teleport_button.Name" xml:space="preserve">
     <value>teleport_button</value>
   </data>
-  <data name="&gt;&gt;shoot_button.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;boxing_checkBox.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="alight_button.Text" xml:space="preserve">
     <value>Alight</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="music_checkBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="&gt;&gt;sit_checkBox.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>10</value>
   </data>
   <data name="&gt;&gt;follow_checkBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;alight_button.ZOrder" xml:space="preserve">
+    <value>17</value>
   </data>
   <data name="&gt;&gt;right_button.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -145,7 +152,6 @@
   <data name="&gt;&gt;right_button.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="boost_checkBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -165,7 +171,7 @@
     <value>fly_button</value>
   </data>
   <data name="&gt;&gt;left_button.ZOrder" xml:space="preserve">
-    <value>20</value>
+    <value>21</value>
   </data>
   <data name="teleportloc_maskedTextBox.Mask" xml:space="preserve">
     <value>000/000/000</value>
@@ -176,8 +182,11 @@
   <data name="&gt;&gt;down_button.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;boxing_checkBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="sit_checkBox.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="alight_button.Location" type="System.Drawing.Point, System.Drawing">
+    <value>140, 31</value>
   </data>
   <data name="teleport_button.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
@@ -189,13 +198,16 @@
     <value>5</value>
   </data>
   <data name="&gt;&gt;follow_textBox.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>11</value>
   </data>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="&gt;&gt;sit_checkBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="right_button.Location" type="System.Drawing.Point, System.Drawing">
+    <value>90, 21</value>
   </data>
   <data name="&gt;&gt;speech_comboBox.Name" xml:space="preserve">
     <value>speech_comboBox</value>
@@ -210,8 +222,17 @@
   <data name="&gt;&gt;follow_textBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;music_checkBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
   <data name="sit_checkBox.Text" xml:space="preserve">
     <value>Within 10m of the update to sit</value>
+  </data>
+  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="music_checkBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>54, 16</value>
   </data>
   <data name="left_button.Size" type="System.Drawing.Size, System.Drawing">
     <value>42, 23</value>
@@ -223,7 +244,7 @@
     <value>Go</value>
   </data>
   <data name="&gt;&gt;stand_button.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
     <value>9, 65</value>
@@ -235,13 +256,13 @@
     <value>Stand</value>
   </data>
   <data name="&gt;&gt;shoot_button.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="right_button.Size" type="System.Drawing.Size, System.Drawing">
     <value>42, 23</value>
   </data>
   <data name="&gt;&gt;teleport_button.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>13</value>
   </data>
   <data name="teleportloc_maskedTextBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>117, 80</value>
@@ -292,7 +313,7 @@
     <value>81, 16</value>
   </data>
   <data name="&gt;&gt;speech_comboBox.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="teleportsim_textBox.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -304,16 +325,16 @@
     <value>10</value>
   </data>
   <data name="&gt;&gt;follow_checkBox.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>12</value>
   </data>
   <data name="sp_button.Text" xml:space="preserve">
     <value>AA</value>
   </data>
   <data name="&gt;&gt;boost_checkBox.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="fly_button.Text" xml:space="preserve">
     <value>Fly</value>
@@ -325,10 +346,13 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;down_button.ZOrder" xml:space="preserve">
-    <value>19</value>
+    <value>20</value>
   </data>
   <data name="boost_checkBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>11, 46</value>
+  </data>
+  <data name="&gt;&gt;shoot_button.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;sp_button.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -336,8 +360,8 @@
   <data name="&gt;&gt;up_button.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;up_button.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="&gt;&gt;stand_button.Name" xml:space="preserve">
+    <value>stand_button</value>
   </data>
   <data name="sit_checkBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>10, 128</value>
@@ -354,14 +378,11 @@
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>WeifenLuo.WinFormsUI.Docking.DockContent, WeifenLuo.WinFormsUI.Docking, Version=2.2.2864.18696, Culture=neutral, PublicKeyToken=d481317c817cec47</value>
   </data>
-  <data name="&gt;&gt;stand_button.Name" xml:space="preserve">
-    <value>stand_button</value>
-  </data>
-  <data name="chatlog_checkBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>103, 154</value>
-  </data>
   <data name="chatlog_checkBox.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
+  </data>
+  <data name="&gt;&gt;music_checkBox.Name" xml:space="preserve">
+    <value>music_checkBox</value>
   </data>
   <data name="boxing_checkBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>140, 58</value>
@@ -384,11 +405,11 @@
   <data name="boost_checkBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>83, 16</value>
   </data>
-  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="&gt;&gt;sp_button.ZOrder" xml:space="preserve">
+    <value>7</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>16</value>
   </data>
   <data name="follow_checkBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -400,10 +421,10 @@
     <value>MovementForm</value>
   </data>
   <data name="&gt;&gt;fly_button.ZOrder" xml:space="preserve">
-    <value>17</value>
+    <value>18</value>
   </data>
   <data name="&gt;&gt;up_button.ZOrder" xml:space="preserve">
-    <value>21</value>
+    <value>22</value>
   </data>
   <data name="&gt;&gt;teleportsim_textBox.Parent" xml:space="preserve">
     <value>$this</value>
@@ -416,6 +437,9 @@
   </data>
   <data name="run_checkBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 22</value>
+  </data>
+  <data name="&gt;&gt;right_button.ZOrder" xml:space="preserve">
+    <value>19</value>
   </data>
   <data name="sp_button.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
@@ -435,14 +459,11 @@
   <data name="&gt;&gt;teleportsim_textBox.Name" xml:space="preserve">
     <value>teleportsim_textBox</value>
   </data>
-  <data name="&gt;&gt;fly_button.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
   <data name="&gt;&gt;label2.Name" xml:space="preserve">
     <value>label2</value>
   </data>
-  <data name="&gt;&gt;right_button.ZOrder" xml:space="preserve">
-    <value>18</value>
+  <data name="&gt;&gt;music_checkBox.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="boost_checkBox.TabIndex" type="System.Int32, mscorlib">
     <value>14</value>
@@ -492,9 +513,6 @@
   <data name="shoot_button.Location" type="System.Drawing.Point, System.Drawing">
     <value>216, 150</value>
   </data>
-  <data name="&gt;&gt;boxing_checkBox.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
   <data name="fly_button.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
   </data>
@@ -510,9 +528,6 @@
   <data name="&gt;&gt;teleport_button.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="run_checkBox.Text" xml:space="preserve">
-    <value>Run</value>
-  </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Speech：</value>
   </data>
@@ -521,6 +536,9 @@
   </data>
   <data name="sp_button.Location" type="System.Drawing.Point, System.Drawing">
     <value>10, 150</value>
+  </data>
+  <data name="music_checkBox.Text" xml:space="preserve">
+    <value>Music</value>
   </data>
   <data name="&gt;&gt;run_checkBox.Name" xml:space="preserve">
     <value>run_checkBox</value>
@@ -558,8 +576,8 @@
   <data name="&gt;&gt;left_button.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="follow_textBox.TabIndex" type="System.Int32, mscorlib">
-    <value>11</value>
+  <data name="&gt;&gt;teleportsim_textBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;run_checkBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -567,8 +585,17 @@
   <data name="speech_comboBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>221, 33</value>
   </data>
+  <data name="&gt;&gt;teleportloc_maskedTextBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.MaskedTextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="teleportsim_textBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>100, 19</value>
+  </data>
+  <data name="music_checkBox.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
+  <data name="&gt;&gt;music_checkBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;speech_comboBox.Parent" xml:space="preserve">
     <value>$this</value>
@@ -576,8 +603,11 @@
   <data name="boxing_checkBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>88, 16</value>
   </data>
+  <data name="follow_textBox.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
   <data name="&gt;&gt;run_checkBox.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="follow_checkBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>10, 105</value>
@@ -594,14 +624,14 @@
   <data name="up_button.Location" type="System.Drawing.Point, System.Drawing">
     <value>51, 2</value>
   </data>
-  <data name="&gt;&gt;sp_button.ZOrder" xml:space="preserve">
-    <value>6</value>
+  <data name="run_checkBox.Text" xml:space="preserve">
+    <value>Run</value>
   </data>
   <data name="left_button.Location" type="System.Drawing.Point, System.Drawing">
     <value>11, 21</value>
   </data>
-  <data name="alight_button.Location" type="System.Drawing.Point, System.Drawing">
-    <value>140, 31</value>
+  <data name="chatlog_checkBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>103, 154</value>
   </data>
   <data name="&gt;&gt;label2.Parent" xml:space="preserve">
     <value>$this</value>
@@ -613,7 +643,7 @@
     <value>59, 19</value>
   </data>
   <data name="&gt;&gt;teleportloc_maskedTextBox.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>14</value>
   </data>
   <data name="follow_textBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>90, 103</value>
@@ -627,32 +657,29 @@
   <data name="sp_button.Size" type="System.Drawing.Size, System.Drawing">
     <value>84, 23</value>
   </data>
-  <data name="&gt;&gt;alight_button.ZOrder" xml:space="preserve">
-    <value>16</value>
+  <data name="&gt;&gt;up_button.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
-  <data name="sit_checkBox.TabIndex" type="System.Int32, mscorlib">
-    <value>12</value>
+  <data name="&gt;&gt;fly_button.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="music_checkBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>275, 58</value>
   </data>
   <data name="&gt;&gt;boxing_checkBox.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="&gt;&gt;label1.Name" xml:space="preserve">
     <value>label1</value>
   </data>
   <data name="&gt;&gt;teleportsim_textBox.ZOrder" xml:space="preserve">
-    <value>14</value>
-  </data>
-  <data name="&gt;&gt;teleportsim_textBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="up_button.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+    <value>15</value>
   </data>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 12</value>
   </data>
   <data name="&gt;&gt;chatlog_checkBox.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="teleport_button.Location" type="System.Drawing.Point, System.Drawing">
     <value>194, 78</value>
@@ -660,14 +687,14 @@
   <data name="down_button.Location" type="System.Drawing.Point, System.Drawing">
     <value>51, 21</value>
   </data>
-  <data name="right_button.Location" type="System.Drawing.Point, System.Drawing">
-    <value>90, 21</value>
+  <data name="&gt;&gt;boxing_checkBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="alight_button.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
   </data>
-  <data name="&gt;&gt;teleportloc_maskedTextBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.MaskedTextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="up_button.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
   <data name="stand_button.TabIndex" type="System.Int32, mscorlib">
     <value>13</value>

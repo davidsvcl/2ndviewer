@@ -71,6 +71,7 @@ namespace _2ndviewer
             //client_.Avatars.OnAvatarProperties += new AvatarManager.AvatarPropertiesCallback(Avatars_OnAvatarProperties);
             client_.Groups.OnCurrentGroups += new GroupManager.CurrentGroupsCallback(Groups_OnCurrentGroups);
             client_.Network.OnEventQueueRunning += new NetworkManager.EventQueueRunningCallback(Network_OnEventQueueRunning);
+            client_.Parcels.OnParcelProperties += new ParcelManager.ParcelPropertiesCallback(Parcels_OnParcelProperties);
 
             Microsoft.Win32.RegistryKey regkey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software\\2ndviewer", false);
             string nickName;
@@ -161,6 +162,12 @@ namespace _2ndviewer
             LoginForm loginForm = new LoginForm();
             loginForm.SetClient(client_);
             loginForm.ShowDialog();
+        }
+
+        void Parcels_OnParcelProperties(Parcel parcel, ParcelManager.ParcelResult result, int sequenceID, bool snapSelection)
+        {
+            System.Diagnostics.Trace.WriteLine(parcel.MusicURL);
+            movementForm_.SetMusicURL(parcel.MusicURL);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

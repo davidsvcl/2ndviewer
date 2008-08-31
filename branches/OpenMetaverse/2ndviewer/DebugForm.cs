@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -37,7 +37,14 @@ namespace _2ndviewer
             string msg = "\r\n" + message;
             WriteLineDelegate dlg = new WriteLineDelegate(WriteLine);
             string[] arg = { msg };
-            Invoke(dlg, arg);
+            try
+            {
+                Invoke(dlg, arg);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.WriteLine(e);
+            }
         }
 
         private void filter_comboBox_SelectedIndexChanged(object sender, EventArgs e)
