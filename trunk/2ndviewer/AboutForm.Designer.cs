@@ -37,37 +37,55 @@
             // 
             // label1
             // 
+            this.label1.AccessibleDescription = null;
+            this.label1.AccessibleName = null;
             resources.ApplyResources(this.label1, "label1");
+            this.label1.Font = null;
             this.label1.Name = "label1";
             // 
             // linkLabel1
             // 
+            this.linkLabel1.AccessibleDescription = null;
+            this.linkLabel1.AccessibleName = null;
             resources.ApplyResources(this.linkLabel1, "linkLabel1");
+            this.linkLabel1.Font = null;
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.TabStop = true;
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // button1
             // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.button1.AccessibleDescription = null;
+            this.button1.AccessibleName = null;
             resources.ApplyResources(this.button1, "button1");
+            this.button1.BackgroundImage = null;
+            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.button1.Font = null;
             this.button1.Name = "button1";
             this.button1.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
+            this.label2.AccessibleDescription = null;
+            this.label2.AccessibleName = null;
             resources.ApplyResources(this.label2, "label2");
+            this.label2.Font = null;
             this.label2.Name = "label2";
             // 
             // AboutForm
             // 
+            this.AccessibleDescription = null;
+            this.AccessibleName = null;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = null;
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label1);
+            this.Font = null;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = null;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AboutForm";
