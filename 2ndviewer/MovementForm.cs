@@ -20,6 +20,7 @@ namespace _2ndviewer
         public string followName_;
         public string speech_;
         public bool boxing_;
+        private WMPLib.WindowsMediaPlayer mediaPlayer_;
 
         public MovementForm()
         {
@@ -36,12 +37,38 @@ namespace _2ndviewer
             }
             speech_comboBox.SelectedIndex = 0;
             speech_ = StringResource.none;
-
+            try
+            {
+                mediaPlayer_ = new WMPLib.WindowsMediaPlayer();
+                mediaPlayer_.settings.autoStart = false;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.WriteLine(e);
+                MessageBox.Show("WindowsMediaPlayer error!" + e.ToString());
+            }
         }
 
         public void SetClient(GridClient client)
         {
             client_ = client;
+        }
+
+        public void SetMusicURL(string url)
+        {
+            try
+            {
+                mediaPlayer_.controls.stop();
+                mediaPlayer_.URL = url;
+                if (music_checkBox.Checked == true)
+                {
+                    mediaPlayer_.controls.play();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.WriteLine(e);
+            }
         }
 
         private void up_button_Click(object sender, EventArgs e)
@@ -244,6 +271,25 @@ namespace _2ndviewer
             {
                 System.Diagnostics.Trace.WriteLine("Walk mode");
                 client_.Self.Movement.AlwaysRun = false;
+            }
+        }
+
+        private void music_checkBox_CheckStateChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (music_checkBox.Checked == true)
+                {
+                    mediaPlayer_.controls.play();
+                }
+                else
+                {
+                    mediaPlayer_.controls.stop();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine(ex);                
             }
         }
     }
