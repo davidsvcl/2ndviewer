@@ -17,7 +17,7 @@ namespace _2ndviewer
         private SecondLife client_;
         private ChatForm chatForm_;
         System.Collections.Generic.List<FriendList> friend_array_;
-        private delegate void refreshListDelegate(string str);
+        private delegate void refreshListDelegate();
 
         public FriendForm()
         {
@@ -35,7 +35,7 @@ namespace _2ndviewer
             chatForm_ = chatForm;
         }
 
-        private void refreshList(string str)
+        private void refreshList()
         {
             listBox1.Items.Clear();
             friend_array_.Clear();
@@ -43,17 +43,19 @@ namespace _2ndviewer
             {
                 client_.Friends.FriendList.ForEach(delegate(FriendInfo friend)
                 {
-                    string friend_str;
+                    FriendList friendlist = new FriendList();
+                    //string friend_str;
                     if (friend.IsOnline)
                     {
-                        friend_str = "(on)" + friend.Name;
+                        //friend_str = "(on)" + friend.Name;
+                        friendlist.Online = true;
                     }
                     else
                     {
-                        friend_str = "(off)" + friend.Name;
+                        //friend_str = "(off)" + friend.Name;
+                        friendlist.Online = false;
                     }
-                    listBox1.Items.Add(friend_str);
-                    FriendList friendlist = new FriendList();
+                    listBox1.Items.Add(friend.Name);
                     friendlist.UUID = friend.UUID;
                     friendlist.Name = friend.Name;
                     friend_array_.Add(friendlist);
@@ -84,8 +86,14 @@ namespace _2ndviewer
         public void refresh()
         {
             refreshListDelegate dlg = new refreshListDelegate(refreshList);
-            string arg = "";
-            Invoke(dlg, arg);
+            try
+            {
+                Invoke(dlg);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.WriteLine(e.ToString());
+            }
         }
 
         private void iMToolStripMenuItem_Click(object sender, EventArgs e)
@@ -117,6 +125,35 @@ namespace _2ndviewer
         private void button1_Click(object sender, EventArgs e)
         {
             refresh();
+        }
+
+        private void listBox1_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            e.DrawBackground();
+            if (friend_array_ == null) return;
+            if (friend_array_.Count <= 0) return;
+
+            Brush brush = null;
+            if (friend_array_[e.Index].Online)
+            {
+                brush = new SolidBrush(Color.Red);
+            }
+            else
+            {
+                if ((e.State & DrawItemState.Selected) != DrawItemState.Selected)
+                {
+                    brush = new SolidBrush(Color.Black);
+                }
+                else
+                {
+                    brush = new SolidBrush(e.ForeColor);
+                }
+            }
+            string name = ((ListBox)sender).Items[e.Index].ToString();
+            e.Graphics.DrawString(name, e.Font, brush, e.Bounds);
+
+            brush.Dispose();
+            e.DrawFocusRectangle();
         }
     }
 }

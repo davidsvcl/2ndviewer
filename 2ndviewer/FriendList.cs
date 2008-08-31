@@ -11,6 +11,7 @@ namespace _2ndviewer
     {
         public FriendList() {
         }
+        public bool Online;
         public LLUUID UUID;
         public string Name;
     }

@@ -43,93 +43,61 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.AccessibleDescription = null;
-            this.tableLayoutPanel1.AccessibleName = null;
             resources.ApplyResources(this.tableLayoutPanel1, "tableLayoutPanel1");
-            this.tableLayoutPanel1.BackgroundImage = null;
             this.tableLayoutPanel1.Controls.Add(this.listBox1, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.button1, 0, 0);
-            this.tableLayoutPanel1.Font = null;
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             // 
             // listBox1
             // 
-            this.listBox1.AccessibleDescription = null;
-            this.listBox1.AccessibleName = null;
-            resources.ApplyResources(this.listBox1, "listBox1");
-            this.listBox1.BackgroundImage = null;
             this.listBox1.ContextMenuStrip = this.contextMenuStrip1;
-            this.listBox1.Font = null;
+            resources.ApplyResources(this.listBox1, "listBox1");
+            this.listBox1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Name = "listBox1";
+            this.listBox1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBox1_DrawItem);
             // 
             // contextMenuStrip1
             // 
-            this.contextMenuStrip1.AccessibleDescription = null;
-            this.contextMenuStrip1.AccessibleName = null;
-            resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
-            this.contextMenuStrip1.BackgroundImage = null;
-            this.contextMenuStrip1.Font = null;
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.iMToolStripMenuItem,
             this.teleportToolStripMenuItem,
             this.profile_ToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
+            resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
             // 
             // iMToolStripMenuItem
             // 
-            this.iMToolStripMenuItem.AccessibleDescription = null;
-            this.iMToolStripMenuItem.AccessibleName = null;
-            resources.ApplyResources(this.iMToolStripMenuItem, "iMToolStripMenuItem");
-            this.iMToolStripMenuItem.BackgroundImage = null;
             this.iMToolStripMenuItem.Name = "iMToolStripMenuItem";
-            this.iMToolStripMenuItem.ShortcutKeyDisplayString = null;
+            resources.ApplyResources(this.iMToolStripMenuItem, "iMToolStripMenuItem");
             this.iMToolStripMenuItem.Click += new System.EventHandler(this.iMToolStripMenuItem_Click);
             // 
             // teleportToolStripMenuItem
             // 
-            this.teleportToolStripMenuItem.AccessibleDescription = null;
-            this.teleportToolStripMenuItem.AccessibleName = null;
-            resources.ApplyResources(this.teleportToolStripMenuItem, "teleportToolStripMenuItem");
-            this.teleportToolStripMenuItem.BackgroundImage = null;
             this.teleportToolStripMenuItem.Name = "teleportToolStripMenuItem";
-            this.teleportToolStripMenuItem.ShortcutKeyDisplayString = null;
+            resources.ApplyResources(this.teleportToolStripMenuItem, "teleportToolStripMenuItem");
             this.teleportToolStripMenuItem.Click += new System.EventHandler(this.teleportToolStripMenuItem_Click);
             // 
             // profile_ToolStripMenuItem
             // 
-            this.profile_ToolStripMenuItem.AccessibleDescription = null;
-            this.profile_ToolStripMenuItem.AccessibleName = null;
-            resources.ApplyResources(this.profile_ToolStripMenuItem, "profile_ToolStripMenuItem");
-            this.profile_ToolStripMenuItem.BackgroundImage = null;
             this.profile_ToolStripMenuItem.Name = "profile_ToolStripMenuItem";
-            this.profile_ToolStripMenuItem.ShortcutKeyDisplayString = null;
+            resources.ApplyResources(this.profile_ToolStripMenuItem, "profile_ToolStripMenuItem");
             this.profile_ToolStripMenuItem.Click += new System.EventHandler(this.profile_ToolStripMenuItem_Click);
             // 
             // button1
             // 
-            this.button1.AccessibleDescription = null;
-            this.button1.AccessibleName = null;
             resources.ApplyResources(this.button1, "button1");
-            this.button1.BackgroundImage = null;
-            this.button1.Font = null;
             this.button1.Name = "button1";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // FriendForm
             // 
-            this.AccessibleDescription = null;
-            this.AccessibleName = null;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = null;
             this.CloseButton = false;
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Font = null;
-            this.Icon = null;
             this.Name = "FriendForm";
-            this.ToolTipText = null;
             this.tableLayoutPanel1.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
