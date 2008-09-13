@@ -61,7 +61,7 @@ namespace _2ndviewer
             client_.Self.OnTeleport += new AgentManager.TeleportCallback(Self_OnTeleport);
             client_.Self.OnScriptDialog += new AgentManager.ScriptDialogCallback(Self_OnScriptDialog);
             client_.Self.OnScriptQuestion += new AgentManager.ScriptQuestionCallback(Self_OnScriptQuestion);
-            client_.Self.OnAlertMessage += new AgentManager.AlertMessage(Self_OnAlertMessage);
+            client_.Self.OnAlertMessage += new AgentManager.AlertMessageCallback(Self_OnAlertMessage);
             client_.Objects.OnObjectUpdated += new ObjectManager.ObjectUpdatedCallback(Objects_OnObjectUpdated);
 //            client_.Objects.OnNewPrim += new ObjectManager.NewPrimCallback(Objects_OnNewPrim);
 //            client_.Objects.OnObjectPropertiesFamily += new ObjectManager.ObjectPropertiesFamilyCallback(Objects_OnObjectPropertiesFamily);
