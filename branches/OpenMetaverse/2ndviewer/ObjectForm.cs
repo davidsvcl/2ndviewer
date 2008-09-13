@@ -30,7 +30,7 @@ namespace _2ndviewer
             client_.Objects.OnObjectProperties += new ObjectManager.ObjectPropertiesCallback(Objects_OnObjectProperties);
         }
 
-        private void Objects_OnObjectProperties(Simulator simulator, LLObject.ObjectProperties properties)
+        private void Objects_OnObjectProperties(Simulator simulator, Primitive.ObjectProperties properties)
         {
             lock (PrimsWaiting)
             {

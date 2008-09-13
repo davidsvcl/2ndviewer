@@ -53,22 +53,22 @@ namespace _2ndviewer
             try
             {
                 //foreach (InventoryBase i in manager_.FolderContents(f.UUID, client_.Self.AgentID, true, true, InventorySortOrder.ByName, 9000))
-                f.DownloadContents(TimeSpan.FromSeconds(10));
-                foreach (InventoryBase i in f)
-                {
-                    InventoryItem item = new InventoryItem();
-                    item.indent_ = indent;
-                    item.Name_ = i.Name;
-                    item.uuid_ = i.UUID;
-                    if (i is InventoryFolder) item.folder_ = true;
-                    else item.folder_ = false;
-                    inventory_array_.Add(item);
-                    if (i is InventoryFolder)
-                    {
-                        InventoryFolder folder = (InventoryFolder)i;
-                        PrintFolder(folder, indent + 1);
-                    }
-                }
+                //f.DownloadContents(TimeSpan.FromSeconds(10));
+                //foreach (InventoryBase i in f)
+                //{
+                //    InventoryItem item = new InventoryItem();
+                //    item.indent_ = indent;
+                //    item.Name_ = i.Name;
+                //    item.uuid_ = i.UUID;
+                //    if (i is InventoryFolder) item.folder_ = true;
+                //    else item.folder_ = false;
+                //    inventory_array_.Add(item);
+                //    if (i is InventoryFolder)
+                //    {
+                //        InventoryFolder folder = (InventoryFolder)i;
+                //        PrintFolder(folder, indent + 1);
+                //    }
+                //}
             }
             catch {
                 System.Diagnostics.Trace.WriteLine("What Happen!!!");
@@ -77,14 +77,14 @@ namespace _2ndviewer
 
         public void InventoryInitialize()
         {
-            this.treeView1.Nodes.Clear();
-            inventory_array_.Clear();
+            //this.treeView1.Nodes.Clear();
+            //inventory_array_.Clear();
 
-            manager_ = client_.Inventory;
-            inventory_ = client_.InventoryStore;
+            //manager_ = client_.Inventory;
+            //inventory_ = client_.InventoryStore;
 
-            InventoryFolder rootFolder = inventory_.RootFolder;
-            PrintFolder(rootFolder, 0);
+            //InventoryFolder rootFolder = inventory_.RootFolder;
+            //PrintFolder(rootFolder, 0);
         }
 
         private void refresh_button_Click(object sender, EventArgs e)
