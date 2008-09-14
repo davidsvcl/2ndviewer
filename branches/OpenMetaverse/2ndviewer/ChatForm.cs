@@ -17,6 +17,7 @@ namespace _2ndviewer
     {
         private GridClient client_;
         private MovementForm movementForm_;
+        private InventoryForm inventoryForm_;
         private PythonEngine pe_;
         private string nickName_;
         private string news4vip_;
@@ -60,6 +61,11 @@ namespace _2ndviewer
         public void SetMovementForm(MovementForm movementForm)
         {
             movementForm_ = movementForm;
+        }
+
+        public void SetInventoryForm(InventoryForm inventoryForm)
+        {
+            inventoryForm_ = inventoryForm;
         }
 
         public void SetNickName(string nickname)
@@ -230,6 +236,29 @@ namespace _2ndviewer
                     News4VipDelegate vipdlg = new News4VipDelegate(News4Vip);
                     string[] viparg = { fromName };
                     Invoke(vipdlg, viparg);
+                }
+                else if (message.StartsWith(nickName_+"ちょうだい"))
+                {
+                    Vector3 location = client_.Self.SimPosition;
+                    List<Avatar> avatars = client_.Network.CurrentSim.ObjectsAvatars.FindAll(
+                        delegate(Avatar avatar)
+                        {
+                            Vector3 pos = avatar.Position;
+                            return true;// ((pos != Vector3.Zero) && (Vector3.Dist(pos, location) < radius));
+                        }
+        
+                    );
+        
+                    foreach (Avatar a in avatars)
+                    {
+                        string name = a.Name;
+                        if ((name != null) && (name != client_.Self.Name) && (name.Contains(fromName)))
+                        {
+                            System.Diagnostics.Trace.WriteLine(name);
+                            inventoryForm_.giveItem(a.ID,"wataame");
+                            break;
+                        }
+                    }
                 }
                 else
                 {

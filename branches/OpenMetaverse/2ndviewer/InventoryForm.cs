@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,17 +16,18 @@ namespace _2ndviewer
     {
         private GridClient client_;
         private InventoryFolder currentDirectory_;
+        private delegate void ExpandDelegate();
 
         public InventoryForm()
         {
             InitializeComponent();
+            currentDirectory_ = null;
         }
 
         public void SetClient(GridClient client)
         {
             client_ = client;
             treeView1.Client = client;
-
         }
 
         public void InventoryInitialize()
@@ -44,10 +45,26 @@ namespace _2ndviewer
                     if (item is InventoryFolder)
                     {
                         currentDirectory_ = item as InventoryFolder;
+                        break;
                     }
                     else
                     {
                     }
+                }
+            }
+            ExpandDelegate edlg = new ExpandDelegate(Expand);
+            Invoke(edlg);
+        }
+
+        private void Expand()
+        {
+            foreach (TreeNode childNode in treeView1.Nodes)
+            {
+                System.Diagnostics.Trace.WriteLine(childNode.Text);
+                if (childNode.Text == "Objects")
+                {
+                    childNode.Expand();
+                    return;
                 }
             }
         }
@@ -78,6 +95,8 @@ namespace _2ndviewer
 
         private void attach(AttachmentPoint point)
         {
+            if (currentDirectory_ == null) InventoryInitialize();
+            if (currentDirectory_ == null) return;
             string inventoryName = this.treeView1.SelectedNode.Text;
 
             InventoryManager Manager = client_.Inventory;
@@ -95,10 +114,12 @@ namespace _2ndviewer
                         try
                         {
                             client_.Appearance.Attach(item, point);
+                            break;
                         }
                         catch
                         {
                             MessageBox.Show(StringResource.failedAttach);
+                            break;
                         }
                     }
                     else
@@ -110,6 +131,8 @@ namespace _2ndviewer
 
         private void detachToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (currentDirectory_ == null) InventoryInitialize();
+            if (currentDirectory_ == null) return;
             string inventoryName = this.treeView1.SelectedNode.Text;
 
             InventoryManager Manager = client_.Inventory;
@@ -126,10 +149,47 @@ namespace _2ndviewer
                         try
                         {
                             client_.Appearance.Detach(item as OpenMetaverse.InventoryItem);
+                            break;
                         }
                         catch
                         {
                             MessageBox.Show(StringResource.failedDetach);
+                            break;
+                        }
+                    }
+                    else
+                    {
+                    }
+                }
+            }
+        }
+        public void giveItem(UUID target, string itemName)
+        {
+            if (currentDirectory_ == null) InventoryInitialize();
+            if (currentDirectory_ == null) return;
+            string inventoryName = itemName;
+
+            InventoryManager Manager = client_.Inventory;
+            OpenMetaverse.Inventory Inventory = Manager.Store;
+            // WARNING: Uses local copy of inventory contents, need to download them first.
+            List<InventoryBase> contents = Inventory.GetContents(currentDirectory_);
+            foreach (InventoryBase b in contents)
+            {
+                if (inventoryName == b.Name || inventoryName == b.UUID.ToString())
+                {
+                    if (b is OpenMetaverse.InventoryItem)
+                    {
+                        OpenMetaverse.InventoryItem item = b as OpenMetaverse.InventoryItem;
+                        try
+                        {
+                            client_.Appearance.Detach(item as OpenMetaverse.InventoryItem);
+                            Manager.GiveItem(item.UUID, item.Name, item.AssetType, target, true);
+                            break;
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show(e.ToString());
+                            break;
                         }
                     }
                     else

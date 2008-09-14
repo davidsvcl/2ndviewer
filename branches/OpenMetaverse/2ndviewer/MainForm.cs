@@ -110,10 +110,16 @@ namespace _2ndviewer
             movementForm_.SetClient(client_);
             movementForm_.TabText = "Movement";
             movementForm_.Show(panel_, WeifenLuo.WinFormsUI.Docking.DockState.Document);
+
+            inventoryForm_ = new InventoryForm();
+            inventoryForm_.SetClient(client_);
+            inventoryForm_.TabText = "Inventory";
+            inventoryForm_.Show(panel_, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);
             
             chatForm_ = new ChatForm();
             chatForm_.SetClient(client_);
             chatForm_.SetMovementForm(movementForm_);
+            chatForm_.SetInventoryForm(inventoryForm_);
             chatForm_.SetNickName(nickName);
             chatForm_.SetNews4Vip(news4vip);
             chatForm_.TabText = "Chat";
@@ -146,11 +152,6 @@ namespace _2ndviewer
             debugForm_ = new DebugForm();
             debugForm_.TabText = "Debug";
             debugForm_.Show(panel_, WeifenLuo.WinFormsUI.Docking.DockState.Document);
-
-            inventoryForm_ = new InventoryForm();
-            inventoryForm_.SetClient(client_);
-            inventoryForm_.TabText = "Inventory";
-            inventoryForm_.Show(panel_, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);
 
             friendForm_ = new FriendForm();
             friendForm_.Show(panel_, WeifenLuo.WinFormsUI.Docking.DockState.DockRight);
