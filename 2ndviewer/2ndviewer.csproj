@@ -153,7 +153,6 @@
     <Compile Include="InventoryForm.Designer.cs">
       <DependentUpon>InventoryForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="InventoryItem.cs" />
     <Compile Include="LandmarkForm.cs">
       <SubType>Form</SubType>
     </Compile>
