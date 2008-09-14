@@ -19,8 +19,8 @@ namespace _2ndviewer
         public DebugForm()
         {
             InitializeComponent();
-            this.filter_comboBox.SelectedIndex = 0;
-            filter_selected = 0;
+            this.filter_comboBox.SelectedIndex = 1;
+            filter_selected = 1;
         }
 
         private void WriteLine(string str)
