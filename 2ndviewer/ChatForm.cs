@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI;
 using OpenMetaverse;
+using OpenMetaverse.Packets;
 using IronPython.Hosting;
 
 namespace _2ndviewer
@@ -25,6 +26,7 @@ namespace _2ndviewer
         Random rnd_;
         System.Collections.Generic.List<string> news4vip_subs_;
         private bool translate_;
+        public Dictionary<UUID, AvatarAppearancePacket> Appearances = new Dictionary<UUID, AvatarAppearancePacket>();
 
         private delegate void WriteLineDelegate(string str);
         private delegate void AddTabDelegate(Im_tab im_tab, string fromName, string message);
@@ -83,10 +85,8 @@ namespace _2ndviewer
 
         private void WriteLine(string str)
         {
-            string msg;
-            msg = chatLog_textBox.Text + str;
-            chatLog_textBox.Text = msg;
-            chatLog_textBox.SelectionStart = msg.Length;
+            chatLog_textBox.AppendText(str);
+            chatLog_textBox.SelectionStart = chatLog_textBox.Text.Length;
             chatLog_textBox.ScrollToCaret();
         }
 
@@ -148,10 +148,8 @@ namespace _2ndviewer
 
         private void IMTabWriteLine(Im_tab im_tab, string fromName, string message)
         {
-            string msg;
-            msg = im_tab.textBox_.Text + "\r\n" + fromName + ":" + message;
-            im_tab.textBox_.Text = msg;
-            im_tab.textBox_.SelectionStart = msg.Length;
+            im_tab.textBox_.AppendText("\r\n" + fromName + ":" + message);
+            im_tab.textBox_.SelectionStart = im_tab.textBox_.Text.Length;
             im_tab.textBox_.ScrollToCaret();
         }
 
@@ -255,9 +253,77 @@ namespace _2ndviewer
                         if ((name != null) && (name != client_.Self.Name) && (name.Contains(fromName)))
                         {
                             System.Diagnostics.Trace.WriteLine(name);
+                            SystemMessage(a.ID+"\r\n");
                             inventoryForm_.giveItem(a.ID,"wataame");
                             break;
                         }
+                    }
+                }
+                else if (message.StartsWith(nickName_+"ぬこ"))
+                {
+                    string target = "Clothing/nuko";
+                    client_.Appearance.WearOutfit(target.Split('/'), false);
+                    client_.Appearance.SetPreviousAppearance(false);
+                }
+                else if (message.StartsWith(nickName_+"うさぎ"))
+                {
+                    string target = "Clothing/kani";
+                    client_.Appearance.WearOutfit(target.Split('/'), false);
+                    client_.Appearance.SetPreviousAppearance(false);
+                }
+                else if (message.StartsWith(nickName_+"マネ"))
+                {
+                    int pos = message.IndexOf("ネ");
+                    string targetName = message.Substring(pos + 1, message.Length - nickName_.Length - 2);
+                    List<DirectoryManager.AgentSearchData> matches;
+                    uint SerialNum = 2;
+
+                    if (client_.Directory.PeopleSearch(DirectoryManager.DirFindFlags.People, targetName, 0, 1000 * 10,
+                        out matches) && matches.Count > 0)
+                    {
+                        UUID target = matches[0].AgentID;
+                        targetName += String.Format(" ({0})", target);
+        
+                        if (Appearances.ContainsKey(target))
+                        {
+                            #region AvatarAppearance to AgentSetAppearance
+        
+                            AvatarAppearancePacket appearance = Appearances[target];
+        
+                            AgentSetAppearancePacket set = new AgentSetAppearancePacket();
+                            set.AgentData.AgentID = client_.Self.AgentID;
+                            set.AgentData.SessionID = client_.Self.SessionID;
+                            set.AgentData.SerialNum = SerialNum++;
+                            set.AgentData.Size = new Vector3(2f, 2f, 2f); // HACK
+        
+                            set.WearableData = new AgentSetAppearancePacket.WearableDataBlock[0];
+                            set.VisualParam = new AgentSetAppearancePacket.VisualParamBlock[appearance.VisualParam.Length];
+        
+                            for (int i = 0; i < appearance.VisualParam.Length; i++)
+                            {
+                                set.VisualParam[i] = new AgentSetAppearancePacket.VisualParamBlock();
+                                set.VisualParam[i].ParamValue = appearance.VisualParam[i].ParamValue;
+                            }
+        
+                            set.ObjectData.TextureEntry = appearance.ObjectData.TextureEntry;
+        
+                            #endregion AvatarAppearance to AgentSetAppearance
+        
+                            // Detach everything we are currently wearing
+                            client_.Appearance.AddAttachments(new List<InventoryBase>(), true);
+        
+                            // Send the new appearance packet
+                            client_.Network.SendPacket(set);
+        
+                        }
+                        else
+                        {
+                            MessageBox.Show("Don't know the appearance of avatar " + targetName);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Couldn't find avatar " + targetName);
                     }
                 }
                 else
@@ -478,14 +544,12 @@ namespace _2ndviewer
                 else {
                     Im_tab im = uuid_array_[i - 1];
                     client_.Self.InstantMessage(im.fromAgentID_, chat_textBox.Text, im.sessionID_);
-                    string msg;
-                    msg = im.textBox_.Text + "\r\n" + client_.Self.Name + ":" + chat_textBox.Text;
                     if (movementForm_.chatlog_checkBox.Checked)
                     {
                         System.IO.File.AppendAllText(System.IO.Directory.GetCurrentDirectory() + "\\chat.txt", "\r\n<IM>" + im.tabPage_.Text + ":" + chat_textBox.Text);
                     }
-                    im.textBox_.Text = msg;
-                    im.textBox_.SelectionStart = msg.Length;
+                    im.textBox_.AppendText("\r\n" + client_.Self.Name + ":" + chat_textBox.Text);
+                    im.textBox_.SelectionStart = im.textBox_.Text.Length;
                     im.textBox_.ScrollToCaret();
                 }
                 chat_textBox.Text = "";
