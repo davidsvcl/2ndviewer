@@ -1,4 +1,5 @@
-﻿namespace _2ndviewer
+﻿using OpenMetaverse.GUI;
+namespace _2ndviewer
 {
     partial class InventoryForm
     {
@@ -31,7 +32,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InventoryForm));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.treeView1 = new OpenMetaverse.GUI.InventoryTree();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.attachToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.attachToRightHandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -163,7 +164,7 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TreeView treeView1;
+        private OpenMetaverse.GUI.InventoryTree treeView1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button refresh_button;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;

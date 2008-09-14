@@ -363,7 +363,7 @@ namespace _2ndviewer
             if (firstOne == 0)
             {
                 friendForm_.refresh();
-                //inventoryForm_.InventoryInitialize();
+                inventoryForm_.InventoryInitialize();
                 firstOne = 1;
             }
             Avatar av;
