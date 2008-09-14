@@ -442,25 +442,22 @@ namespace _2ndviewer
                     }
                     if (Vector3.Distance(pos, client_.Self.SimPosition) > followDistance)
                     {
-                        int followRegionX = (int)(regionHandle >> 32);
-                        int followRegionY = (int)(regionHandle & 0xFFFFFFFF);
-                        int followRegionZ = (int)(regionHandle);
-                        ulong x = (ulong)(pos.X + followRegionX);
-                        ulong y = (ulong)(pos.Y + followRegionY);
+                        uint regionX, regionY;
+                        Helpers.LongToUInts(simulator.Handle, out regionX, out regionY);
+
+                        double xTarget = (double)pos.X + (double)regionX;
+                        double yTarget = (double)pos.Y + (double)regionY;
+                        double zTarget = pos.Z - 2f;
+                        if (movementForm_.boxing_ == true)
+                        {
+                            movementForm_.boxing();
+                        }
+                        client_.Self.AutoPilot(xTarget, yTarget, zTarget);
+                        client_.Self.Movement.TurnToward(pos);
+                    }
+                    else
+                    {
                         client_.Self.AutoPilotCancel();
-                        if (pos.Z > 1)
-                        {
-                            if (movementForm_.boxing_ == true)
-                            {
-                                movementForm_.boxing();
-                            }
-                            client_.Self.AutoPilotLocal(Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y), pos.Z);
-                            client_.Self.Movement.TurnToward(pos);
-                        }
-                        else
-                        {
-                            client_.Self.AutoPilotCancel();
-                        }
                     }
                 }
             }
