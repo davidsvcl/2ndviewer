@@ -71,6 +71,8 @@
             this.world.ImageLocation = null;
             this.world.Name = "world";
             this.world.TabStop = false;
+            this.world.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.world_MouseDoubleClick);
+            this.world.MouseClick += new System.Windows.Forms.MouseEventHandler(this.world_MouseClick);
             // 
             // MinimapForm
             // 
