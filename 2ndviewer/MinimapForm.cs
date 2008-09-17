@@ -119,5 +119,42 @@ namespace _2ndviewer
         {
             filter_selected = this.filter_comboBox.SelectedIndex;
         }
+
+        private void world_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Trace.WriteLine("auto move:");
+        }
+
+        private void world_MouseClick(object sender, MouseEventArgs e)
+        {
+            System.Diagnostics.Trace.WriteLine("auto move:" + e.X + "," + e.Y);
+            client_.Self.AutoPilotCancel();
+            // axis-Y negative
+            int z = (int)client_.Self.SimPosition.Z;
+            client_.Self.AutoPilotLocal(e.X, 255-e.Y, z);
+        }
+
+        private void world_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            System.Diagnostics.Trace.WriteLine("teleport:" + e.X + "," + e.Y);
+            client_.Self.AutoPilotCancel();
+            // axis-Y negative
+            int z = (int)client_.Self.SimPosition.Z;
+            System.Threading.Thread process = new System.Threading.Thread(
+                delegate()
+                {
+                    try
+                    {
+                        client_.Self.Teleport(client_.Network.CurrentSim.Name, new Vector3(e.X, 255 - e.Y, z));
+                    }
+                    catch
+                    {
+                        MessageBox.Show(StringResource.failedTeleport, "Error");
+                    }
+                });
+            process.Start();
+        }
+
+
     }
 }
