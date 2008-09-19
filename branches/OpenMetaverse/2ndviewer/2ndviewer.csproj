@@ -63,7 +63,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin\Release\OpenMetaverse.dll</HintPath>
     </Reference>
-    <Reference Include="OpenMetaverse.GUI, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="OpenMetaverse.GUI, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="OpenMetaverse.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin\Release\OpenMetaverse.Utilities.dll</HintPath>
