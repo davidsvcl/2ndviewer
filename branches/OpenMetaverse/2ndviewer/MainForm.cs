@@ -66,7 +66,7 @@ namespace _2ndviewer
             client_.Settings.TEXTURE_CACHE_DIR = Application.StartupPath + System.IO.Path.DirectorySeparatorChar + "cache";
             client_.Settings.ALWAYS_REQUEST_PARCEL_ACL = false;
             client_.Settings.ALWAYS_REQUEST_PARCEL_DWELL = false;
-            client_.Settings.OBJECT_TRACKING = false; // We use our own object tracking system
+            //client_.Settings.OBJECT_TRACKING = false; // We use our own object tracking system
             client_.Settings.AVATAR_TRACKING = true; //but we want to use the libsl avatar system
             client_.Network.OnConnected += new NetworkManager.ConnectedCallback(Network_OnConnected);
             client_.Network.OnDisconnected += new NetworkManager.DisconnectedCallback(Network_OnDisconnected);
