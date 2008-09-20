@@ -28,6 +28,7 @@ namespace _2ndviewer
         public MovementForm movementForm_;
         public ObjectForm objectForm_;
         public AvatarForm avatarForm_;
+        public RenderForm renderForm_;
         public GridClient client_;
         private delegate void SetStatusTextDelegate(string str);
         private delegate void ShowScriptDialogDelegate(string message, int chatChannel, List<string> buttons);
@@ -56,6 +57,17 @@ namespace _2ndviewer
             makeLandmark();
 
             client_ = new GridClient();
+            client_.Settings.MULTIPLE_SIMS = false;
+            client_.Settings.ALWAYS_DECODE_OBJECTS = true;
+            client_.Settings.ALWAYS_REQUEST_OBJECTS = true;
+            client_.Settings.SEND_AGENT_UPDATES = true;
+            client_.Settings.DISABLE_AGENT_UPDATE_DUPLICATE_CHECK = true;
+            client_.Settings.USE_TEXTURE_CACHE = true;
+            client_.Settings.TEXTURE_CACHE_DIR = Application.StartupPath + System.IO.Path.DirectorySeparatorChar + "cache";
+            client_.Settings.ALWAYS_REQUEST_PARCEL_ACL = false;
+            client_.Settings.ALWAYS_REQUEST_PARCEL_DWELL = false;
+            client_.Settings.OBJECT_TRACKING = false; // We use our own object tracking system
+            client_.Settings.AVATAR_TRACKING = true; //but we want to use the libsl avatar system
             client_.Network.OnConnected += new NetworkManager.ConnectedCallback(Network_OnConnected);
             client_.Network.OnDisconnected += new NetworkManager.DisconnectedCallback(Network_OnDisconnected);
             client_.Self.OnInstantMessage += new AgentManager.InstantMessageCallback(Self_OnInstantMessage);
@@ -74,6 +86,7 @@ namespace _2ndviewer
             client_.Network.OnEventQueueRunning += new NetworkManager.EventQueueRunningCallback(Network_OnEventQueueRunning);
             client_.Parcels.OnParcelProperties += new ParcelManager.ParcelPropertiesCallback(Parcels_OnParcelProperties);
             client_.Network.RegisterCallback(PacketType.AvatarAppearance, new NetworkManager.PacketCallback(AvatarAppearanceHandler));
+            client_.Network.OnCurrentSimChanged += new NetworkManager.CurrentSimChangedCallback(Network_OnCurrentSimChanged);
 
             Microsoft.Win32.RegistryKey regkey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software\\2ndviewer", false);
             string nickName;
@@ -161,10 +174,30 @@ namespace _2ndviewer
             friendForm_.TabText = "Friend";
             friendForm_.SetClient(client_);
 
+            if (DialogResult.Yes == MessageBox.Show("Open Render Window?", "Question", MessageBoxButtons.YesNo))
+            {
+                renderForm_ = new RenderForm();
+                renderForm_.Show();
+                renderForm_.SetMainForm(this);
+                renderForm_.Text = "Render";
+                renderForm_.SetClient(client_);
+            }
+
             firstOne = 0;
             LoginForm loginForm = new LoginForm();
             loginForm.SetClient(client_);
             loginForm.ShowDialog();
+        }
+
+        void Network_OnCurrentSimChanged(Simulator PreviousSimulator)
+        {
+            if (renderForm_ != null)
+            {
+                if (renderForm_.Visible == true)
+                {
+                    renderForm_.InitLists();
+                }
+            }
         }
 
         void Parcels_OnParcelProperties(Parcel parcel, ParcelManager.ParcelResult result, int sequenceID, bool snapSelection)
