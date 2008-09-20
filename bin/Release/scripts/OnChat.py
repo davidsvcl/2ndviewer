@@ -21,10 +21,39 @@ from System import *
 if message.StartsWith(nickname+"python"):
 	client.Self.Chat(fromname + "おっけー", 0, ChatType.Normal)
 
+# 容姿が霧のようにもやもやしてる時にコールすると直ることがあります
 if message.StartsWith(nickname+"rebake"):
 	#client.Appearance.RequestCachedBakes()
 	client.Appearance.SetPreviousAppearance(0)
 
+# 容姿の変更サンプル
+if message.StartsWith(nickname+"容姿一覧"):
+	client.Self.Chat("ぬこ、うさぎ、デフォルト男、デフォルト女", 0, ChatType.Normal)
+if message.StartsWith(nickname+"ぬこ"):
+    target = "Clothing/nuko"
+    client.Appearance.WearOutfit(target.Split('/'), 0)
+    client.Appearance.SetPreviousAppearance(0)
+if message.StartsWith(nickname+"うさぎ"):
+    target = "Clothing/kani"
+    client.Appearance.WearOutfit(target.Split('/'), 0)
+    client.Appearance.SetPreviousAppearance(0)
+if message.StartsWith(nickname+"デフォルト男"):
+    target = "Clothing/Male Shape & Outfit"
+    client.Appearance.WearOutfit(target.Split('/'), 0)
+    client.Appearance.SetPreviousAppearance(0)
+if message.StartsWith(nickname+"デフォルト女"):
+    target = "Clothing/Female Shape & Outfit"
+    client.Appearance.WearOutfit(target.Split('/'), 0)
+    client.Appearance.SetPreviousAppearance(0)
+
+# 立川君ちょうだいサンプル
+if message.StartsWith(nickname+"グローブちょうだい"):
+    item = "==Valor==Boxing globe (Blue) L Powered by Yuna"
+    inventory.giveItem(inventory.getUUIDbyAvatarName(fromname), item);
+    item = "==Valor==Boxing globe (Blue) R Powered by Yuna"
+    inventory.giveItem(inventory.getUUIDbyAvatarName(fromname), item);
+
+# アニメーションのサンプル
 if message.StartsWith(nickname+"スクリプト一覧"):
 	client.Self.Chat("座れ、立ち上がれ、死ね、生き返れ、ちゅうして、ブラッシング、拍手、マッスル、シャドーボクシング、ピース、キック、ストレッチ", 0, ChatType.Normal)
 if message.StartsWith(nickname+"座れ"):

@@ -163,6 +163,31 @@ namespace _2ndviewer
                 }
             }
         }
+
+        public UUID getUUIDbyAvatarName(string avatarName)
+        {
+            Vector3 location = client_.Self.SimPosition;
+            List<Avatar> avatars = client_.Network.CurrentSim.ObjectsAvatars.FindAll(
+                delegate(Avatar avatar)
+                {
+                    Vector3 pos = avatar.Position;
+                    return true;// ((pos != Vector3.Zero) && (Vector3.Dist(pos, location) < radius));
+                }
+
+            );
+
+            foreach (Avatar a in avatars)
+            {
+                string name = a.Name;
+                if ((name != null) && (name != client_.Self.Name) && (name.Contains(avatarName)))
+                {
+                    System.Diagnostics.Trace.WriteLine(name+ ","+a.ID);
+                    return a.ID;
+                }
+            }
+            return UUID.Zero;
+        }
+
         public void giveItem(UUID target, string itemName)
         {
             if (currentDirectory_ == null) InventoryInitialize();
