@@ -68,6 +68,7 @@ namespace _2ndviewer
         public void SetInventoryForm(InventoryForm inventoryForm)
         {
             inventoryForm_ = inventoryForm;
+            pe_.Globals.Add("inventory", inventoryForm_);
         }
 
         public void SetNickName(string nickname)
@@ -234,42 +235,6 @@ namespace _2ndviewer
                     News4VipDelegate vipdlg = new News4VipDelegate(News4Vip);
                     string[] viparg = { fromName };
                     Invoke(vipdlg, viparg);
-                }
-                else if (message.StartsWith(nickName_+"ちょうだい"))
-                {
-                    Vector3 location = client_.Self.SimPosition;
-                    List<Avatar> avatars = client_.Network.CurrentSim.ObjectsAvatars.FindAll(
-                        delegate(Avatar avatar)
-                        {
-                            Vector3 pos = avatar.Position;
-                            return true;// ((pos != Vector3.Zero) && (Vector3.Dist(pos, location) < radius));
-                        }
-        
-                    );
-        
-                    foreach (Avatar a in avatars)
-                    {
-                        string name = a.Name;
-                        if ((name != null) && (name != client_.Self.Name) && (name.Contains(fromName)))
-                        {
-                            System.Diagnostics.Trace.WriteLine(name);
-                            SystemMessage(a.ID+"\r\n");
-                            inventoryForm_.giveItem(a.ID,"wataame");
-                            break;
-                        }
-                    }
-                }
-                else if (message.StartsWith(nickName_+"ぬこ"))
-                {
-                    string target = "Clothing/nuko";
-                    client_.Appearance.WearOutfit(target.Split('/'), false);
-                    client_.Appearance.SetPreviousAppearance(false);
-                }
-                else if (message.StartsWith(nickName_+"うさぎ"))
-                {
-                    string target = "Clothing/kani";
-                    client_.Appearance.WearOutfit(target.Split('/'), false);
-                    client_.Appearance.SetPreviousAppearance(false);
                 }
                 else if (message.StartsWith(nickName_+"マネ"))
                 {
