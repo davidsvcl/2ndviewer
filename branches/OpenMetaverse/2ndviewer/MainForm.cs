@@ -64,6 +64,8 @@ namespace _2ndviewer
             client_.Settings.DISABLE_AGENT_UPDATE_DUPLICATE_CHECK = true;
             client_.Settings.USE_TEXTURE_CACHE = true;
             client_.Settings.TEXTURE_CACHE_DIR = Application.StartupPath + System.IO.Path.DirectorySeparatorChar + "cache";
+            // Crank up the throttle on texture downloads
+            client_.Throttle.Texture = 446000.0f;
             client_.Settings.ALWAYS_REQUEST_PARCEL_ACL = false;
             client_.Settings.ALWAYS_REQUEST_PARCEL_DWELL = false;
             //client_.Settings.OBJECT_TRACKING = false; // We use our own object tracking system
@@ -195,6 +197,7 @@ namespace _2ndviewer
             {
                 if (renderForm_.Visible == true)
                 {
+                    renderForm_.TextureDownloaderReset();
                     renderForm_.InitLists();
                 }
             }

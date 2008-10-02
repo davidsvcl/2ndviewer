@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,9 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 using OpenMetaverse;
 using OpenMetaverse.Rendering;
+using OpenMetaverse.StructuredData;
+using OpenMetaverse.Imaging;
 using Tao.OpenGl;
 using Tao.Platform.Windows;
 
@@ -19,6 +22,7 @@ namespace _2ndviewer
     {
         private GridClient client_;
         private MainForm mainForm_;
+        private bool textureDownload_;
 
         const float DEG_TO_RAD = 0.0174532925f;
         const uint TERRAIN_START = (uint)Int32.MaxValue + 1;
@@ -29,6 +33,10 @@ namespace _2ndviewer
         EventHandler IdleEvent;
 
         int TotalPrims;
+
+        // Textures
+        TexturePipeline TextureDownloader;
+        Dictionary<UUID, TextureInfo> Textures = new Dictionary<UUID, TextureInfo>();
 
         // Terrain
         float MaxHeight = 0.1f;
@@ -80,6 +88,12 @@ namespace _2ndviewer
                 Application.Exit();
             }
 
+            textureDownload_ = false;
+            if (DialogResult.Yes == MessageBox.Show("Do you want to download textures", "Question", MessageBoxButtons.YesNo))
+            {
+                textureDownload_ = true;
+            }
+
             // Setup OpenGL
             glControl.InitializeContexts();
             glControl.SwapBuffers();
@@ -107,6 +121,13 @@ namespace _2ndviewer
             client_.Objects.OnNewPrim += new ObjectManager.NewPrimCallback(Objects_OnNewPrim);
             client_.Terrain.OnLandPatch += new TerrainManager.LandPatchCallback(Terrain_OnLandPatch);
             client_.Objects.OnNewFoliage += new ObjectManager.NewFoliageCallback(Objects_OnNewFoliage);
+            //
+            // Initialize the texture download pipeline
+            if (TextureDownloader != null)
+                TextureDownloader.Shutdown();
+            TextureDownloader = new TexturePipeline(client_);
+            TextureDownloader.OnDownloadFinished += new TexturePipeline.DownloadFinishedCallback(TextureDownloader_OnDownloadFinished);
+            //TextureDownloader.OnDownloadProgress += new TexturePipeline.DownloadProgressCallback(TextureDownloader_OnDownloadProgress);
         }
 
         public void SetMainForm(MainForm mainForm)
@@ -114,20 +135,33 @@ namespace _2ndviewer
             mainForm_ = mainForm;
         }
 
+        public void TextureDownloaderReset()
+        {
+            TextureDownloader.OnDownloadFinished -= TextureDownloader_OnDownloadFinished;
+            //
+            // Initialize the texture download pipeline
+            if (TextureDownloader != null)
+                TextureDownloader.Shutdown();
+
+            TextureDownloader = new TexturePipeline(client_);
+            TextureDownloader.OnDownloadFinished += new TexturePipeline.DownloadFinishedCallback(TextureDownloader_OnDownloadFinished);
+            //TextureDownloader.OnDownloadProgress += new TexturePipeline.DownloadProgressCallback(TextureDownloader_OnDownloadProgress);
+        }
+
         public void InitLists()
         {
             TotalPrims = 0;
 
-            //lock (Textures)
-            //{
-            //    foreach (TextureInfo tex in Textures.Values)
-            //    {
-            //        int id = tex.ID;
-            //        Gl.glDeleteTextures(1, ref id);
-            //    }
+            lock (Textures)
+            {
+                foreach (TextureInfo tex in Textures.Values)
+                {
+                    int id = tex.ID;
+                    Gl.glDeleteTextures(1, ref id);
+                }
 
-            //    Textures.Clear();
-            //}
+                Textures.Clear();
+            }
 
             lock (RenderPrimList) RenderPrimList.Clear();
             lock (RenderFoliageList) RenderFoliageList.Clear();
@@ -258,6 +292,9 @@ namespace _2ndviewer
 
         private void RenderScene()
         {
+            Camera.FocalPoint = client_.Self.SimPosition;
+            UpdateCamera();
+
             try
             {
                 Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
@@ -455,49 +492,49 @@ namespace _2ndviewer
 
                             #region Texturing
                             // 2008/09/20 tuna テクスチャはキャッシュシステムを構築するまでおあずけ
-                            //TextureInfo info;
-                            //if (Textures.TryGetValue(face.TextureFace.TextureID, out info))
-                            //{
-                            //    if (info.Alpha)
-                            //        alpha = true;
+                            TextureInfo info;
+                            if (Textures.TryGetValue(face.TextureFace.TextureID, out info))
+                            {
+                                if (info.Alpha)
+                                    alpha = true;
 
-                            //    textureID = info.ID;
+                                textureID = info.ID;
 
-                            //    // Enable texturing for this face
-                            //    Gl.glPolygonMode(Gl.GL_FRONT_AND_BACK, Gl.GL_FILL);
-                            //}
-                            //else
-                            //{
-                            //    if (face.TextureFace.TextureID == Primitive.TextureEntry.WHITE_TEXTURE ||
-                            //        face.TextureFace.TextureID == UUID.Zero)
-                            //    {
-                                    Gl.glPolygonMode(Gl.GL_FRONT, Gl.GL_FILL);
-                            //    }
-                            //    else
-                            //    {
-                            //        Gl.glPolygonMode(Gl.GL_FRONT, Gl.GL_LINE);
-                            //    }
-                            //}
+                                // Enable texturing for this face
+                                Gl.glPolygonMode(Gl.GL_FRONT_AND_BACK, Gl.GL_FILL);
+                            }
+                            else
+                            {
+                                if (face.TextureFace.TextureID == Primitive.TextureEntry.WHITE_TEXTURE ||
+                                    face.TextureFace.TextureID == UUID.Zero)
+                                {
+                                  Gl.glPolygonMode(Gl.GL_FRONT, Gl.GL_FILL);
+                                }
+                                else
+                                {
+                                    Gl.glPolygonMode(Gl.GL_FRONT, Gl.GL_LINE);
+                                }
+                            }
 
-                            //if (firstPass && !alpha || !firstPass && alpha)
-                            //{
-                            //    // Color this prim differently based on whether it is selected or not
-                            //    if (LastHit == prim.LocalID || (LastHit != 0 && LastHit == prim.ParentID))
-                            //    {
-                            //        Gl.glColor4f(1f, color.G * 0.3f, color.B * 0.3f, color.A);
-                            //    }
-                            //    else
-                            //    {
-                                    Gl.glColor4f(color.R, color.G, color.B, color.A);
-                            //    }
+                            if (firstPass && !alpha || !firstPass && alpha)
+                            {
+                                // Color this prim differently based on whether it is selected or not
+                                if (LastHit == prim.LocalID || (LastHit != 0 && LastHit == prim.ParentID))
+                                {
+                                    Gl.glColor4f(1f, color.G * 0.3f, color.B * 0.3f, color.A);
+                                }
+                                else
+                                {
+                                  Gl.glColor4f(color.R, color.G, color.B, color.A);
+                                }
 
-                            //    // Bind the texture
+                                // Bind the texture
                                 Gl.glBindTexture(Gl.GL_TEXTURE_2D, textureID);
 
                                 Gl.glTexCoordPointer(2, Gl.GL_FLOAT, 0, data.TexCoords);
                                 Gl.glVertexPointer(3, Gl.GL_FLOAT, 0, data.Vertices);
                                 Gl.glDrawElements(Gl.GL_TRIANGLES, data.Indices.Length, Gl.GL_UNSIGNED_SHORT, data.Indices);
-                            //}
+                            }
 
                             #endregion Texturing
                         }
@@ -545,6 +582,99 @@ namespace _2ndviewer
                 Gl.glColor3f(1f, 1f, 1f);
             }
         }
+
+        #region Texture Downloading
+
+        private void TextureDownloader_OnDownloadFinished(UUID id, bool success)
+        {
+            bool alpha = false;
+            ManagedImage imgData = null;
+            byte[] raw = null;
+
+            try
+            {
+                // Load the image off the disk
+                if (success)
+                {
+                    ImageDownload download = TextureDownloader.GetTextureToRender(id);
+                    if (OpenJPEG.DecodeToImage(download.AssetData, out imgData))
+                    {
+                        raw = imgData.ExportRaw();
+
+                        if ((imgData.Channels & ManagedImage.ImageChannels.Alpha) != 0)
+                            alpha = true;
+                    }
+                    else
+                    {
+                        success = false;
+                        Console.WriteLine("Failed to decode texture");
+                    }
+                }
+
+                // Make sure the OpenGL commands run on the main thread
+                BeginInvoke(
+                       (MethodInvoker)delegate()
+                       {
+                           if (success)
+                           {
+                               int textureID = 0;
+
+                               try
+                               {
+                                   Gl.glGenTextures(1, out textureID);
+                                   Gl.glBindTexture(Gl.GL_TEXTURE_2D, textureID);
+
+                                   Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_NEAREST); //Gl.GL_NEAREST);
+                                   Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
+                                   Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_REPEAT);
+                                   Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT);
+                                   Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_GENERATE_MIPMAP, Gl.GL_TRUE); //Gl.GL_FALSE);
+
+                                   //Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGBA, bitmap.Width, bitmap.Height, 0, Gl.GL_BGRA, Gl.GL_UNSIGNED_BYTE,
+                                   //    bitmapData.Scan0);
+                                   //int error = Gl.glGetError();
+
+                                   int error = Glu.gluBuild2DMipmaps(Gl.GL_TEXTURE_2D, Gl.GL_RGBA, imgData.Width, imgData.Height, Gl.GL_BGRA,
+                                       Gl.GL_UNSIGNED_BYTE, raw);
+
+                                   if (error == 0)
+                                   {
+                                       Textures[id] = new TextureInfo(textureID, alpha);
+                                       Console.WriteLine("Created OpenGL texture for " + id.ToString());
+                                   }
+                                   else
+                                   {
+                                       Textures[id] = new TextureInfo(0, false);
+                                       Console.WriteLine("Error creating OpenGL texture: " + error);
+                                   }
+                               }
+                               catch (Exception ex)
+                               {
+                                   Console.WriteLine(ex);
+                               }
+                           }
+
+                           // Remove this image from the download listbox
+                           //lock (DownloadList)
+                           //{
+                           //    GlacialComponents.Controls.GLItem item;
+                           //    if (DownloadList.TryGetValue(id, out item))
+                           //    {
+                           //        DownloadList.Remove(id);
+                           //        try { lstDownloads.Items.Remove(item); }
+                           //        catch (Exception) { }
+                           //        lstDownloads.Invalidate();
+                           //    }
+                           //}
+                       });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        #endregion Texture Downloading
 
         private void StartPicking(int cursorX, int cursorY)
         {
@@ -634,8 +764,9 @@ namespace _2ndviewer
                 {
                     if (render.Prim.ParentID == 0)
                     {
-                        Camera.FocalPoint = render.Prim.Position;
-                        UpdateCamera();
+                        //Camera.FocalPoint = render.Prim.Position;
+                        //UpdateCamera();
+                        //cient_.Self.AutoPilotすればいい？
                     }
                     else
                     {
@@ -651,8 +782,9 @@ namespace _2ndviewer
                             // clicked child but the highlighting is applied to all the children
                             LastHit = renderParent.Prim.LocalID;
 
-                            Camera.FocalPoint = renderParent.Prim.Position + render.Prim.Position;
-                            UpdateCamera();
+                            //Camera.FocalPoint = renderParent.Prim.Position + render.Prim.Position;
+                            //UpdateCamera();
+                            //cient_.Self.AutoPilotすればいい？
                         }
                         else
                         {
@@ -719,18 +851,19 @@ namespace _2ndviewer
                     }
 
                     // Texture for this face
-                    //if (teFace.TextureID != UUID.Zero &&
-                    //    teFace.TextureID != Primitive.TextureEntry.WHITE_TEXTURE)
-                    //{ 
-                    //    lock (Textures)
-                    //    {
-                    //        if (!Textures.ContainsKey(teFace.TextureID))
-                    //        {
-                    //            // We haven't constructed this image in OpenGL yet, get ahold of it
-                    //            TextureDownloader.RequestTexture(teFace.TextureID);
-                    //        }
-                    //    }
-                    //}
+                    if (textureDownload_ == true &&
+                        teFace.TextureID != UUID.Zero &&
+                        teFace.TextureID != Primitive.TextureEntry.WHITE_TEXTURE)
+                    { 
+                        lock (Textures)
+                        {
+                            if (!Textures.ContainsKey(teFace.TextureID))
+                            {
+                                // We haven't constructed this image in OpenGL yet, get ahold of it
+                                TextureDownloader.RequestTexture(teFace.TextureID);
+                            }
+                        }
+                    }
 
                     // Set the UserData for this face to our FaceData struct
                     face.UserData = data;
@@ -777,6 +910,14 @@ namespace _2ndviewer
             client_.Objects.OnNewPrim -= Objects_OnNewPrim;
             client_.Terrain.OnLandPatch -= Terrain_OnLandPatch;
             client_.Objects.OnNewFoliage -= Objects_OnNewFoliage;
+            TextureDownloader.OnDownloadFinished -= TextureDownloader_OnDownloadFinished;
+            // Shutdown the texture downloader
+            if (TextureDownloader != null)
+            {
+                TextureDownloader.Shutdown();
+                TextureDownloader.Abort();
+            }
+
             Application.Idle -= IdleEvent;
         }
 
@@ -906,6 +1047,20 @@ namespace _2ndviewer
         [DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern bool PeekMessage(out Message msg, IntPtr hWnd, uint messageFilterMin, uint messageFilterMax, uint flags);
     }
+
+    public struct TextureInfo
+    {
+        /// <summary>OpenGL Texture ID</summary>
+        public int ID;
+        /// <summary>True if this texture has an alpha component</summary>
+        public bool Alpha;
+
+        public TextureInfo(int id, bool alpha)
+        {
+            ID = id;
+            Alpha = alpha;
+        }
+    }
     public struct HeightmapLookupValue : IComparable<HeightmapLookupValue>
     {
         public int Index;
@@ -1015,4 +1170,338 @@ namespace _2ndviewer
     {
         public static IRendering Plugin;
     }
+
+
+    class TaskInfo
+    {
+        public UUID RequestID;
+        public int RequestNbr;
+
+
+        public TaskInfo(UUID reqID, int reqNbr)
+        {
+            RequestID = reqID;
+            RequestNbr = reqNbr;
+        }
+    }
+
+    /// <summary>
+    /// Texture request download handler, allows a configurable number of download slots
+    /// </summary>
+    public class TexturePipeline
+    {
+        private static GridClient Client;
+
+        // queue for requested images
+        private Queue<UUID> RequestQueue;
+
+        // list of current requests in process
+        private Dictionary<UUID, int> CurrentRequests;
+
+        private static AutoResetEvent[] resetEvents;
+
+        private static int[] threadpoolSlots;
+
+        /// <summary>
+        /// For keeping track of active threads available/downloading textures
+        /// </summary>
+        public static int[] ThreadpoolSlots
+        {
+            get { lock (threadpoolSlots) { return threadpoolSlots; }}
+            set { lock (threadpoolSlots) { threadpoolSlots = value; } }
+        }
+
+        // storage for images ready to render
+        private Dictionary<UUID, ImageDownload> RenderReady;
+
+        // maximum allowed concurrent requests at once
+        const int MAX_TEXTURE_REQUESTS = 3;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="success"></param>
+        public delegate void DownloadFinishedCallback(UUID id, bool success);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="received"></param>
+        /// <param name="total"></param>
+        public delegate void DownloadProgressCallback(UUID image, int recieved, int total);
+
+        /// <summary>Fired when a texture download completes</summary>
+        public event DownloadFinishedCallback OnDownloadFinished;
+        /// <summary></summary>
+        public event DownloadProgressCallback OnDownloadProgress;
+
+        private Thread downloadMaster;
+        private bool Running;
+
+        private AssetManager.ImageReceivedCallback DownloadCallback;
+        private AssetManager.ImageReceiveProgressCallback DownloadProgCallback;
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="client">Reference to <code>SecondLife</code> client</param>
+        public TexturePipeline(GridClient client)
+        {
+            Running = true;
+
+            RequestQueue = new Queue<UUID>();
+            CurrentRequests = new Dictionary<UUID, int>(MAX_TEXTURE_REQUESTS);
+
+            RenderReady = new Dictionary<UUID, ImageDownload>();
+
+            resetEvents = new AutoResetEvent[MAX_TEXTURE_REQUESTS];
+            threadpoolSlots = new int[MAX_TEXTURE_REQUESTS];
+
+            // pre-configure autoreset events/download slots
+            for (int i = 0; i < MAX_TEXTURE_REQUESTS; i++)
+            {
+                resetEvents[i] = new AutoResetEvent(false);
+                threadpoolSlots[i] = -1;
+            }
+
+            Client = client;
+
+            DownloadCallback = new AssetManager.ImageReceivedCallback(Assets_OnImageReceived);
+            DownloadProgCallback = new AssetManager.ImageReceiveProgressCallback(Assets_OnImageReceiveProgress);
+            Client.Assets.OnImageReceived += DownloadCallback;
+            Client.Assets.OnImageReceiveProgress += DownloadProgCallback;
+
+            // Fire up the texture download thread
+            downloadMaster = new Thread(new ThreadStart(DownloadThread));
+            downloadMaster.Start();
+        }
+
+        public void Shutdown()
+        {
+            Client.Assets.OnImageReceived -= DownloadCallback;
+            Client.Assets.OnImageReceiveProgress -= DownloadProgCallback;
+
+            RequestQueue.Clear();
+
+            for (int i = 0; i < resetEvents.Length; i++)
+                if (resetEvents[i] != null)
+                    resetEvents[i].Set();
+
+            Running = false;
+        }
+
+        public void Abort()
+        {
+            downloadMaster.Abort();
+            // waiting a thread abort
+            downloadMaster.Join();
+        }
+
+        /// <summary>
+        /// Request a texture be downloaded, once downloaded OnImageRenderReady event will be fired
+        /// containing texture key which can be used to retrieve texture with GetTextureToRender method
+        /// </summary>
+        /// <param name="textureID">id of Texture to request</param>
+        public void RequestTexture(UUID textureID)
+        {
+            if (Client.Assets.Cache.HasImage(textureID))
+            {
+                // Add to rendering dictionary
+                lock (RenderReady)
+                {
+                    if (!RenderReady.ContainsKey(textureID))
+                    {
+                        RenderReady.Add(textureID, Client.Assets.Cache.GetCachedImage(textureID));
+
+                        // Let any subscribers know about it
+                        if (OnDownloadFinished != null)
+                        {
+                            OnDownloadFinished(textureID, true);
+                        }
+                    }
+                    else
+                    {
+                        // This image has already been served up, ignore this request
+                    }
+                }
+            }
+            else
+            {
+                lock (RequestQueue)
+                {
+                    // Make sure we aren't already downloading the texture
+                    if (!RequestQueue.Contains(textureID) && !CurrentRequests.ContainsKey(textureID))
+                    {
+                        RequestQueue.Enqueue(textureID);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// retrieve texture information from dictionary
+        /// </summary>
+        /// <param name="textureID">Texture ID</param>
+        /// <returns>ImageDownload object</returns>
+        public ImageDownload GetTextureToRender(UUID textureID)
+        {
+            ImageDownload renderable = new ImageDownload();
+            lock (RenderReady)
+            {
+                if (RenderReady.ContainsKey(textureID))
+                {
+                    renderable = RenderReady[textureID];
+                }
+                else
+                {
+                    Logger.Log("Requested texture data for texture that does not exist in dictionary", Helpers.LogLevel.Warning);
+                }
+                return renderable;
+            }
+        }
+
+        /// <summary>
+        /// Remove no longer necessary texture from dictionary
+        /// </summary>
+        /// <param name="textureID"></param>
+        public void RemoveFromPipeline(UUID textureID)
+        {
+            lock (RenderReady)
+            {
+                if (RenderReady.ContainsKey(textureID))
+                    RenderReady.Remove(textureID);
+            }
+        }
+
+        /// <summary>
+        /// Master Download Thread, Queues up downloads in the threadpool
+        /// </summary>
+        private void DownloadThread()
+        {
+            int reqNbr;
+
+            try
+            {
+                while (Running)
+                {
+                    if (RequestQueue.Count > 0)
+                    {
+                        reqNbr = -1;
+                        // find available slot for reset event
+                        for (int i = 0; i < threadpoolSlots.Length; i++)
+                        {
+                            if (threadpoolSlots[i] == -1)
+                            {
+                                threadpoolSlots[i] = 1;
+                                reqNbr = i;
+                                break;
+                            }
+                        }
+
+                        if (reqNbr != -1)
+                        {
+                            UUID requestID;
+                            lock (RequestQueue)
+                                requestID = RequestQueue.Dequeue();
+
+                            Logger.DebugLog(String.Format("Sending Worker thread new download request {0}", reqNbr));
+                            ThreadPool.QueueUserWorkItem(new WaitCallback(textureRequestDoWork), new TaskInfo(requestID, reqNbr));
+
+                            continue;
+                        }
+                    }
+
+                    // Queue was empty, let's give up some CPU time
+                    Thread.Sleep(500);
+                }
+            }
+            catch (System.Threading.ThreadAbortException)
+            {
+                System.Diagnostics.Trace.WriteLine("Abort");
+            }
+        }
+
+        void textureRequestDoWork(Object threadContext)
+        {
+            TaskInfo ti = (TaskInfo)threadContext;
+
+            lock (CurrentRequests)
+            {
+                if (CurrentRequests.ContainsKey(ti.RequestID))
+                {
+                    threadpoolSlots[ti.RequestNbr] = -1;
+                    return;
+                }
+                else
+                {
+                    CurrentRequests.Add(ti.RequestID, ti.RequestNbr);
+                }
+            }
+
+            Logger.DebugLog(String.Format("Worker {0} Requesting {1}", ti.RequestNbr, ti.RequestID));
+
+            resetEvents[ti.RequestNbr].Reset();
+            Client.Assets.RequestImage(ti.RequestID, ImageType.Normal);
+
+            // don't release this worker slot until texture is downloaded or timeout occurs
+            if (!resetEvents[ti.RequestNbr].WaitOne(30 * 1000, false))
+            {
+                // Timed out
+                Logger.Log("Worker " + ti.RequestNbr + " Timeout waiting for Texture " + ti.RequestID + " to Download", Helpers.LogLevel.Warning);
+
+                lock (CurrentRequests)
+                    CurrentRequests.Remove(ti.RequestID);
+            }
+
+            // free up this download slot
+            threadpoolSlots[ti.RequestNbr] = -1;
+        }
+
+        private void Assets_OnImageReceived(ImageDownload image, AssetTexture asset)
+        {
+            // Free up this slot in the ThreadPool
+            lock (CurrentRequests)
+            {
+                int requestNbr;
+                if (asset != null && CurrentRequests.TryGetValue(image.ID, out requestNbr))
+                {
+                    Logger.DebugLog(String.Format("Worker {0} Downloaded texture {1}", requestNbr, image.ID));
+                    resetEvents[requestNbr].Set();
+                    CurrentRequests.Remove(image.ID);
+                }
+            }
+
+            if (image.Success)
+            {
+                lock (RenderReady)
+                {
+                    if (!RenderReady.ContainsKey(image.ID))
+                    {
+                        // Add to rendering dictionary
+                        RenderReady.Add(image.ID, image);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine(String.Format("Download of texture {0} failed. NotFound={1}", image.ID, image.NotFound));
+            }
+
+            // Let any subscribers know about it
+            if (OnDownloadFinished != null)
+            {
+                OnDownloadFinished(image.ID, image.Success);
+            }
+        }
+
+        private void Assets_OnImageReceiveProgress(UUID image, int recieved, int total)
+        {
+            if (OnDownloadProgress != null)
+            {
+                OnDownloadProgress(image, recieved, total);
+            }
+        }
+    }
+
 }
