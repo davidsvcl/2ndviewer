@@ -634,6 +634,17 @@ namespace _2ndviewer
             process.Start();
         }
 
+        private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start("http://search.secondlife.com/search.php");
+            }
+            catch
+            {
+            }
+        }
+
         private void optionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OptionForm optionForm = new OptionForm();
