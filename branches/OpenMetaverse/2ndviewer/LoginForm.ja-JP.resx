@@ -142,6 +142,12 @@
   <data name="password_checkBox.Text" xml:space="preserve">
     <value>パスワードを記憶</value>
   </data>
+  <data name="AcountLinkLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>106, 12</value>
+  </data>
+  <data name="AcountLinkLabel.Text" xml:space="preserve">
+    <value>新規アカウントを作成</value>
+  </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>372, 134</value>
   </data>

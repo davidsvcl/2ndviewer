@@ -120,6 +120,9 @@
   <data name="chatLocAv" xml:space="preserve">
     <value>moved near av(10m)</value>
   </data>
+  <data name="CreateAccountUrl" xml:space="preserve">
+    <value>https://join.secondlife.com/</value>
+  </data>
   <data name="defaultNews4VipUrl" xml:space="preserve">
     <value>http://yutori.2ch.net/news4vip/subject.txt</value>
   </data>

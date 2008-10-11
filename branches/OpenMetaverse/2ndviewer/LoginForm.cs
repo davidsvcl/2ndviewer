@@ -37,6 +37,18 @@ namespace _2ndviewer
             password_textBox.Text = (string)regkey.GetValue("password");
             regkey.Close();
         }
+
+        private void AcountLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(StringResource.CreateAccountUrl);
+            }
+            catch
+            {
+            }
+        }
+
         private void login_button_Click(object sender, EventArgs e)
         {
             this.Enabled = false;

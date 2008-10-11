@@ -120,6 +120,9 @@
   <data name="chatLocAv" xml:space="preserve">
     <value>チャット範囲内で動いたav：</value>
   </data>
+  <data name="CreateAccountUrl" xml:space="preserve">
+    <value>https://secure-web18.secondlife.com/join/jp/</value>
+  </data>
   <data name="defaultNews4VipUrl" xml:space="preserve">
     <value>http://yutori.2ch.net/news4vip/subject.txt</value>
   </data>
