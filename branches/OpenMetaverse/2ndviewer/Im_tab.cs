@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,29 +7,44 @@ using OpenMetaverse;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// ƒtƒŒƒ“ƒhƒŠƒXƒgƒNƒ‰ƒX
+    /// ƒtƒŒƒ“ƒhƒEƒBƒ“ƒhƒE‚ÉŠi”[‚·‚éƒtƒŒƒ“ƒhƒŠƒXƒg—pƒf[ƒ^ƒNƒ‰ƒX‚Å‚·B
+    /// </summary>
     class Im_tab
     {
+        /// <summary>UUID</summary>
         public UUID fromAgentID_;
+        /// <summary>ƒZƒbƒVƒ‡ƒ“ID</summary>
         public UUID sessionID_;
+        /// <summary>ƒ^ƒu</summary>
         public System.Windows.Forms.TabPage tabPage_;
+        /// <summary>ƒƒOƒGƒŠƒA</summary>
         public System.Windows.Forms.TextBox textBox_;
 
+        /// <summary>”äŠr‰‰Zq</summary>
         public static bool operator ==(Im_tab left, Im_tab right)
         {
             if (left.fromAgentID_ == right.fromAgentID_) return true;
             else return false;
         }
+
+        /// <summary>”äŠr‰‰Zq</summary>
         public static bool operator !=(Im_tab left, Im_tab right)
         {
             if (left.fromAgentID_ != right.fromAgentID_) return true;
             else return false;
         }
+
+        /// <summary>”äŠr‰‰Zq</summary>
         public override bool Equals(Object o)
         {
             Im_tab other = o as Im_tab;
             if (this.fromAgentID_ == other.fromAgentID_) return true;
             else return false;
         }
+
+        /// <summary>ƒnƒbƒVƒ…ƒR[ƒh</summary>
         public override int GetHashCode()
         {
             return base.GetHashCode();

@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,8 +9,15 @@ using System.Windows.Forms;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// ƒIƒvƒVƒ‡ƒ“İ’èƒEƒBƒ“ƒhƒEƒNƒ‰ƒX
+    /// ƒIƒvƒVƒ‡ƒ“İ’è‰æ–Ê•\¦‚ğs‚¢‚Ü‚·B
+    /// </summary>
     public partial class OptionForm : Form
     {
+        /// <summary>
+        /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+        /// </summary>
         public OptionForm()
         {
             InitializeComponent();

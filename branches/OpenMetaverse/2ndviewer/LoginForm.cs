@@ -11,23 +11,35 @@ using OpenMetaverse;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// ログインウィンドウクラス
+    /// ログイン画面表示を行います。
+    /// </summary>
     public partial class LoginForm : Form
     {
+        /// <summary>Second Lifeグリッド通信ライブラリ</summary>
         private GridClient client_;
+        /// <summary>ログイン成功時用デリゲート</summary>
         private delegate void LogonSuccessDelegate();
+        /// <summary>ログイン失敗時用デリゲート</summary>
         private delegate void LogonFailedDelegate(string message);
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
         public LoginForm()
         {
             InitializeComponent();
         }
 
+        /// <summary>通信ライブラリをセットする</summary>
         public void SetClient(GridClient client)
         {
             client_ = client;
             client_.Network.OnLogin += new NetworkManager.LoginCallback(Network_OnLogin);
         }
 
+        /// <summary>画面表示完了時に呼ばれるメソッド</summary>
         private void LoginForm_Shown(object sender, EventArgs e)
         {
             Microsoft.Win32.RegistryKey regkey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software\\2ndviewer", false);
@@ -38,6 +50,7 @@ namespace _2ndviewer
             regkey.Close();
         }
 
+        /// <summary>アカウント作成サイト</summary>
         private void AcountLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
@@ -49,6 +62,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>ログインボタン選択時に呼ばれるメソッド</summary>
         private void login_button_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
@@ -82,17 +96,27 @@ namespace _2ndviewer
             client_.Network.BeginLogin(loginParams);
         }
 
+        /// <summary>
+        /// ログイン成功
+        /// 画面を閉じる事でメインウィンドウへ遷移する
+        /// </summary>
         private void LogonSuccess()
         {
             Close();
         }
 
+        /// <summary>
+        /// ログイン失敗
+        /// </summary>
         private void LogonFailed(string message)
         {
             MessageBox.Show(message, StringResource.failedLogin, MessageBoxButtons.OK);
             this.Enabled = true;
         }
 
+        /// <summary>
+        /// ログイン完了時に呼ばれるメソッド
+        /// </summary>
         void Network_OnLogin(LoginStatus login, string message)
         {
             if (login == LoginStatus.Success)

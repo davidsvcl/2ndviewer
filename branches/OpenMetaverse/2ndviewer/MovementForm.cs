@@ -12,16 +12,30 @@ using OpenMetaverse;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// コントロールウィンドウクラス
+    /// コントロール画面表示を行います。
+    /// </summary>
     public partial class MovementForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
+        /// <summary>Second Lifeグリッド通信ライブラリ</summary>
         private GridClient client_;
+        /// <summary>ストーキング</summary>
         public bool follow_on_;
+        /// <summary>近くのものに座る</summary>
         public bool sit_on_;
+        /// <summary>ストーキングするアバター名</summary>
         public string followName_;
+        /// <summary>音声合成の音声名</summary>
         public string speech_;
+        /// <summary>ボクシング</summary>
         public bool boxing_;
+        /// <summary>音楽再生</summary>
         private WMPLib.WindowsMediaPlayer mediaPlayer_;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
         public MovementForm()
         {
             InitializeComponent();
@@ -49,11 +63,13 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>通信ライブラリをセットする</summary>
         public void SetClient(GridClient client)
         {
             client_ = client;
         }
 
+        /// <summary>音楽のURLをセットする</summary>
         public void SetMusicURL(string url)
         {
             try
@@ -71,6 +87,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>↑ボタン</summary>
         private void up_button_Click(object sender, EventArgs e)
         {
             double x;
@@ -91,6 +108,7 @@ namespace _2ndviewer
             client_.Self.AutoPilot(x, y, z);
         }
 
+        /// <summary>←ボタン</summary>
         private void left_button_Click(object sender, EventArgs e)
         {
             double x = client_.Self.GlobalPosition.X;
@@ -111,6 +129,7 @@ namespace _2ndviewer
             client_.Self.AutoPilot(x, y, z);
         }
 
+        /// <summary>↓ボタン</summary>
         private void down_button_Click(object sender, EventArgs e)
         {
             double x;
@@ -131,6 +150,7 @@ namespace _2ndviewer
             client_.Self.AutoPilot(x, y, z);
         }
 
+        /// <summary>→ボタン</summary>
         private void right_button_Click(object sender, EventArgs e)
         {
             double x = client_.Self.GlobalPosition.X;
@@ -151,16 +171,19 @@ namespace _2ndviewer
             client_.Self.AutoPilot(x, y, z);
         }
 
+        /// <summary>飛ぶボタン</summary>
         private void fly_button_Click(object sender, EventArgs e)
         {
             client_.Self.Fly(true);
         }
 
+        /// <summary>降りるボタン</summary>
         private void alight_button_Click(object sender, EventArgs e)
         {
             client_.Self.Fly(false);
         }
 
+        /// <summary>テレポートボタン</summary>
         private void teleport_button_Click(object sender, EventArgs e)
         {
             string location_text = teleportloc_maskedTextBox.Text;
@@ -179,26 +202,31 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>ストーキングチェックボックス</summary>
         private void follow_checkBox_CheckStateChanged(object sender, EventArgs e)
         {
             follow_on_ = follow_checkBox.Checked;
         }
 
+        /// <summary>ストーキングアバター名変更</summary>
         private void follow_textBox_TextChanged(object sender, EventArgs e)
         {
             followName_ = follow_textBox.Text;
         }
 
+        /// <summary>座るチェックボックス</summary>
         private void sit_checkBox_CheckStateChanged(object sender, EventArgs e)
         {
             sit_on_ = sit_checkBox.Checked;
         }
 
+        /// <summary>立つボタン</summary>
         private void stand_button_Click(object sender, EventArgs e)
         {
             client_.Self.Stand();
         }
 
+        /// <summary>AsciiArtボタン</summary>
         private void sp_button_Click(object sender, EventArgs e)
         {
             AAForm aaform = new AAForm();
@@ -215,11 +243,13 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>音声合成チェックボックス</summary>
         private void speech_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             speech_ = speech_comboBox.Text;
         }
 
+        /// <summary>銃を撃つボタン</summary>
         private void shoot_button_Click(object sender, EventArgs e)
         {
             client_.Self.Movement.Mouselook = true;
@@ -237,6 +267,7 @@ namespace _2ndviewer
             client_.Self.Movement.SendUpdate();
         }
 
+        /// <summary>ボクシング</summary>
         public void boxing()
         {
             client_.Self.Movement.MLButtonDown = true;
@@ -255,11 +286,13 @@ namespace _2ndviewer
             client_.Self.Movement.SendUpdate();
         }
 
+        /// <summary>ボクシングチェックボックス</summary>
         private void boxing_checkBox_CheckStateChanged(object sender, EventArgs e)
         {
             boxing_ = boxing_checkBox.Checked;
         }
 
+        /// <summary>常に走るチェックボックス</summary>
         private void run_checkBox_CheckStateChanged(object sender, EventArgs e)
         {
             if (run_checkBox.Checked)
@@ -274,6 +307,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>音楽再生チェックボックス</summary>
         private void music_checkBox_CheckStateChanged(object sender, EventArgs e)
         {
             try

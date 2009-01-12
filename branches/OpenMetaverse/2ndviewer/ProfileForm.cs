@@ -11,19 +11,34 @@ using OpenMetaverse;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// プロフィールウィンドウクラス
+    /// プロフィール画面表示を行います。
+    /// </summary>
     public partial class ProfileForm : Form, IDisposable
     {
+        /// <summary>Second Lifeグリッド通信ライブラリ</summary>
         private GridClient client_;
+        /// <summary>アバターUUID</summary>
         private UUID avatarID_;
+        /// <summary>アバター画像UUID</summary>
         private UUID slImageID_;
+        /// <summary>ファーストライフ画像UUID</summary>
         private UUID flImageID_;
 
+        /// <summary></summary>
         private delegate void PropertiesUpdateDelegate(UUID avatarID, Avatar.AvatarProperties properties);
+        /// <summary>画像受信コールバック</summary>
         AssetManager.ImageReceivedCallback ImageReceivedCallback;
 
+        /// <summary></summary>
         private delegate void SetAvatarTextDelegate(string avatar);
+        /// <summary></summary>
         private delegate void SetPartnerTextDelegate(string partner);
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
         public ProfileForm()
         {
             InitializeComponent();
@@ -32,6 +47,9 @@ namespace _2ndviewer
 
         #region IDisposable メンバ
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
         void IDisposable.Dispose()
         {
             client_.Avatars.OnAvatarProperties -= Avatars_OnAvatarProperties;
@@ -41,16 +59,19 @@ namespace _2ndviewer
 
         #endregion
 
+        /// <summary>通信ライブラリをセットする</summary>
         public void SetClient(GridClient client)
         {
             client_ = client;
         }
 
+        /// <summary>アバターIDをセットする</summary>
         public void SetAvatarID(UUID uuid)
         {
             avatarID_ = uuid;
         }
 
+        /// <summary>画面表示時に呼ばれるメソッド</summary>
         private void ProfileForm_Load(object sender, EventArgs e)
         {
             client_.Avatars.OnAvatarProperties += new AvatarManager.AvatarPropertiesCallback(Avatars_OnAvatarProperties);
@@ -63,6 +84,7 @@ namespace _2ndviewer
             client_.Assets.OnImageReceived += ImageReceivedCallback;
         }
 
+        /// <summary></summary>
         void Avatars_OnAvatarNames(Dictionary<UUID, string> names)
         {
             foreach (KeyValuePair<UUID, string> kvp in names)
@@ -80,15 +102,19 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         private void SetAvatarText(string avatar)
         {
             name_textBox.Text = avatar;
         }
+
+        /// <summary></summary>
         private void SetPartnerText(string partner)
         {
             partner_textBox.Text = partner;
         }
 
+        /// <summary></summary>
         void Avatars_OnAvatarProperties(UUID avatarID, Avatar.AvatarProperties properties)
         {
             PropertiesUpdateDelegate dlg = new PropertiesUpdateDelegate(PropertiesUpdate);
@@ -96,6 +122,7 @@ namespace _2ndviewer
             Invoke(dlg, arg);
         }
 
+        /// <summary></summary>
         private void PropertiesUpdate(UUID avatarID, Avatar.AvatarProperties properties)
         {
             firstlist_textBox.Text = properties.FirstLifeText;
@@ -120,11 +147,13 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         private void view_button_Click(object sender, EventArgs e)
         {
             webBrowser1.Navigate(web_textBox.Text);
         }
 
+        /// <summary></summary>
         void Assets_OnImageReceived(ImageDownload image, AssetTexture assetTexture)
         {
             OpenMetaverse.Imaging.ManagedImage img;
@@ -144,6 +173,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         private void label1_Click(object sender, EventArgs e)
         {
 

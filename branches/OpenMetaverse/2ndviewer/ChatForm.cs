@@ -14,30 +14,58 @@ using IronPython.Hosting;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// チャットウィンドウクラス
+    /// チャットの送受信を行います。
+    /// またIronPythonを仲介します。
+    /// </summary>
     public partial class ChatForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
+        /// <summary>Second Lifeグリッド通信ライブラリ</summary>
         private GridClient client_;
+        /// <summary>コントロールウィンドウ</summary>
         private MovementForm movementForm_;
+        /// <summary>アイテムウィンドウ</summary>
         private InventoryForm inventoryForm_;
+        /// <summary>IronPython仲介エンジン</summary>
         private PythonEngine pe_;
+        /// <summary>ニックネーム、デフォルト「立川君」</summary>
         private string nickName_;
+        /// <summary>ニュー速VIPのURL</summary>
         private string news4vip_;
+        /// <summary>IMタブ配列</summary>
         System.Collections.Generic.List<Im_tab> uuid_array_;
+        /// <summary>踊れコマンドとニュー速VIP用乱数</summary>
         Random rnd_;
+        /// <summary>ニュー速VIPのタイトル配列</summary>
         System.Collections.Generic.List<string> news4vip_subs_;
+        /// <summary>翻訳コマンドの状態</summary>
         private bool translate_;
+        /// <summary>容姿配列</summary>
         public Dictionary<UUID, AvatarAppearancePacket> Appearances = new Dictionary<UUID, AvatarAppearancePacket>();
 
+        /// <summary>チャットログにテキストを追加するためのデリゲート</summary>
         private delegate void WriteLineDelegate(string str);
+        /// <summary>IMタブを追加するためのデリゲート</summary>
         private delegate void AddTabDelegate(Im_tab im_tab, string fromName, string message);
+        /// <summary>IMタブにテキストを追加するためのデリゲート</summary>
         private delegate void IMTabWriteLineDelegate(Im_tab im_tab, string fromName, string message);
+        /// <summary>ストーキングを開始するためのデリゲート</summary>
         private delegate void FollowDelegate(bool check, string name);
+        /// <summary>Yahoo!ニュースを発言するためのデリゲート</summary>
         private delegate void YahooNewsDelegate(string name);
+        /// <summary>Lindenオフィシャルブログを発言するためのデリゲート</summary>
         private delegate void LindenOfficialBlogDelegate(string name);
+        /// <summary>ソラマメブログを発言するためのデリゲート</summary>
         private delegate void SlmameDelegate(string name);
+        /// <summary>ニュー速VIPのスレ発言するためのデリゲート</summary>
         private delegate void News4VipDelegate(string name);
+        /// <summary>翻訳するためのデリゲート</summary>
         private delegate void TranslateDelegate(string fromname, string message);
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
         public ChatForm()
         {
             InitializeComponent();
@@ -48,6 +76,12 @@ namespace _2ndviewer
             pe_ = new PythonEngine();
         }
 
+        /// <summary>
+        /// SetClient
+        /// 通信ライブラリをセットする
+        /// IronPythonエンジンにグローバル変数を追加する
+        /// IronPythonのグローバル変数にダミー値をセットする
+        /// </summary>
         public void SetClient(GridClient client)
         {
             client_ = client;
@@ -60,17 +94,20 @@ namespace _2ndviewer
             pe_.Globals.Add("sessionID",dummyuuid);
         }
 
+        /// <summary>コントロールウィンドウをセットする</summary>
         public void SetMovementForm(MovementForm movementForm)
         {
             movementForm_ = movementForm;
         }
 
+        /// <summary>アイテムウィンドウをセットする</summary>
         public void SetInventoryForm(InventoryForm inventoryForm)
         {
             inventoryForm_ = inventoryForm;
             pe_.Globals.Add("inventory", inventoryForm_);
         }
 
+        /// <summary>ニックネームをセットする</summary>
         public void SetNickName(string nickname)
         {
             nickName_ = nickname;
@@ -79,11 +116,17 @@ namespace _2ndviewer
             pe_.Globals.Remove("fromname");
             pe_.Globals.Add("fromname", nickName_);
         }
+
+        /// <summary>ニュー速VIPのURLをセットする</summary>
         public void SetNews4Vip(string url)
         {
             news4vip_ = url;
         }
 
+        /// <summary>
+        /// WriteLine
+        /// チャットログにテキストを追加し、最後の行へスクロールする
+        /// </summary>
         private void WriteLine(string str)
         {
             chatLog_textBox.AppendText(str);
@@ -91,6 +134,10 @@ namespace _2ndviewer
             chatLog_textBox.ScrollToCaret();
         }
 
+        /// <summary>
+        /// AddTab
+        /// IMタブを追加する
+        /// </summary>
         private void AddTab(Im_tab im_tab, string fromName, string message)
         {
             im_tab.tabPage_ = new TabPage();
@@ -119,6 +166,10 @@ namespace _2ndviewer
             uuid_array_.Add(im_tab);
         }
 
+        /// <summary>
+        /// StartIM
+        /// IMタブを追加する
+        /// </summary>
         public void StartIM(UUID toAgentID, string toName)
         {
             Im_tab im_tab = new Im_tab();
@@ -147,6 +198,10 @@ namespace _2ndviewer
             uuid_array_.Add(im_tab);
         }
 
+        /// <summary>
+        /// IMTabWriteLine
+        /// IMタブにテキストを追加する
+        /// </summary>
         private void IMTabWriteLine(Im_tab im_tab, string fromName, string message)
         {
             im_tab.textBox_.AppendText("\r\n" + fromName + ":" + message);
@@ -154,11 +209,22 @@ namespace _2ndviewer
             im_tab.textBox_.ScrollToCaret();
         }
 
+        /// <summary>
+        /// Follow
+        /// ストーキングの開始/停止をコントロールウィンドウにセットする
+        /// </summary>
         private void Follow(bool check, string name)
         {
             movementForm_.follow_checkBox.Checked = check;
             movementForm_.follow_textBox.Text = name;
         }
+
+        /// <summary>
+        /// Self_OnChat
+        /// チャット受信時に呼び出されるメソッドです。
+        /// チャットコマンドの解析を行います
+        /// OnChat.pyにつながります
+        /// </summary>
         public void Self_OnChat(string message, ChatAudibleLevel audible, ChatType type, ChatSourceType sourceType, string fromName, UUID id, UUID ownerid, Vector3 position)
         {
             if (message.Length <= 0) return;
@@ -379,10 +445,13 @@ namespace _2ndviewer
             Invoke(dlg, arg);
         }
 
+        /// <summary>
+        /// Speech
+        /// 音声読み上げメソッドです。
+        /// </summary>
         private void Speech(string message)
         {
             string speech = movementForm_.speech_;
-            //System.Diagnostics.Trace.WriteLine(speech);
             if (speech != StringResource.none)
             {
                 try
@@ -398,6 +467,10 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// SystemMessage
+        /// システムメッセージをチャットログに追加するメソッドです。
+        /// </summary>
         public void SystemMessage(string message)
         {
             if (message.Length <= 0) return;
@@ -407,6 +480,12 @@ namespace _2ndviewer
             Invoke(dlg, arg);
         }
 
+        /// <summary>
+        /// IMChat
+        /// IMタブにをIMログに追加するメソッドです。
+        /// 該当するIMタブがなければIMタブを追加します
+        /// OnIMChat.pyにつながります
+        /// </summary>
         public void IMChat(string message, string fromName, UUID fromAgentID, UUID sessionID)
         {
             if (message.Length <= 0) return;
@@ -463,6 +542,12 @@ namespace _2ndviewer
             Invoke(dlg, arg);
         }
 
+        /// <summary>
+        /// chat_textBox_KeyDown
+        /// チャット発言エリアでエンターキーを押した時呼ばれるメソッドです。
+        /// 「/チャンネル番号 メッセージ」で特定チャンネルに向けて発言できます
+        /// OnKeyDownEnter.pyにつながります
+        /// </summary>
         private void chat_textBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -477,7 +562,6 @@ namespace _2ndviewer
                 }
                 catch (Exception exc)
                 {
-                    //System.Diagnostics.Trace.WriteLine(e);
                     SystemMessage("PythonError(scripts\\OnChatKeyDownEnter.py):\r\n" + exc.ToString());
                 }
                 int i = tabControl1.SelectedIndex;
@@ -521,6 +605,10 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// closeToolStripMenuItem_Click
+        /// ポップアップメニューの閉じるを選択時呼ばれるメソッドです。
+        /// </summary>
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int index = this.tabControl1.SelectedIndex;
@@ -537,6 +625,10 @@ namespace _2ndviewer
 
 
 
+        /// <summary>
+        /// YahooNews
+        /// Yahoo!ニュースを取得しチャットで発言するメソッドです。
+        /// </summary>
         private void YahooNews(string name)
         {
             try
@@ -577,6 +669,11 @@ namespace _2ndviewer
                 client_.Self.Chat("エラー:"+e.Message, 0, ChatType.Normal);
             }
         }
+
+        /// <summary>
+        /// YahooNews
+        /// Yahoo!ニュースを取得しチャットで発言するメソッドです。
+        /// </summary>
         private void LindenOfficialBlog(string name)
         {
             try
@@ -621,6 +718,11 @@ namespace _2ndviewer
                 client_.Self.Chat("エラー:" + e.Message, 0, ChatType.Normal);
             }
         }
+
+        /// <summary>
+        /// Slmame
+        /// Slmameブログを取得しチャットで発言するメソッドです。
+        /// </summary>
         private void Slmame(string name)
         {
             try
@@ -667,6 +769,11 @@ namespace _2ndviewer
                 client_.Self.Chat("エラー:" + e.Message, 0, ChatType.Normal);
             }
         }
+
+        /// <summary>
+        /// News4Vip
+        /// ニュー速VIPのスレ一覧を取得しチャットで発言するメソッドです。
+        /// </summary>
         private void News4Vip(string name)
         {
             try
@@ -698,6 +805,11 @@ namespace _2ndviewer
             }
 
         }
+
+        /// <summary>
+        /// Translate
+        /// 翻訳しチャットで発言するメソッドです。
+        /// </summary>
         private void Translate(string fromname, string message)
         {
             try

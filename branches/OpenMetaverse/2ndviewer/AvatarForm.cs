@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,36 +12,51 @@ using OpenMetaverse;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// ƒAƒoƒ^[ˆê——ƒEƒBƒ“ƒhƒEƒNƒ‰ƒX
+    /// ‹ß‚­‚É‚¢‚éƒAƒoƒ^[–¼•\¦‚Æw’è‚µ‚½ƒAƒoƒ^[‚É‘Î‚µ‚ÄƒRƒ“ƒ^ƒNƒg‚ğs‚¢‚Ü‚·B
+    /// </summary>
     public partial class AvatarForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
+        /// <summary>Second LifeƒOƒŠƒbƒh’ÊMƒ‰ƒCƒuƒ‰ƒŠ</summary>
         private GridClient client_;
+        /// <summary>ƒ`ƒƒƒbƒgƒEƒBƒ“ƒhƒE</summary>
         private ChatForm chatForm_;
+        /// <summary>ƒRƒ“ƒgƒ[ƒ‹ƒEƒBƒ“ƒhƒE</summary>
         private MovementForm movementForm_;
+        /// <summary>ƒAƒoƒ^[”z—ñ</summary>
         System.Collections.Generic.List<Avatar> avatar_array_ = new System.Collections.Generic.List<Avatar>();
 
+        /// <summary>
+        /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+        /// </summary>
         public AvatarForm()
         {
             InitializeComponent();
         }
 
+        /// <summary>’ÊMƒ‰ƒCƒuƒ‰ƒŠ‚ğƒZƒbƒg‚·‚é</summary>
         public void SetClient(GridClient client)
         {
             client_ = client;
         }
 
+        /// <summary>ƒ`ƒƒƒbƒgƒEƒBƒ“ƒhƒE‚ğƒZƒbƒg‚·‚é</summary>
         public void SetChatForm(ChatForm chatForm)
         {
             chatForm_ = chatForm;
         }
 
+        /// <summary>ƒRƒ“ƒgƒ[ƒ‹ƒEƒBƒ“ƒhƒE‚ğƒZƒbƒg‚·‚é</summary>
         public void SetMovementForm(MovementForm movementForm)
         {
             movementForm_ = movementForm;
         }
 
+        /// <summary>“¯ƒVƒ€‚ÌƒAƒoƒ^[‚ğŒŸõ‚µ‚Ü‚·</summary>
         private void searchAvatars(string searchString)
         {
-            float radius = float.Parse("20");
+            //float radius = float.Parse("20");
             avatar_array_.Clear();
             this.listBox1.Items.Clear();
 
@@ -67,11 +82,13 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>XVƒ{ƒ^ƒ“</summary>
         private void refresh_button_Click(object sender, EventArgs e)
         {
             searchAvatars("");
         }
 
+        /// <summary>ƒAƒoƒ^[ŒŸõ</summary>
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -81,6 +98,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>IM‚ğŠJn</summary>
         private void im_button_Click(object sender, EventArgs e)
         {
             int index = listBox1.SelectedIndex;
@@ -88,6 +106,7 @@ namespace _2ndviewer
             chatForm_.StartIM(avatar_array_[index].ID, avatar_array_[index].Name);
         }
 
+        /// <summary>ƒvƒƒtƒB[ƒ‹‚Ì•\¦</summary>
         private void profile_button_Click(object sender, EventArgs e)
         {
             int index = listBox1.SelectedIndex;
@@ -100,6 +119,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>ƒtƒŒƒ“ƒhƒVƒbƒv‚ğƒIƒtƒ@[‚·‚é</summary>
         private void friend_button_Click(object sender, EventArgs e)
         {
             int index = listBox1.SelectedIndex;
@@ -107,6 +127,7 @@ namespace _2ndviewer
             client_.Friends.OfferFriendship(avatar_array_[index].ID);
         }
 
+        /// <summary>ƒXƒg[ƒLƒ“ƒOŠJn</summary>
         private void follow_button_Click(object sender, EventArgs e)
         {
             int index = listBox1.SelectedIndex;
@@ -117,6 +138,7 @@ namespace _2ndviewer
             movementForm_.follow_textBox.Text = avatar_array_[index].Name;
         }
 
+        /// <summary>w’è‚µ‚½ƒAƒoƒ^[‚ğƒeƒŒƒ|[ƒg‚Å©•ª‚ÌêŠ‚ÉŒÄ‚Ño‚·</summary>
         private void teleport_button_Click(object sender, EventArgs e)
         {
             int index = listBox1.SelectedIndex;

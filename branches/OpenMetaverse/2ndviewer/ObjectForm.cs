@@ -12,24 +12,37 @@ using OpenMetaverse;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// オブジェクトウィンドウクラス
+    /// オブジェクト画面表示を行います。
+    /// </summary>
     public partial class ObjectForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
+        /// <summary>Second Lifeグリッド通信ライブラリ</summary>
         private GridClient client_;
+        /// <summary>PrimsWaiting配列</summary>
         private Dictionary<UUID, Primitive> PrimsWaiting = new Dictionary<UUID, Primitive>();
+        /// <summary></summary>
         System.Threading.AutoResetEvent AllPropertiesReceived = new System.Threading.AutoResetEvent(false);
+        /// <summary>オブジェクト配列</summary>
         System.Collections.Generic.List<Primitive> object_array_ = new System.Collections.Generic.List<Primitive>();
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
         public ObjectForm()
         {
             InitializeComponent();
         }
 
+        /// <summary>通信ライブラリをセットする</summary>
         public void SetClient(GridClient client)
         {
             client_ = client;
             client_.Objects.OnObjectProperties += new ObjectManager.ObjectPropertiesCallback(Objects_OnObjectProperties);
         }
 
+        /// <summary>Objects_OnObjectProperties</summary>
         private void Objects_OnObjectProperties(Simulator simulator, Primitive.ObjectProperties properties)
         {
             lock (PrimsWaiting)
@@ -47,6 +60,8 @@ namespace _2ndviewer
                 }
             }
         }
+
+        /// <summary>RequestObjectProperties</summary>
         private bool RequestObjectProperties(List<Primitive> objects, int msPerRequest)
         {
             uint[] localids = new uint[objects.Count];
@@ -63,6 +78,7 @@ namespace _2ndviewer
             return AllPropertiesReceived.WaitOne(2000 + msPerRequest * objects.Count, false);
         }
 
+        /// <summary>検索</summary>
         private void searchObjects(string searchString)
         {
             float radius = float.Parse("20");
@@ -102,6 +118,7 @@ namespace _2ndviewer
             System.Diagnostics.Trace.WriteLine("Done");
         }
 
+        /// <summary>検索</summary>
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -111,6 +128,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>リフレッシュ</summary>
         private void refresh_button_Click(object sender, EventArgs e)
         {
             searchObjects("");
@@ -126,6 +144,7 @@ namespace _2ndviewer
 //            ));
         }
 
+        /// <summary>座るボタン</summary>
         private void sit_button_Click(object sender, EventArgs e)
         {
             int index = listBox1.SelectedIndex;
@@ -134,6 +153,10 @@ namespace _2ndviewer
             client_.Self.Sit();
         }
 
+        /// <summary>
+        /// 触るボタン
+        /// 実際に触れてない？
+        /// </summary>
         private void touch_button_Click(object sender, EventArgs e)
         {
             int index = listBox1.SelectedIndex;

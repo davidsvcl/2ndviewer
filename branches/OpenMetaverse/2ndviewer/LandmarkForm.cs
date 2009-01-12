@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,8 +9,15 @@ using System.Windows.Forms;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// ƒ‰ƒ“ƒhƒ}[ƒN’Ç‰ÁƒEƒBƒ“ƒhƒEƒNƒ‰ƒX
+    /// ƒ‰ƒ“ƒhƒ}[ƒN‚Ì’Ç‰Á‰æ–Ê•\¦‚ğs‚¢‚Ü‚·B
+    /// </summary>
     public partial class LandmarkForm : Form
     {
+        /// <summary>
+        /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+        /// </summary>
         public LandmarkForm()
         {
             InitializeComponent();

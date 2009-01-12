@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,12 +7,23 @@ using OpenMetaverse;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// ƒtƒŒƒ“ƒhƒŠƒXƒgƒNƒ‰ƒX
+    /// ƒtƒŒƒ“ƒhƒEƒBƒ“ƒhƒE‚ÉŠi”[‚·‚éƒtƒŒƒ“ƒhƒŠƒXƒg—pƒf[ƒ^ƒNƒ‰ƒX‚Å‚·B
+    /// </summary>
     class FriendList
     {
+        /// <summary>
+        /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+        /// </summary>
         public FriendList() {
         }
+
+        /// <summary>ƒIƒ“ƒ‰ƒCƒ“(true)/ƒIƒtƒ‰ƒCƒ“(false)</summary>
         public bool Online;
+        /// <summary>UUID</summary>
         public UUID UUID;
+        /// <summary>ƒAƒoƒ^[–¼</summary>
         public string Name;
     }
 }
