@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,29 +12,46 @@ using OpenMetaverse;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// ƒtƒŒƒ“ƒhƒEƒBƒ“ƒhƒEƒNƒ‰ƒX
+    /// ƒtƒŒƒ“ƒhî•ñ‚Ì•\¦‚Æw’è‚µ‚½ƒtƒŒƒ“ƒh‚É‘Î‚µ‚ÄƒRƒ“ƒ^ƒNƒg‚ğs‚¢‚Ü‚·B
+    /// </summary>
     public partial class FriendForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
+        /// <summary>Second LifeƒOƒŠƒbƒh’ÊMƒ‰ƒCƒuƒ‰ƒŠ</summary>
         private GridClient client_;
+        /// <summary>ƒ`ƒƒƒbƒgƒEƒBƒ“ƒhƒE</summary>
         private ChatForm chatForm_;
+        /// <summary>ƒtƒŒƒ“ƒh”z—ñ</summary>
         System.Collections.Generic.List<FriendList> friend_array_;
+        /// <summary>ƒŠƒXƒgƒ{ƒbƒNƒX‚ğƒŠƒtƒŒƒbƒVƒ…‚·‚é‚½‚ß‚ÌƒfƒŠƒQ[ƒg</summary>
         private delegate void refreshListDelegate();
 
+        /// <summary>
+        /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+        /// </summary>
         public FriendForm()
         {
             InitializeComponent();
             friend_array_ = new System.Collections.Generic.List<FriendList>();
         }
 
+        /// <summary>’ÊMƒ‰ƒCƒuƒ‰ƒŠ‚ğƒZƒbƒg‚·‚é</summary>
         public void SetClient(GridClient client)
         {
             client_ = client;
         }
 
+        /// <summary>ƒ`ƒƒƒbƒgƒEƒBƒ“ƒhƒE‚ğƒZƒbƒg‚·‚é</summary>
         public void SetChatForm(ChatForm chatForm)
         {
             chatForm_ = chatForm;
         }
 
+        /// <summary>
+        /// refreshList
+        /// ƒtƒŒƒ“ƒhƒŠƒXƒg‚ğÄ\’z‚µ‚Ü‚·
+        /// </summary>
         private void refreshList()
         {
             listBox1.Items.Clear();
@@ -83,6 +100,10 @@ namespace _2ndviewer
             //}
         }
 
+        /// <summary>
+        /// refresh
+        /// ƒtƒŒƒ“ƒhƒŠƒXƒg‚ğXV‚·‚éƒƒ\ƒbƒh‚Å‚·B
+        /// </summary>
         public void refresh()
         {
             refreshListDelegate dlg = new refreshListDelegate(refreshList);
@@ -96,6 +117,10 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// iMToolStripMenuItem_Click
+        /// ƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚©‚çIM‚ğ‘I‘ğ‚µ‚½‚ÉŒÄ‚Î‚ê‚éƒƒ\ƒbƒh‚Å‚·B
+        /// </summary>
         private void iMToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int index = listBox1.SelectedIndex;
@@ -103,6 +128,10 @@ namespace _2ndviewer
             chatForm_.StartIM(friend_array_[index].UUID, friend_array_[index].Name);
         }
 
+        /// <summary>
+        /// teleportToolStripMenuItem_Click
+        /// ƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚©‚çƒeƒŒƒ|[ƒg‚ğ‘I‘ğ‚µ‚½‚ÉŒÄ‚Î‚ê‚éƒƒ\ƒbƒh‚Å‚·B
+        /// </summary>
         private void teleportToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int index = listBox1.SelectedIndex;
@@ -110,6 +139,10 @@ namespace _2ndviewer
             client_.Self.SendTeleportLure(friend_array_[index].UUID, "Join me in " + client_.Network.CurrentSim.Name + "!");
         }
 
+        /// <summary>
+        ///  profile_ToolStripMenuItem_Click
+        /// ƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚©‚çƒvƒƒtƒB[ƒ‹•\¦‚ğ‘I‘ğ‚µ‚½‚ÉŒÄ‚Î‚ê‚éƒƒ\ƒbƒh‚Å‚·B
+        /// </summary>
         private void profile_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int index = listBox1.SelectedIndex;
@@ -122,11 +155,20 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// button1_Click
+        /// XVƒ{ƒ^ƒ“‚ğ‘I‘ğ‚µ‚½‚ÉŒÄ‚Î‚ê‚éƒƒ\ƒbƒh‚Å‚·B
+        /// </summary>
         private void button1_Click(object sender, EventArgs e)
         {
             refresh();
         }
 
+        /// <summary>
+        /// listBox1_DrawItem
+        /// ƒtƒŒƒ“ƒhƒŠƒXƒg‚ğ•`‰æ‚·‚éƒƒ\ƒbƒh‚Å‚·B
+        /// Online‚ÍÔ‚ÅAOffline‚Í•‚Å•¶š‚ğ•`‰æ‚µ‚Ü‚·
+        /// </summary>
         private void listBox1_DrawItem(object sender, DrawItemEventArgs e)
         {
             e.DrawBackground();

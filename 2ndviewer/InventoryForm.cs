@@ -12,24 +12,36 @@ using OpenMetaverse;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// アイテムウィンドウクラス
+    /// アイテムの表示を行います。
+    /// </summary>
     public partial class InventoryForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
+        /// <summary>Second Lifeグリッド通信ライブラリ</summary>
         private GridClient client_;
+        /// <summary>カレントイベントリフォルダ</summary>
         private InventoryFolder currentDirectory_;
+        /// <summary>ツリーの展開用デリゲート</summary>
         private delegate void ExpandDelegate();
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
         public InventoryForm()
         {
             InitializeComponent();
             currentDirectory_ = null;
         }
 
+        /// <summary>通信ライブラリをセットする</summary>
         public void SetClient(GridClient client)
         {
             client_ = client;
             treeView1.Client = client;
         }
 
+        /// <summary>初期化する</summary>
         public void InventoryInitialize()
         {
             InventoryManager Manager = client_.Inventory;
@@ -56,6 +68,7 @@ namespace _2ndviewer
             Invoke(edlg);
         }
 
+        /// <summary>ツリーを展開する</summary>
         private void Expand()
         {
             foreach (TreeNode childNode in treeView1.Nodes)
@@ -69,30 +82,36 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>未使用</summary>
         private void RefreshTree()
         {
         }
 
+        /// <summary>リフレッシュボタン</summary>
         private void refresh_button_Click(object sender, EventArgs e)
         {
             RefreshTree();
         }
 
+        /// <summary>ポップアップメニュからアタッチを選択した時に呼ばれるメソッド</summary>
         private void attachToolStripMenuItem_Click(object sender, EventArgs e)
         {
             attach(OpenMetaverse.AttachmentPoint.Default);
         }
 
+        /// <summary>ポップアップメニュから右手にアタッチを選択した時に呼ばれるメソッド</summary>
         private void attachToRightHandToolStripMenuItem_Click(object sender, EventArgs e)
         {
             attach(AttachmentPoint.RightHand);
         }
 
+        /// <summary>ポップアップメニュから左手にアタッチを選択した時に呼ばれるメソッド</summary>
         private void attachToLeftHandToolStripMenuItem_Click(object sender, EventArgs e)
         {
             attach(AttachmentPoint.LeftHand);
         }
 
+        /// <summary>アタッチメソッド</summary>
         private void attach(AttachmentPoint point)
         {
             if (currentDirectory_ == null) InventoryInitialize();
@@ -129,6 +148,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>デタッチメソッド</summary>
         private void detachToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (currentDirectory_ == null) InventoryInitialize();
@@ -164,6 +184,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>アバター名からUUIDを取得する</summary>
         public UUID getUUIDbyAvatarName(string avatarName)
         {
             Vector3 location = client_.Self.SimPosition;
@@ -188,6 +209,7 @@ namespace _2ndviewer
             return UUID.Zero;
         }
 
+        /// <summary>指定した相手にアイテムを与える</summary>
         public void giveItem(UUID target, string itemName)
         {
             if (currentDirectory_ == null) InventoryInitialize();

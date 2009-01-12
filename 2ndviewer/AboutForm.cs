@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,13 +9,24 @@ using System.Windows.Forms;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// ƒo[ƒWƒ‡ƒ“î•ñƒEƒBƒ“ƒhƒEƒNƒ‰ƒX
+    /// ƒo[ƒWƒ‡ƒ“î•ñ‚Ì•\¦‚ğs‚¢‚Ü‚·B
+    /// </summary>
     public partial class AboutForm : Form
     {
+        /// <summary>
+        /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+        /// </summary>
         public AboutForm()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// linkLabel1_LinkClicked
+        /// ƒŠƒ“ƒNƒ{ƒ^ƒ“ƒNƒŠƒbƒNƒCƒxƒ“ƒg
+        /// </summary>
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try

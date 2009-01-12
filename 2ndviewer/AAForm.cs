@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,15 +9,28 @@ using System.Windows.Forms;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// ƒAƒXƒL[ƒA[ƒgƒEƒBƒ“ƒhƒEƒNƒ‰ƒX
+    /// ƒAƒXƒL[ƒA[ƒg‚Ì“o˜^AŒÄ‚Ño‚µ‚ğs‚¢‚Ü‚·B
+    /// </summary>
     public partial class AAForm : Form
     {
+        /// <summary>ƒfƒBƒŒƒNƒgƒŠ”z—ñ</summary>
         private String[] dirs_;
+
+        /// <summary>
+        /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+        /// </summary>
         public AAForm()
         {
             InitializeComponent();
             ReReadDirectory();
         }
 
+        /// <summary>
+        /// ReReadDirectory
+        /// ƒfƒBƒŒƒNƒgƒŠ‚ÌÄ“Ç‚İ‚İ‚ğs‚¢‚Ü‚·
+        /// </summary>
         private void ReReadDirectory()
         {
             try
@@ -36,6 +49,11 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// select_button_Click
+        /// ‘I‘ğƒ{ƒ^ƒ“ƒNƒŠƒbƒNƒCƒxƒ“ƒg
+        /// ƒŠƒXƒgƒ{ƒbƒNƒX‚©‚ç‘I‘ğ‚³‚ê‚½ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İA“à—e‚ğƒeƒLƒXƒgƒ{ƒbƒNƒX‚É”½‰f‚µ‚Ü‚·
+        /// </summary>
         private void select_button_Click(object sender, EventArgs e)
         {
             string text = System.IO.File.ReadAllText(dirs_[listBox1.SelectedIndex], System.Text.Encoding.GetEncoding("UTF-8"));
@@ -43,6 +61,11 @@ namespace _2ndviewer
             this.textBox1.Text = text;
         }
 
+        /// <summary>
+        /// add_button_Click
+        /// ’Ç‰Áƒ{ƒ^ƒ“ƒNƒŠƒbƒNƒCƒxƒ“ƒg
+        /// ƒeƒLƒXƒgƒ{ƒbƒNƒX‚Ì“à—e‚ğƒtƒ@ƒCƒ‹‚É‘‚«‚İAƒŠƒXƒgƒ{ƒbƒNƒX‚É’Ç‰Á‚µ‚Ü‚·
+        /// </summary>
         private void add_button_Click(object sender, EventArgs e)
         {
             if (title_textBox.Text.Length <= 0) {
@@ -62,6 +85,11 @@ namespace _2ndviewer
             ReReadDirectory();
         }
 
+        /// <summary>
+        /// clear_button_Click
+        /// ƒNƒŠƒAƒ{ƒ^ƒ“ƒNƒŠƒbƒNƒCƒxƒ“ƒg
+        /// ƒeƒLƒXƒgƒ{ƒbƒNƒX‚Ì“à—e‚ğÁ‚µ‚Ü‚·
+        /// </summary>
         private void clear_button_Click(object sender, EventArgs e)
         {
             this.title_textBox.Text = "";

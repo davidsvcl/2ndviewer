@@ -12,13 +12,24 @@ using OpenMetaverse;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// ミニマップウィンドウクラス
+    /// ミニマップ画面表示を行います。
+    /// </summary>
     public partial class MinimapForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
+        /// <summary>Second Lifeグリッド通信ライブラリ</summary>
         private GridClient client_;
+        /// <summary>前にいたシム名</summary>
         private string oldSim_;
+        /// <summary>イメージ</summary>
         private System.Drawing.Image mMapImage;
+        /// <summary>フィルタ</summary>
         public int filter_selected;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
         public MinimapForm()
         {
             InitializeComponent();
@@ -26,16 +37,19 @@ namespace _2ndviewer
             filter_selected = 0;
         }
 
+        /// <summary>通信ライブラリをセットする</summary>
         public void SetClient(GridClient client)
         {
             client_ = client;
         }
 
+        /// <summary>更新ボタン</summary>
         private void refresh_button_Click(object sender, EventArgs e)
         {
             printMap(true);
         }
 
+        /// <summary>ミニマップ描画</summary>
         public void printMap(bool reqweb)
         {
             Bitmap map = new Bitmap(256, 256, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
@@ -91,6 +105,8 @@ namespace _2ndviewer
 
             world.BackgroundImage = map;
         }
+
+        /// <summary>ミニマップをダウンロードする</summary>
         public System.Drawing.Image DownloadWebMapImage()
         {
             System.Net.HttpWebRequest request = null;
@@ -115,16 +131,19 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>フィルタの選択変更時に呼ばれるメソッド</summary>
         private void filter_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             filter_selected = this.filter_comboBox.SelectedIndex;
         }
 
+        /// <summary>未使用</summary>
         private void world_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("auto move:");
         }
 
+        /// <summary>クリック時:auto move</summary>
         private void world_MouseClick(object sender, MouseEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("auto move:" + e.X + "," + e.Y);
@@ -134,6 +153,7 @@ namespace _2ndviewer
             client_.Self.AutoPilotLocal(e.X, 255-e.Y, z);
         }
 
+        /// <summary>ダブルクリック時:teleport</summary>
         private void world_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("teleport:" + e.X + "," + e.Y);

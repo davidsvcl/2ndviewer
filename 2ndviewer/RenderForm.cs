@@ -18,51 +18,83 @@ using Tao.Platform.Windows;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// レンダリングウィンドウクラス
+    /// 3Dレンダリング画面表示を行います。
+    /// </summary>
     public partial class RenderForm : Form
     {
+        /// <summary>Second Lifeグリッド通信ライブラリ</summary>
         private GridClient client_;
+        /// <summary>メインウィンドウ</summary>
         private MainForm mainForm_;
+        /// <summary></summary>
         private bool textureDownload_;
 
+        /// <summary></summary>
         const float DEG_TO_RAD = 0.0174532925f;
+        /// <summary></summary>
         const uint TERRAIN_START = (uint)Int32.MaxValue + 1;
+        /// <summary></summary>
         Dictionary<uint, Primitive> RenderFoliageList = new Dictionary<uint, Primitive>();
+        /// <summary></summary>
         Dictionary<uint, RenderablePrim> RenderPrimList = new Dictionary<uint, RenderablePrim>();
 
+        /// <summary></summary>
         Camera Camera;
+        /// <summary></summary>
         EventHandler IdleEvent;
 
-        int TotalPrims;
+        //int TotalPrims;
 
         // Textures
+        /// <summary></summary>
         TexturePipeline TextureDownloader;
+        /// <summary></summary>
         Dictionary<UUID, TextureInfo> Textures = new Dictionary<UUID, TextureInfo>();
 
         // Terrain
+        /// <summary></summary>
         float MaxHeight = 0.1f;
+        /// <summary></summary>
         TerrainPatch[,] Heightmap;
+        /// <summary></summary>
         HeightmapLookupValue[] LookupHeightTable;
 
         // Picking globals
+        /// <summary></summary>
         bool Clicked = false;
+        /// <summary></summary>
         int ClickX = 0;
+        /// <summary></summary>
         int ClickY = 0;
+        /// <summary></summary>
         uint LastHit = 0;
 
+        /// <summary></summary>
         Vector3 PivotPosition = Vector3.Zero;
+        /// <summary></summary>
         bool Pivoting = false;
+        /// <summary></summary>
         Point LastPivot;
         //
+        /// <summary></summary>
         const int SELECT_BUFSIZE = 512;
+        /// <summary></summary>
         uint[] SelectBuffer = new uint[SELECT_BUFSIZE];
 
         //
+        /// <summary></summary>
         NativeMethods.Message msg;
+        /// <summary></summary>
         private bool AppStillIdle
         {
             get { return !NativeMethods.PeekMessage(out msg, IntPtr.Zero, 0, 0, 0); }
         }
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
         public RenderForm()
         {
             InitializeComponent();
@@ -115,6 +147,7 @@ namespace _2ndviewer
             InitializeObjects();
         }
 
+        /// <summary>通信ライブラリをセットする</summary>
         public void SetClient(GridClient client)
         {
             client_ = client;
@@ -130,11 +163,13 @@ namespace _2ndviewer
             //TextureDownloader.OnDownloadProgress += new TexturePipeline.DownloadProgressCallback(TextureDownloader_OnDownloadProgress);
         }
 
+        /// <summary>メインウィンドウをセットする</summary>
         public void SetMainForm(MainForm mainForm)
         {
             mainForm_ = mainForm;
         }
 
+        /// <summary></summary>
         public void TextureDownloaderReset()
         {
             TextureDownloader.OnDownloadFinished -= TextureDownloader_OnDownloadFinished;
@@ -148,9 +183,10 @@ namespace _2ndviewer
             //TextureDownloader.OnDownloadProgress += new TexturePipeline.DownloadProgressCallback(TextureDownloader_OnDownloadProgress);
         }
 
+        /// <summary></summary>
         public void InitLists()
         {
-            TotalPrims = 0;
+            //TotalPrims = 0;
 
             lock (Textures)
             {
@@ -167,6 +203,7 @@ namespace _2ndviewer
             lock (RenderFoliageList) RenderFoliageList.Clear();
         }
 
+        /// <summary></summary>
         private void InitializeObjects()
         {
             InitLists();
@@ -196,6 +233,7 @@ namespace _2ndviewer
             */
         }
 
+        /// <summary></summary>
         private void InitOpenGL()
         {
             Gl.glShadeModel(Gl.GL_SMOOTH);
@@ -207,6 +245,7 @@ namespace _2ndviewer
             Gl.glHint(Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST);
         }
 
+        /// <summary></summary>
         private void InitCamera()
         {
             Camera = new Camera();
@@ -216,6 +255,7 @@ namespace _2ndviewer
             Camera.Far = 512.0d;
         }
 
+        /// <summary></summary>
         private void UpdateCamera()
         {
             if (client_ != null)
@@ -234,6 +274,7 @@ namespace _2ndviewer
             Gl.glPopMatrix();
         }
 
+        /// <summary></summary>
         private void InitHeightmap()
         {
             // Initialize the heightmap
@@ -259,6 +300,7 @@ namespace _2ndviewer
             Array.Sort<HeightmapLookupValue>(LookupHeightTable);
         }
 
+        /// <summary></summary>
         private void glControl_Resize(object sender, EventArgs e)
         {
             Gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);
@@ -277,11 +319,14 @@ namespace _2ndviewer
             // Set the center of the glControl as the default pivot point
             LastPivot = glControl.PointToScreen(new Point(glControl.Width / 2, glControl.Height / 2));
         }
+
+        /// <summary></summary>
         private void SetPerspective()
         {
             Glu.gluPerspective(50.0d * Camera.Zoom, 1.0d, 0.1d, Camera.Far);
         }
 
+        /// <summary></summary>
         private void Application_Idle(object sender, EventArgs e)
         {
             while (AppStillIdle)
@@ -290,6 +335,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         private void RenderScene()
         {
             Camera.FocalPoint = client_.Self.SimPosition;
@@ -342,11 +388,14 @@ namespace _2ndviewer
             {
             }
         }
+
+        /// <summary></summary>
         private void RenderSkybox()
         {
             //Gl.glTranslatef(0f, 0f, 0f);
         }
 
+        /// <summary></summary>
         private void RenderTerrain()
         {
             if (Heightmap != null)
@@ -419,6 +468,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         int[] CubeMapDefines = new int[]
         {
             Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB,
@@ -429,6 +479,7 @@ namespace _2ndviewer
             Gl.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_ARB
         };
 
+        /// <summary></summary>
         private void RenderPrims()
         {
             if (RenderPrimList != null && RenderPrimList.Count > 0)
@@ -559,6 +610,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         private void RenderAvatars()
         {
             if (client_ != null && client_.Network.CurrentSim != null)
@@ -585,6 +637,7 @@ namespace _2ndviewer
 
         #region Texture Downloading
 
+        /// <summary></summary>
         private void TextureDownloader_OnDownloadFinished(UUID id, bool success)
         {
             bool alpha = false;
@@ -676,6 +729,7 @@ namespace _2ndviewer
 
         #endregion Texture Downloading
 
+        /// <summary></summary>
         private void StartPicking(int cursorX, int cursorY)
         {
             int[] viewport = new int[4];
@@ -697,6 +751,7 @@ namespace _2ndviewer
             Gl.glInitNames();
         }
 
+        /// <summary></summary>
         private void StopPicking()
         {
             int hits;
@@ -722,6 +777,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         private void ProcessHits(int hits, uint[] selectBuffer)
         {
             uint names = 0;
@@ -796,6 +852,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         void Terrain_OnLandPatch(Simulator simulator, int x, int y, int width, float[] data)
         {
             if (client_ != null && client_.Network.CurrentSim == simulator)
@@ -811,6 +868,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         void Objects_OnNewPrim(Simulator simulator, Primitive prim, ulong regionHandle, ushort timeDilation)
         {
             try
@@ -878,12 +936,14 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         void Objects_OnNewFoliage(Simulator simulator, Primitive foliage, ulong regionHandle, ushort timeDilation)
         {
             lock (RenderFoliageList)
                 RenderFoliageList[foliage.LocalID] = foliage;
         }
 
+        /// <summary></summary>
         void glControl_MouseWheel(object sender, MouseEventArgs e)
         {
             if (e.Delta != 0)
@@ -905,6 +965,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         private void RenderForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             client_.Objects.OnNewPrim -= Objects_OnNewPrim;
@@ -921,6 +982,7 @@ namespace _2ndviewer
             Application.Idle -= IdleEvent;
         }
 
+        /// <summary></summary>
         private void glControl_MouseDown(object sender, MouseEventArgs e)
         {
             if ((Control.ModifierKeys & Keys.Alt) != 0 && LastHit > 0)
@@ -934,12 +996,14 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         private void glControl_MouseUp(object sender, MouseEventArgs e)
         {
             // Stop pivoting if we were previously
             Pivoting = false;
         }
 
+        /// <summary></summary>
         private void glControl_MouseMove(object sender, MouseEventArgs e)
         {
             if (Pivoting)
@@ -984,6 +1048,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         private void glControl_MouseClick(object sender, MouseEventArgs e)
         {
             if ((Control.ModifierKeys & Keys.Alt) == 0 && e.Button == MouseButtons.Left)
@@ -995,6 +1060,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         private void glControl_Resize_1(object sender, EventArgs e)
         {
             Gl.glClearColor(0.39f, 0.58f, 0.93f, 1.0f);
@@ -1015,6 +1081,7 @@ namespace _2ndviewer
         }
     }
 
+    /// <summary></summary>
     public struct RenderablePrim
     {
         public Primitive Prim;
@@ -1023,6 +1090,7 @@ namespace _2ndviewer
         public readonly static RenderablePrim Empty = new RenderablePrim();
     }
 
+    /// <summary></summary>
     public struct Camera
     {
         public Vector3 Position;
@@ -1030,8 +1098,11 @@ namespace _2ndviewer
         public double Zoom;
         public double Far;
     }
+
+    /// <summary></summary>
     public struct NativeMethods
     {
+        /// <summary></summary>
         [StructLayout(LayoutKind.Sequential)]
         public struct Message
         {
@@ -1048,6 +1119,7 @@ namespace _2ndviewer
         public static extern bool PeekMessage(out Message msg, IntPtr hWnd, uint messageFilterMin, uint messageFilterMax, uint flags);
     }
 
+    /// <summary></summary>
     public struct TextureInfo
     {
         /// <summary>OpenGL Texture ID</summary>
@@ -1055,29 +1127,37 @@ namespace _2ndviewer
         /// <summary>True if this texture has an alpha component</summary>
         public bool Alpha;
 
+        /// <summary></summary>
         public TextureInfo(int id, bool alpha)
         {
             ID = id;
             Alpha = alpha;
         }
     }
+
+    /// <summary></summary>
     public struct HeightmapLookupValue : IComparable<HeightmapLookupValue>
     {
+        /// <summary></summary>
         public int Index;
+        /// <summary></summary>
         public float Value;
 
+        /// <summary></summary>
         public HeightmapLookupValue(int index, float value)
         {
             Index = index;
             Value = value;
         }
 
+        /// <summary></summary>
         public int CompareTo(HeightmapLookupValue val)
         {
             return Value.CompareTo(val.Value);
         }
     }
 
+    /// <summary></summary>
     public static class Math3D
     {
         // Column-major:
@@ -1086,6 +1166,7 @@ namespace _2ndviewer
         // |  2  6 10 14 |
         // |  3  7 11 15 |
 
+        /// <summary></summary>
         public static float[] CreateTranslationMatrix(Vector3 v)
         {
             float[] mat = new float[16];
@@ -1098,6 +1179,7 @@ namespace _2ndviewer
             return mat;
         }
 
+        /// <summary></summary>
         public static float[] CreateRotationMatrix(Quaternion q)
         {
             float[] mat = new float[16];
@@ -1143,6 +1225,7 @@ namespace _2ndviewer
             return mat;
         }
 
+        /// <summary></summary>
         public static float[] CreateScaleMatrix(Vector3 v)
         {
             float[] mat = new float[16];
@@ -1156,28 +1239,39 @@ namespace _2ndviewer
         }
     }
 
+    /// <summary></summary>
     public struct FaceData
     {
+        /// <summary></summary>
         public float[] Vertices;
+        /// <summary></summary>
         public ushort[] Indices;
+        /// <summary></summary>
         public float[] TexCoords;
+        /// <summary></summary>
         public int TexturePointer;
+        /// <summary></summary>
         public System.Drawing.Image Texture;
         // TODO: Normals / binormals?
     }
 
+    /// <summary></summary>
     public static class Render
     {
+        /// <summary></summary>
         public static IRendering Plugin;
     }
 
 
+    /// <summary></summary>
     class TaskInfo
     {
+        /// <summary></summary>
         public UUID RequestID;
+        /// <summary></summary>
         public int RequestNbr;
 
-
+        /// <summary></summary>
         public TaskInfo(UUID reqID, int reqNbr)
         {
             RequestID = reqID;
@@ -1190,6 +1284,7 @@ namespace _2ndviewer
     /// </summary>
     public class TexturePipeline
     {
+    /// <summary></summary>
         private static GridClient Client;
 
         // queue for requested images
@@ -1277,6 +1372,7 @@ namespace _2ndviewer
             downloadMaster.Start();
         }
 
+        /// <summary></summary>
         public void Shutdown()
         {
             Client.Assets.OnImageReceived -= DownloadCallback;
@@ -1291,6 +1387,7 @@ namespace _2ndviewer
             Running = false;
         }
 
+        /// <summary></summary>
         public void Abort()
         {
             downloadMaster.Abort();
@@ -1422,6 +1519,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         void textureRequestDoWork(Object threadContext)
         {
             TaskInfo ti = (TaskInfo)threadContext;
@@ -1458,6 +1556,7 @@ namespace _2ndviewer
             threadpoolSlots[ti.RequestNbr] = -1;
         }
 
+        /// <summary></summary>
         private void Assets_OnImageReceived(ImageDownload image, AssetTexture asset)
         {
             // Free up this slot in the ThreadPool
@@ -1495,6 +1594,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary></summary>
         private void Assets_OnImageReceiveProgress(UUID image, int recieved, int total)
         {
             if (OnDownloadProgress != null)

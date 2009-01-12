@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,29 +14,65 @@ using OpenMetaverse.Packets;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// アプリケーションのメインウィンドウクラス
+    /// メインウィンドウの中に子ウィンドウが入っています。
+    /// </summary>
     public partial class MainForm : Form
     {
+        /// <summary>DockWindowを収めるパネル</summary>
         public WeifenLuo.WinFormsUI.Docking.DockPanel panel_;
+        /// <summary>ランドマーク(ローカル保存)用のXmlDocument</summary>
         private XmlDocument xmldoc_;
+        /// <summary>ランドマーク(ローカル保存)用のルートノード</summary>
         private XmlElement rootNode_;
+        /// <summary>チャットウィンドウ</summary>
         public ChatForm chatForm_;
+        /// <summary>デバッグウィンドウ</summary>
         public DebugForm debugForm_;
+        /// <summary>フレンドウィンドウ</summary>
         public FriendForm friendForm_;
+        /// <summary>グループウィンドウ</summary>
         public GroupForm groupForm_;
+        /// <summary>アイテムウィンドウ</summary>
         public InventoryForm inventoryForm_;
+        /// <summary>ミニマップウィンドウ</summary>
         public MinimapForm minimapForm_;
+        /// <summary>コントロール用ウィンドウ</summary>
         public MovementForm movementForm_;
+        /// <summary>オブジェクトウィンドウ</summary>
         public ObjectForm objectForm_;
+        /// <summary>アバター一覧ウィンドウ</summary>
         public AvatarForm avatarForm_;
+        /// <summary>3Dレンダリングウィンドウ</summary>
         public RenderForm renderForm_;
+        /// <summary>
+        /// Second Lifeグリッド通信ライブラリ
+        /// ここで作成したインスタンスを他のウィンドウに渡すことで通信を行います
+        /// </summary>
         public GridClient client_;
+        /// <summary>ステータスバーにテキストをセットするためのデリゲート</summary>
         private delegate void SetStatusTextDelegate(string str);
+        /// <summary>スクリプトダイアログを表示するためのデリゲート</summary>
         private delegate void ShowScriptDialogDelegate(string message, int chatChannel, List<string> buttons);
+        /// <summary>Objects_OnObjectUpdatedが一回呼ばれるまでは0、一回呼ばれたら1</summary>
         private int firstOne;
+        /// <summary>デバッグウィンドウに最後にセットしたアバター</summary>
         private string last_getAvatarName;
+        /// <summary>ランドマーク配列</summary>
         private System.Collections.Generic.List<LandmarkList> landmark_array_;
+        /// <summary>メッセージボックスを表示(1)/非表示(0)</summary>
         public int confirm_messageBox;
 
+        /// <summary>
+        /// コンストラクタ
+        /// 以下の動作をアプリケーションの初期化として行います。
+        /// ・子ウィンドウをドッキングパネルにするためのパネルの生成
+        /// ・Second Lifeグリッド通信ライブラリインスタンスの生成
+        /// ・Second Lifeグリッド通信ライブラリのコールバック(イベントハンドラー)登録
+        /// ・レジストリの読み込み
+        /// ・子ウィンドウの生成
+        /// </summary>
         public MainForm()
         {
             // Localizeテストコード
@@ -191,6 +227,10 @@ namespace _2ndviewer
             loginForm.ShowDialog();
         }
 
+        /// <summary>
+        /// Network_OnCurrentSimChanged
+        /// アバターのいるシムが変わった時に呼び出されるメソッドです。
+        /// </summary>
         void Network_OnCurrentSimChanged(Simulator PreviousSimulator)
         {
             if (renderForm_ != null)
@@ -203,12 +243,21 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// Parcels_OnParcelProperties
+        /// 音楽変更のトリガーが呼び出されるメソッドです(調査中)。
+        /// 再生する音楽のURLを変更します
+        /// </summary>
         void Parcels_OnParcelProperties(Parcel parcel, ParcelManager.ParcelResult result, int sequenceID, bool snapSelection)
         {
             System.Diagnostics.Trace.WriteLine(parcel.MusicURL);
             movementForm_.SetMusicURL(parcel.MusicURL);
         }
 
+        /// <summary>
+        /// AvatarAppearanceHandler
+        /// アバターの容姿に関わる動作で呼び出されるメソッドです(調査中)。
+        /// </summary>
         private void AvatarAppearanceHandler(Packet packet, Simulator simulator)
         {
             AvatarAppearancePacket appearance = (AvatarAppearancePacket)packet;
@@ -216,6 +265,11 @@ namespace _2ndviewer
             lock (chatForm_.Appearances) chatForm_.Appearances[appearance.Sender.ID] = appearance;
         }
 
+        /// <summary>
+        /// MainForm_FormClosing
+        /// メインウィンドウが閉じられようとした時に呼び出されるメソッドです。
+        /// ランドマーク用のXMLをファイルに保存します
+        /// </summary>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (MessageBox.Show(StringResource.exitMessage, "Exit", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -235,22 +289,41 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// MainForm_FormClosed
+        /// メインウィンドウが閉じられた後呼び出されるメソッドです。
+        /// Second Lifeグリッド通信ライブラリに対してログアウトを指示します
+        /// </summary>
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             client_.Network.Logout();
         }
 
+        /// <summary>
+        /// Network_OnConnected
+        /// グリッドへ接続された時に呼び出されるメソッドです。
+        /// Second Lifeグリッド通信ライブラリに対して所持金の精算とアバター容姿のセットを指示します
+        /// </summary>
         void Network_OnConnected(object sender)
         {
             client_.Self.RequestBalance();
             client_.Appearance.SetPreviousAppearance(false);
         }
 
+        /// <summary>
+        /// Network_OnDisconnected
+        /// 切断された時に呼び出されるメソッドです。
+        /// </summary>
         void Network_OnDisconnected(NetworkManager.DisconnectType reason, string message)
         {
             MessageBox.Show(StringResource.disconnected + message, "", MessageBoxButtons.OK);
         }
 
+        /// <summary>
+        /// Self_OnInstantMessage
+        /// InstantMessageを受け取った時呼び出されるメソッドです。
+        /// ※ここで言うInstatMessageとはIMだけでなく、フレンドシップオファーなども含まれるため注意が必要です
+        /// </summary>
         void Self_OnInstantMessage(InstantMessage im, Simulator simulator)
         {
             switch (im.Dialog)
@@ -299,6 +372,13 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// Self_OnTeleport
+        /// テレポート時に呼び出されるメソッドです。
+        /// Second Lifeグリッド通信ライブラリに対して所持金の精算とアバター容姿のセットを指示します
+        /// ステータスバーのテキストを書き換えます
+        /// ※テレポート開始、テレポート停止など、一度のテレポートで複数回呼ばれるため注意が必要です
+        /// </summary>
         private void Self_OnTeleport(string message, AgentManager.TeleportStatus status, AgentManager.TeleportFlags flags)
         {
             //chatForm_.SystemMessage(message);
@@ -316,6 +396,11 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// Self_OnScriptDialog
+        /// スクリプトによるダイアログ表示で呼び出されるメソッドです。
+        /// メッセージ内容とボタンをダイアログボックスに表示します
+        /// </summary>
         private void Self_OnScriptDialog(string message, string objectName, UUID imageID, UUID objectID, string firstName, string lastName, int chatChannel, List<string> buttons)
         {
             //throw new NotImplementedException();
@@ -334,6 +419,10 @@ namespace _2ndviewer
             Invoke(dlg, dlgarg);
         }
 
+        /// <summary>
+        /// ShowScriptDialog
+        /// スクリプトダイアログをダイアログボックス表示するメソッドです。
+        /// </summary>
         private void ShowScriptDialog(string message, int chatChannel, List<string> buttons)
         {
             ScriptDialog scriptDialog = new ScriptDialog();
@@ -342,6 +431,12 @@ namespace _2ndviewer
             scriptDialog.Show(this);
         }
 
+        /// <summary>
+        /// Self_OnScriptQuestion
+        /// スクリプトによるダイアログ表示で呼び出されるメソッドです。
+        /// 主にセキュリティに関わるダイアログです
+        /// メッセージボックスを表示します
+        /// </summary>
         private void Self_OnScriptQuestion(Simulator simulator, UUID taskID, UUID itemID, string objectName, string objectOwner, ScriptPermission questions)
         {
             System.Diagnostics.Trace.WriteLine("OnScriptQuestion");
@@ -394,16 +489,30 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// Self_OnAlertMessage
+        /// アラートを受け取った時に呼び出されるメソッドです。
+        /// </summary>
         private void Self_OnAlertMessage(string message)
         {
             if (!message.StartsWith("Autopilot canceled")) chatForm_.SystemMessage("<Alert>" + message);
         }
 
+        /// <summary>
+        /// SetStatusText
+        /// ステータスバーにテキストをセットするメソッドです。
+        /// </summary>
         private void SetStatusText(string message)
         {
             toolStripStatusLabel1.Text = message;
         }
 
+        /// <summary>
+        /// Objects_OnObjectUpdated
+        /// オブジェクトに変化が起きた時に呼び出されるメソッドです。
+        /// ストーキングを行います
+        /// ※オブジェクトに変化が起きたときというのは、オブジェクトまたはアバターが移動した事または何かしらの動作が起きたこと事を指します(調査中)
+        /// </summary>
         void Objects_OnObjectUpdated(Simulator simulator, ObjectUpdate update, ulong regionHandle, ushort timeDilation)
         {
             if (firstOne == 0)
@@ -508,12 +617,20 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// Friends_OnFriendOnline
+        /// フレンドがログインした時に呼び出されるメソッドです。
+        /// </summary>
         void Friends_OnFriendOnline(FriendInfo friend)
         {
             chatForm_.SystemMessage("\r\n" + friend.Name + StringResource.onlineMessage);
             friendForm_.refresh();
         }
 
+        /// <summary>
+        /// Friends_OnFriendOffline
+        /// フレンドがログアウトした時に呼び出されるメソッドです。
+        /// </summary>
         void Friends_OnFriendOffline(FriendInfo friend)
         {
             chatForm_.SystemMessage("\r\n" + friend.Name + StringResource.offlineMessage);
@@ -528,12 +645,20 @@ namespace _2ndviewer
         //    chatForm_.SystemMessage("\r\n" + properties.BornOn);
         //}
 
+        /// <summary>
+        /// Groups_OnCurrentGroups
+        /// 調査中
+        /// </summary>
         void Groups_OnCurrentGroups(Dictionary<UUID, Group> groups)
         {
             groupForm_.Groups_ = groups;
             Invoke(new MethodInvoker(groupForm_.UpdateGroups));
         }
 
+        /// <summary>
+        /// Network_OnEventQueueRunning
+        /// 調査中
+        /// </summary>
         void Network_OnEventQueueRunning(Simulator simulator)
         {
             if (simulator == client_.Network.CurrentSim)
@@ -553,11 +678,20 @@ namespace _2ndviewer
 //            //System.Diagnostics.Trace.WriteLine(properties.Name + "," + properties.LastOwnerID);
 //        }
 
+        /// <summary>
+        /// exitToolStripMenuItem_Click
+        /// メニューから終了を選択した時に呼ばれるメソッドです。
+        /// </summary>
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
 
+        /// <summary>
+        /// addLandmarkToolStripMenuItem_Click
+        /// メニューからランドマークを追加を選択した時に呼ばれるメソッドです。
+        /// ランドマーク追加用ダイアログを表示し、XMLノードの追加、メニューへの追加を行います
+        /// </summary>
         private void addLandmarkToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LandmarkForm landmarkForm = new LandmarkForm();
@@ -606,6 +740,12 @@ namespace _2ndviewer
 
         }
 
+        /// <summary>
+        /// landmark_Click
+        /// メニューからランドマークを選択した時に呼ばれるメソッドです。
+        /// テレポートを行います
+        /// 名前で探すため、同一名称のランドマークは使用できません
+        /// </summary>
         void landmark_Click(object sender, EventArgs e)
         {
             //MessageBox.Show(sender.ToString());
@@ -634,6 +774,11 @@ namespace _2ndviewer
             process.Start();
         }
 
+        /// <summary>
+        /// SearchToolStripMenuItem_Click
+        /// メニューから検索を選択した時に呼ばれるメソッドです。
+        /// 標準のウェブブラウザーを表示しSecondLifeの検索ページを表示します
+        /// </summary>
         private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -645,6 +790,11 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// optionToolStripMenuItem_Click
+        /// メニューからオプションを選択した時に呼ばれるメソッドです。
+        /// オプション設定ダイアログを表示します
+        /// </summary>
         private void optionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OptionForm optionForm = new OptionForm();
@@ -668,12 +818,21 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// versionToolStripMenuItem_Click
+        /// メニューからバージョン情報を選択した時に呼ばれるメソッドです。
+        /// バージョン情報ダイアログを表示します
+        /// </summary>
         private void versionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AboutForm aboutForm = new AboutForm();
             aboutForm.ShowDialog(this);
         }
 
+        /// <summary>
+        /// makeLandmarkItem
+        /// XMLノードからメニューバーにランドマークを追加するメソッドです。
+        /// </summary>
         private void makeLandmarkItem(XmlNode itemNode, System.Windows.Forms.ToolStripMenuItem folderItem)
         {
             ToolStripMenuItem item = new ToolStripMenuItem();
@@ -709,6 +868,10 @@ namespace _2ndviewer
             folderItem.DropDownItems.Add(item);
         }
 
+        /// <summary>
+        /// makeLandmarkFolder
+        /// XMLノードからメニューバーにランドマークフォルダーを追加するメソッドです。
+        /// </summary>
         private void makeLandmarkFolder(XmlNode rootNode, System.Windows.Forms.ToolStripMenuItem folderItem)
         {
             foreach (XmlNode top_node in rootNode.ChildNodes)
@@ -727,6 +890,10 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>
+        /// makeLandmark
+        /// XMLファイル(ランドマーク)を読み込みメニューバーに登録するメソッドです。
+        /// </summary>
         private void makeLandmark()
         {
             try
@@ -743,6 +910,9 @@ namespace _2ndviewer
         }
     }
 
+    /// <summary>
+    /// ランドマーク格納用データクラス
+    /// </summary>
     class LandmarkList
     {
         public LandmarkList()
@@ -755,18 +925,28 @@ namespace _2ndviewer
         public float z;
     }
 
+    /// <summary>
+    /// ScriptDialog
+    /// スクリプトダイアログをウィンドウダイアログにするクラスです
+    /// </summary>
     class ScriptDialog : Form
     {
+        /// <summary>Second Lifeグリッド通信ライブラリ</summary>
         private GridClient client_;
+        /// <summary>スクリプトの通信チャンネル</summary>
         private int chatChannel;
+
+        /// <summary>コンストラクタ</summary>
         public ScriptDialog()
         {
             this.Text = "Script";
         }
+        /// <summary>通信ライブラリをセットする</summary>
         public void SetClient(GridClient client)
         {
             client_ = client;
         }
+        /// <summary>コンポーネントを配置する</summary>
         public void SetObjects(string message, int chatChannel, List<string> buttons)
         {
             this.chatChannel = chatChannel;
@@ -800,6 +980,7 @@ namespace _2ndviewer
             }
 
         }
+        /// <summary>ボタンクリック時のイベント</summary>
         void button_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Trace.WriteLine(sender.ToString());

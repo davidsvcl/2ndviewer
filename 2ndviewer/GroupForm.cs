@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,22 +12,33 @@ using OpenMetaverse;
 
 namespace _2ndviewer
 {
+    /// <summary>
+    /// ƒOƒ‹[ƒvƒEƒBƒ“ƒhƒEƒNƒ‰ƒX
+    /// Q‰Á‚µ‚Ä‚¢‚éƒOƒ‹[ƒv‚Ìˆê——‚Ì•\¦‚ğs‚¢‚Ü‚·B
+    /// </summary>
     public partial class GroupForm : WeifenLuo.WinFormsUI.Docking.DockContent
     {
+        /// <summary>Second LifeƒOƒŠƒbƒh’ÊMƒ‰ƒCƒuƒ‰ƒŠ</summary>
         private GridClient client_;
+        /// <summary>ƒOƒ‹[ƒv”z—ñ</summary>
         public Dictionary<UUID, Group> Groups_;
 
+        /// <summary>
+        /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+        /// </summary>
         public GroupForm()
         {
             InitializeComponent();
             leave_button.Enabled = false;
         }
 
+        /// <summary>’ÊMƒ‰ƒCƒuƒ‰ƒŠ‚ğƒZƒbƒg‚·‚é</summary>
         public void SetClient(GridClient client)
         {
             client_ = client;
         }
 
+        /// <summary>ƒOƒ‹[ƒvƒŠƒXƒgƒ{ƒbƒNƒX‚ğÄ\’z‚µ‚Ü‚·</summary>
         public void UpdateGroups()
         {
             lock (group_listBox)
@@ -40,6 +51,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>ƒŠƒXƒgƒ{ƒbƒNƒX‚Ì‘I‘ğ‚ª•ÏX‚³‚ê‚½‚ÉŒÄ‚Î‚ê‚éƒƒ\ƒbƒh‚Å‚·</summary>
         private void group_listBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (group_listBox.SelectedIndex >= 0)
@@ -52,11 +64,13 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>ƒOƒ‹[ƒv‚ğì¬‚µ‚Ü‚·</summary>
         private void create_button_Click(object sender, EventArgs e)
         {
             // IMPLEMENT ME
         }
 
+        /// <summary>ƒOƒ‹[ƒv‚ğƒAƒNƒeƒBƒu‚É‚µ‚Ü‚·</summary>
         private void activate_button_Click(object sender, EventArgs e)
         {
             if (group_listBox.SelectedIndex >= 0)
@@ -66,6 +80,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>ƒOƒ‹[ƒvî•ñ•\¦ƒEƒBƒ“ƒhƒE‚ğ•\¦‚µ‚Ü‚·</summary>
         private void info_button_Click(object sender, EventArgs e)
         {
             if (group_listBox.SelectedIndex >= 0 && group_listBox.Items[group_listBox.SelectedIndex].ToString() != "none")
@@ -80,6 +95,7 @@ namespace _2ndviewer
             }
         }
 
+        /// <summary>ƒOƒ‹[ƒv‚©‚ç—£’E‚µ‚Ü‚·</summary>
         private void leave_button_Click(object sender, EventArgs e)
         {
             if (group_listBox.SelectedIndex >= 0 && group_listBox.Items[group_listBox.SelectedIndex].ToString() != "none")
