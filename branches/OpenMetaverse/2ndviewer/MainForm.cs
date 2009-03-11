@@ -121,6 +121,7 @@ namespace _2ndviewer
             // ProfileFormへ移動
             //client_.Avatars.OnAvatarProperties += new AvatarManager.AvatarPropertiesCallback(Avatars_OnAvatarProperties);
             client_.Groups.OnCurrentGroups += new GroupManager.CurrentGroupsCallback(Groups_OnCurrentGroups);
+            client_.Groups.OnGroupRoles += new GroupManager.GroupRolesCallback(Groups_OnGroupRoles);
             client_.Network.OnEventQueueRunning += new NetworkManager.EventQueueRunningCallback(Network_OnEventQueueRunning);
             client_.Parcels.OnParcelProperties += new ParcelManager.ParcelPropertiesCallback(Parcels_OnParcelProperties);
             client_.Network.RegisterCallback(PacketType.AvatarAppearance, new NetworkManager.PacketCallback(AvatarAppearanceHandler));
@@ -645,12 +646,28 @@ namespace _2ndviewer
         //    chatForm_.SystemMessage("\r\n" + properties.BornOn);
         //}
 
+        void Groups_OnGroupRoles(Dictionary<UUID, GroupRole> roles)
+        {
+            foreach (GroupRole role in roles.Values)
+            {
+                System.Diagnostics.Trace.WriteLine("RoleName:" + role.Name);
+                System.Diagnostics.Trace.WriteLine("RoleDescription:" + role.Description);
+                System.Diagnostics.Trace.WriteLine("RoleTitle:" + role.Title);
+                System.Diagnostics.Trace.WriteLine("RoleID:" + role.ID);
+            }
+        }
+
         /// <summary>
         /// Groups_OnCurrentGroups
         /// 調査中
         /// </summary>
         void Groups_OnCurrentGroups(Dictionary<UUID, Group> groups)
         {
+            foreach(Group group in groups.Values) {
+                System.Diagnostics.Trace.WriteLine("group name:" + group.Name);
+                System.Diagnostics.Trace.WriteLine("group uuid:" + group.ID);
+                client_.Groups.RequestGroupRoles(group.ID);
+            }
             groupForm_.Groups_ = groups;
             Invoke(new MethodInvoker(groupForm_.UpdateGroups));
         }
