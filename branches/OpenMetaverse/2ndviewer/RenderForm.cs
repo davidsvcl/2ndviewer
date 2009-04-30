@@ -153,7 +153,6 @@ namespace _2ndviewer
             client_ = client;
             client_.Objects.OnNewPrim += new ObjectManager.NewPrimCallback(Objects_OnNewPrim);
             client_.Terrain.OnLandPatch += new TerrainManager.LandPatchCallback(Terrain_OnLandPatch);
-            client_.Objects.OnNewFoliage += new ObjectManager.NewFoliageCallback(Objects_OnNewFoliage);
             //
             // Initialize the texture download pipeline
             if (TextureDownloader != null)
@@ -871,6 +870,12 @@ namespace _2ndviewer
         /// <summary></summary>
         void Objects_OnNewPrim(Simulator simulator, Primitive prim, ulong regionHandle, ushort timeDilation)
         {
+            if (prim.PrimData.PCode == PCode.Grass || prim.PrimData.PCode == PCode.Tree || prim.PrimData.PCode == PCode.NewTree)
+            {
+                lock (RenderFoliageList)
+                RenderFoliageList[prim.LocalID] = prim;
+                return;
+            }
             try
             {
                 RenderablePrim render = new RenderablePrim();
@@ -934,13 +939,6 @@ namespace _2ndviewer
             {
                 System.Diagnostics.Trace.WriteLine("OnNewPrim:"+e);
             }
-        }
-
-        /// <summary></summary>
-        void Objects_OnNewFoliage(Simulator simulator, Primitive foliage, ulong regionHandle, ushort timeDilation)
-        {
-            lock (RenderFoliageList)
-                RenderFoliageList[foliage.LocalID] = foliage;
         }
 
         /// <summary></summary>

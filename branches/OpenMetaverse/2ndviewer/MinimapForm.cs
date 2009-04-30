@@ -83,10 +83,11 @@ namespace _2ndviewer
             catch {
             }
             // avatars
-            System.Collections.Generic.List<Vector3> avatars = client_.Network.CurrentSim.AvatarPositions;
-            for (int i = 0; i < avatars.Count; i++)
+            InternalDictionary<UUID, Vector3> avatars = client_.Network.CurrentSim.AvatarPositions;
+            foreach (KeyValuePair<UUID, Vector3> kvp in avatars.Dictionary)
             {
-                Rectangle rect = new Rectangle((int)Math.Round(avatars[i].X,0) -2, 255 -((int)Math.Round(avatars[i].Y,0) -2), 4, 4);
+
+                Rectangle rect = new Rectangle((int)Math.Round(kvp.Value.X, 0) - 2, 255 - ((int)Math.Round(kvp.Value.Y, 0) - 2), 4, 4);
                 g.FillEllipse(brush, rect);
                 g.DrawEllipse(pen, rect);
             }
