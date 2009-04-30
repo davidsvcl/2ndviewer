@@ -18,4 +18,12 @@
   </folder>
   <folder title="ショップ">
   </folder>
+  <location title="Nirvana">
+    <sim>Nirvana Coast</sim>
+    <RegionX>89</RegionX>
+    <RegionY>79</RegionY>
+    <RegionZ>89</RegionZ>
+    <text>
+    </text>
+  </location>
 </landmark>

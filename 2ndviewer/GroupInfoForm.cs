@@ -94,7 +94,7 @@ namespace _2ndviewer
         void Groups_OnGroupProfile(Group group)
         {
             profile_ = group;
-            if (group_.InsigniaID != UUID.Zero) client_.Assets.RequestImage(group_.InsigniaID, ImageType.Normal, 113000.0f, 0);
+            if (group_.InsigniaID != UUID.Zero) client_.Assets.RequestImage(group_.InsigniaID, ImageType.Normal, 113000.0f, 0, 0);
             if(InvokeRequired)BeginInvoke(new MethodInvoker(UpdateProfile));
         }
 

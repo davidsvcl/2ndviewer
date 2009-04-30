@@ -45,7 +45,7 @@ namespace _2ndviewer
         /// <summary>アバター一覧ウィンドウ</summary>
         public AvatarForm avatarForm_;
         /// <summary>3Dレンダリングウィンドウ</summary>
-        public RenderForm renderForm_;
+        //public RenderForm renderForm_; // 一旦除外
         /// <summary>
         /// Second Lifeグリッド通信ライブラリ
         /// ここで作成したインスタンスを他のウィンドウに渡すことで通信を行います
@@ -213,14 +213,14 @@ namespace _2ndviewer
             friendForm_.TabText = "Friend";
             friendForm_.SetClient(client_);
 
-            if (DialogResult.Yes == MessageBox.Show("Open Render Window?", "Question", MessageBoxButtons.YesNo))
-            {
-                renderForm_ = new RenderForm();
-                renderForm_.Show();
-                renderForm_.SetMainForm(this);
-                renderForm_.Text = "Render";
-                renderForm_.SetClient(client_);
-            }
+            //if (DialogResult.Yes == MessageBox.Show("Open Render Window?", "Question", MessageBoxButtons.YesNo))
+            //{
+            //    renderForm_ = new RenderForm();
+            //    renderForm_.Show();
+            //    renderForm_.SetMainForm(this);
+            //    renderForm_.Text = "Render";
+            //    renderForm_.SetClient(client_);
+            //}
 
             firstOne = 0;
             LoginForm loginForm = new LoginForm();
@@ -234,14 +234,14 @@ namespace _2ndviewer
         /// </summary>
         void Network_OnCurrentSimChanged(Simulator PreviousSimulator)
         {
-            if (renderForm_ != null)
-            {
-                if (renderForm_.Visible == true)
-                {
-                    renderForm_.TextureDownloaderReset();
-                    renderForm_.InitLists();
-                }
-            }
+            //if (renderForm_ != null)
+            //{
+            //    if (renderForm_.Visible == true)
+            //    {
+            //        renderForm_.TextureDownloaderReset();
+            //        renderForm_.InitLists();
+            //    }
+            //}
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace _2ndviewer
         /// 音楽変更のトリガーが呼び出されるメソッドです(調査中)。
         /// 再生する音楽のURLを変更します
         /// </summary>
-        void Parcels_OnParcelProperties(Parcel parcel, ParcelManager.ParcelResult result, int sequenceID, bool snapSelection)
+        void Parcels_OnParcelProperties(Simulator simulator, Parcel parcel, OpenMetaverse.ParcelResult result, int selectedPrims, int sequenceID, bool snapSelection)
         {
             System.Diagnostics.Trace.WriteLine(parcel.MusicURL);
             movementForm_.SetMusicURL(parcel.MusicURL);
@@ -380,10 +380,10 @@ namespace _2ndviewer
         /// ステータスバーのテキストを書き換えます
         /// ※テレポート開始、テレポート停止など、一度のテレポートで複数回呼ばれるため注意が必要です
         /// </summary>
-        private void Self_OnTeleport(string message, AgentManager.TeleportStatus status, AgentManager.TeleportFlags flags)
+        private void Self_OnTeleport(string message, OpenMetaverse.TeleportStatus status, OpenMetaverse.TeleportFlags flags)
         {
             //chatForm_.SystemMessage(message);
-            if (status == AgentManager.TeleportStatus.Finished)
+            if (status == OpenMetaverse.TeleportStatus.Finished)
             {
                 client_.Self.RequestBalance();
                 client_.Appearance.SetPreviousAppearance(false);
