@@ -5,6 +5,8 @@ import clr
 
 clr.AddReferenceByPartialName("OpenMetaverse")
 from OpenMetaverse import *
+#clr.AddReferenceByPartialName("OpenMetaverseTypes.dll")
+#from OpenMetaverseTypes import *
 
 clr.AddReference("System.Net")
 from System.Net import *
@@ -20,6 +22,11 @@ from System import *
 
 if message.StartsWith(nickname+"python"):
 	client.Self.Chat(fromname + "おっけー", 0, ChatType.Normal)
+
+#テスト
+#if message.StartsWith(nickname+"ターンライト"):
+#	pos = Vector3(float(0.0), float(0.0), float(0.0))
+#	client.Self.Movement.TurnToward(pos)
 
 # 容姿が霧のようにもやもやしてる時にコールすると直ることがあります
 if message.StartsWith(nickname+"rebake"):

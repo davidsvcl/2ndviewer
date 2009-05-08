@@ -51,6 +51,8 @@ namespace _2ndviewer
         /// ここで作成したインスタンスを他のウィンドウに渡すことで通信を行います
         /// </summary>
         public GridClient client_;
+        /// <summary>タイトルバーにテキストをセットするためのデリゲート</summary>
+        private delegate void SetTitleTextDelegate(string str);
         /// <summary>ステータスバーにテキストをセットするためのデリゲート</summary>
         private delegate void SetStatusTextDelegate(string str);
         /// <summary>スクリプトダイアログを表示するためのデリゲート</summary>
@@ -301,6 +303,15 @@ namespace _2ndviewer
         }
 
         /// <summary>
+        /// SetStatusText
+        /// タイトルバーにテキストをセットするメソッドです。
+        /// </summary>
+        private void SetTitleText(string message)
+        {
+            this.Text = message;
+        }
+
+        /// <summary>
         /// Network_OnConnected
         /// グリッドへ接続された時に呼び出されるメソッドです。
         /// Second Lifeグリッド通信ライブラリに対して所持金の精算とアバター容姿のセットを指示します
@@ -309,6 +320,16 @@ namespace _2ndviewer
         {
             client_.Self.RequestBalance();
             client_.Appearance.SetPreviousAppearance(false);
+            SetTitleTextDelegate dlg = new SetTitleTextDelegate(SetTitleText);
+            string message = "2ndviewer - " + client_.Self.FirstName + " " + client_.Self.LastName;
+            string[] arg = { message };
+            try
+            {
+                Invoke(dlg, arg);
+            }
+            catch
+            {
+            }
         }
 
         /// <summary>
