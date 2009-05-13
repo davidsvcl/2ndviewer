@@ -357,6 +357,33 @@ namespace _2ndviewer
                         MessageBox.Show("Couldn't find avatar " + targetName);
                     }
                 }
+                else if (message.StartsWith(nickName_ + "プリム"))
+                {
+                    /*
+                    // リンゴ？
+                    Primitive.ConstructionData prim = new Primitive.ConstructionData();
+                    prim.Material = Material.Wood;
+                    prim.PCode = PCode.Prim;
+                    prim.PathBegin = 0f;
+                    prim.PathCurve = PathCurve..Circle;
+                    prim.PathEnd = 1f;
+                    prim.PathRadiusOffset = 0f;
+                    prim.PathRevolutions = 1f;
+                    prim.PathScaleX = 1f;
+                    prim.PathScaleY = 1f;
+                     */
+                    Primitive.ConstructionData prim = ObjectManager.BuildBasicShape(PrimType.Box);
+
+                    Vector3 pos;
+                    pos.X = client_.Self.SimPosition.X;
+                    pos.Y = client_.Self.SimPosition.Y;
+                    pos.Z = client_.Self.SimPosition.Z;
+                    Vector3 scale;
+                    scale.X = 1.0f;
+                    scale.Y = 1.0f;
+                    scale.Z = 1.0f;
+                    client_.Objects.AddPrim(client_.Network.CurrentSim, prim, UUID.Zero, pos, scale, Quaternion.Identity);
+                }
                 else
                 {
                     System.Text.RegularExpressions.Regex regHiragana = new System.Text.RegularExpressions.Regex(
@@ -369,7 +396,7 @@ namespace _2ndviewer
                     while (m.Success)
                     {
                         string field = m.Groups[0].Value;
-                        if(field.Length>0)hiraganaFields.Add(field);
+                        if (field.Length > 0) hiraganaFields.Add(field);
                         m = m.NextMatch();
                     }
                     m = regKanji.Match(message);
