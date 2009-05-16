@@ -9,6 +9,8 @@ using System.Windows.Forms;
 
 using WeifenLuo.WinFormsUI;
 using OpenMetaverse;
+using OpenMetaverse.Imaging;
+using OpenMetaverse.Http;
 
 namespace _2ndviewer
 {
@@ -32,6 +34,8 @@ namespace _2ndviewer
         public bool boxing_;
         /// <summary>音楽再生</summary>
         private WMPLib.WindowsMediaPlayer mediaPlayer_;
+        ///
+        private UUID AssetID;
 
         /// <summary>
         /// コンストラクタ
@@ -324,6 +328,182 @@ namespace _2ndviewer
             catch (Exception ex)
             {
                 System.Diagnostics.Trace.WriteLine(ex);                
+            }
+        }
+
+        /// <summary>
+        /// 画像アップロードボタン
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void imgupload_button_Click(object sender, EventArgs e)
+        {
+            String filename = null;
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Image Files (*.jp2,*.j2c,*.jpg,*.jpeg,*.gif,*.png,*.bmp,*.tga,*.tif,*.tiff,*.ico,*.wmf,*.emf)|"
+                + "*.jp2;*.j2c;*.jpg;*.jpeg;*.gif;*.png;*.bmp;*.tga;*.tif;*.tiff;*.ico;*.wmf;*.emf;";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                filename = dialog.FileName;
+            }
+            if (filename == null || filename == "")
+            {
+                return;
+            }
+
+            string lowfilename = filename.ToLower();
+            Bitmap bitmap = null;
+            byte[] UploadData = null;
+            try
+            {
+                if (lowfilename.EndsWith(".jp2") || lowfilename.EndsWith(".j2c"))
+                {
+                    Image image;
+                    ManagedImage managedImage;
+                    UploadData = System.IO.File.ReadAllBytes(filename);
+                    OpenJPEG.DecodeToImage(UploadData, out managedImage, out image);
+                    bitmap = (Bitmap)image;
+                }
+                else
+                {
+                    if (lowfilename.EndsWith(".tga"))
+                    {
+                        bitmap = LoadTGAClass.LoadTGA(filename);
+                    }
+                    else
+                    {
+                        bitmap = (Bitmap)System.Drawing.Image.FromFile(filename);
+                    }
+                    int oldwidth = bitmap.Width;
+                    int oldheight = bitmap.Height;
+                    if (!IsPowerOfTwo((uint)oldwidth) || !IsPowerOfTwo((uint)oldheight))
+                    {
+                        Bitmap resized = new Bitmap(256, 256, bitmap.PixelFormat);
+                        Graphics graphics = Graphics.FromImage(resized);
+                        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                        graphics.DrawImage(bitmap, 0, 0, 256, 256);
+                        bitmap.Dispose();
+                        bitmap = resized;
+                        oldwidth = 256;
+                        oldheight = 256;
+                    }
+                    if (oldwidth > 1024 || oldheight > 1024)
+                    {
+                        int newwidth = (oldwidth > 1024) ? 1024 : oldwidth;
+                        int newheight = (oldheight > 1024) ? 1024 : oldheight;
+
+                        Bitmap resized = new Bitmap(newwidth, newheight, bitmap.PixelFormat);
+                        Graphics graphics = Graphics.FromImage(resized);
+
+                        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                        graphics.InterpolationMode =
+                           System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                        graphics.DrawImage(bitmap, 0, 0, newwidth, newheight);
+
+                        bitmap.Dispose();
+                        bitmap = resized;
+                    }
+                    UploadData = OpenJPEG.EncodeFromImage(bitmap, true);
+                }
+
+                UUID SendToID = UUID.Zero;
+                int Transferred = 0;
+                
+
+                if (UploadData != null)
+                {
+                    string name = System.IO.Path.GetFileNameWithoutExtension(filename);
+
+                    client_.Inventory.RequestCreateItemFromAsset(UploadData, name, "Uploaded with SL Image Upload", AssetType.Texture, InventoryType.Texture, client_.Inventory.FindFolderForType(AssetType.Texture),
+                        delegate(CapsClient client, long bytesReceived, long bytesSent, long totalBytesToReceive, long totalBytesToSend)
+                        {
+                            if (bytesSent > 0)
+                            {
+                                Transferred = (int)bytesSent;
+                                //BeginInvoke((MethodInvoker)delegate() { SetProgress(); });
+                            }
+                        },
+
+                        delegate(bool success, string status, UUID itemID, UUID assetID)
+                        {
+                            if (this.InvokeRequired)
+                            {
+
+                                //BeginInvoke(new MethodInvoker(EnableControls));
+                            }
+                            else
+                            {
+                                //EnableControls();
+                            }
+                            if (success)
+                            {
+                                AssetID = assetID;
+                                UpdateAssetID();
+
+                                // Fix the permissions on the new upload since they are fscked by default
+                                InventoryItem item = client_.Inventory.FetchItem(itemID, client_.Self.AgentID, 1000 * 15);
+
+                                Transferred = UploadData.Length;
+                                //BeginInvoke((MethodInvoker)delegate() { SetProgress(); });
+
+                                if (item != null)
+                                {
+                                    item.Permissions.EveryoneMask = PermissionMask.All;
+                                    item.Permissions.NextOwnerMask = PermissionMask.All;
+                                    client_.Inventory.RequestUpdateItem(item);
+
+                                    //Logger.Log("Created inventory item " + itemID.ToString(), Helpers.LogLevel.Info, Client);
+                                    //MessageBox.Show("Created inventory item " + itemID.ToString());
+                                    MessageBox.Show("Created inventory item " + assetID.ToString());
+                                    //System.Diagnostics.Trace.WriteLine(itemID.ToString());
+                                    System.Diagnostics.Trace.WriteLine(assetID.ToString());
+
+                                    // FIXME: We should be watching the callback for RequestUpdateItem instead of a dumb sleep
+                                    System.Threading.Thread.Sleep(2000);
+
+                                    if (SendToID != UUID.Zero)
+                                    {
+                                        //Logger.Log("Sending item to " + SendToID.ToString(), Helpers.LogLevel.Info, client_);
+                                        client_.Inventory.GiveItem(itemID, name, AssetType.Texture, SendToID, true);
+                                        MessageBox.Show("Sent item to " + SendToID.ToString());
+                                    }
+                                }
+                                else
+                                {
+                                    //Logger.DebugLog("Created inventory item " + itemID.ToString() + " but failed to fetch it," +
+                                    //    " cannot update permissions or send to another avatar", Client);
+                                    MessageBox.Show("Created inventory item " + itemID.ToString() + " but failed to fetch it," +
+                                        " cannot update permissions or send to another avatar");
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Asset upload failed: " + status);
+                            }
+                        }
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Image Upload Failed:"+ex, "ImgUpload", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private bool IsPowerOfTwo(uint n)
+        {
+            return (n & (n - 1)) == 0 && n != 0;
+        }
+        private void UpdateAssetID()
+        {
+            if (this.InvokeRequired)
+            {
+                BeginInvoke(new MethodInvoker(UpdateAssetID));
+            }
+            else
+            {
+                //txtAssetID.Text = AssetID.ToString();
+                System.Diagnostics.Trace.WriteLine(AssetID.ToString());
             }
         }
     }

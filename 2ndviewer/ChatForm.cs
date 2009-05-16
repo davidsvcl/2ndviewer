@@ -27,6 +27,8 @@ namespace _2ndviewer
         private MovementForm movementForm_;
         /// <summary>アイテムウィンドウ</summary>
         private InventoryForm inventoryForm_;
+        /// <summary>メインウィンドウ</summary>
+        private MainForm mainForm_;
         /// <summary>IronPython仲介エンジン</summary>
         private PythonEngine pe_;
         /// <summary>ニックネーム、デフォルト「立川君」</summary>
@@ -43,6 +45,8 @@ namespace _2ndviewer
         private bool translate_;
         /// <summary>容姿配列</summary>
         public Dictionary<UUID, AvatarAppearancePacket> Appearances = new Dictionary<UUID, AvatarAppearancePacket>();
+        /// <summary>指定したグループのID</summary>
+        public UUID currentGroupId_;
 
         /// <summary>チャットログにテキストを追加するためのデリゲート</summary>
         private delegate void WriteLineDelegate(string str);
@@ -74,6 +78,7 @@ namespace _2ndviewer
             translate_ = false;
             rnd_ = new Random();
             pe_ = new PythonEngine();
+            currentGroupId_ = UUID.Zero;
         }
 
         /// <summary>
@@ -105,6 +110,12 @@ namespace _2ndviewer
         {
             inventoryForm_ = inventoryForm;
             pe_.Globals.Add("inventory", inventoryForm_);
+        }
+
+        /// <summary>メインウィンドウをセットする</summary>
+        public void SetMainForm(MainForm mainForm)
+        {
+            mainForm_ = mainForm;
         }
 
         /// <summary>ニックネームをセットする</summary>
@@ -357,7 +368,7 @@ namespace _2ndviewer
                         MessageBox.Show("Couldn't find avatar " + targetName);
                     }
                 }
-                else if (message.StartsWith(nickName_ + "プリム"))
+                else if (message.StartsWith(nickName_ + "プリム作成"))
                 {
                     /*
                     // リンゴ？
@@ -382,7 +393,31 @@ namespace _2ndviewer
                     scale.X = 1.0f;
                     scale.Y = 1.0f;
                     scale.Z = 1.0f;
-                    client_.Objects.AddPrim(client_.Network.CurrentSim, prim, UUID.Zero, pos, scale, Quaternion.Identity);
+                    client_.Objects.AddPrim(client_.Network.CurrentSim, prim, currentGroupId_, pos, scale, Quaternion.Identity);
+                    if (!mainForm_.primDone_.WaitOne(10000, false))
+                    {
+                        client_.Self.Chat("プリムの生成に失敗したかもしれません＞＜", 0, ChatType.Normal);
+                        return;
+                    }
+                }
+                //else if (message.StartsWith(nickName_ + "プリム削除"))
+                //{
+                //    int pos = message.IndexOf("除");
+                //    string target = message.Substring(pos + 1, message.Length - nickName_.Length - 5);
+                //    uint uuid = uint.Parse(target);
+                //    client_.Objects.DropObject(client_.Network.CurrentSim, uuid);
+                //}
+                else if (message.StartsWith(nickName_ + "画像セット"))
+                {
+                    string[] sep = message.Split(' ');
+                    if (sep.Length != 3)
+                    {
+                        client_.Self.Chat("フォーマットエラー", 0, ChatType.Normal);
+                    }
+                    uint primId = uint.Parse(sep[1]);
+                    UUID imgageId = UUID.Parse(sep[2]);
+                    Primitive.TextureEntry textures = new Primitive.TextureEntry(imgageId);
+                    client_.Objects.SetTextures(client_.Network.CurrentSim, primId, textures);
                 }
                 else
                 {
