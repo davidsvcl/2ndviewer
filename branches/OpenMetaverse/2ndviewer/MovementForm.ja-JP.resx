@@ -227,6 +227,9 @@
   <data name="run_checkBox.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <data name="run_checkBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>211, 54</value>
+  </data>
   <data name="run_checkBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>57, 22</value>
   </data>
@@ -246,12 +249,18 @@
     <value>NoControl</value>
   </data>
   <data name="music_checkBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>274, 82</value>
+    <value>274, 58</value>
   </data>
   <data name="music_checkBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>48, 16</value>
   </data>
   <data name="music_checkBox.Text" xml:space="preserve">
     <value>音楽</value>
+  </data>
+  <data name="imgupload_button.Size" type="System.Drawing.Size, System.Drawing">
+    <value>64, 24</value>
+  </data>
+  <data name="imgupload_button.Text" xml:space="preserve">
+    <value>画像アップ</value>
   </data>
 </root>

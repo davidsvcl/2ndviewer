@@ -52,6 +52,7 @@
             this.left_button = new System.Windows.Forms.Button();
             this.up_button = new System.Windows.Forms.Button();
             this.music_checkBox = new System.Windows.Forms.CheckBox();
+            this.imgupload_button = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // fly_button
@@ -299,6 +300,17 @@
             this.music_checkBox.UseVisualStyleBackColor = true;
             this.music_checkBox.CheckStateChanged += new System.EventHandler(this.music_checkBox_CheckStateChanged);
             // 
+            // imgupload_button
+            // 
+            this.imgupload_button.AccessibleDescription = null;
+            this.imgupload_button.AccessibleName = null;
+            resources.ApplyResources(this.imgupload_button, "imgupload_button");
+            this.imgupload_button.BackgroundImage = null;
+            this.imgupload_button.Font = null;
+            this.imgupload_button.Name = "imgupload_button";
+            this.imgupload_button.UseVisualStyleBackColor = true;
+            this.imgupload_button.Click += new System.EventHandler(this.imgupload_button_Click);
+            // 
             // MovementForm
             // 
             this.AccessibleDescription = null;
@@ -307,6 +319,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = null;
             this.CloseButton = false;
+            this.Controls.Add(this.imgupload_button);
             this.Controls.Add(this.music_checkBox);
             this.Controls.Add(this.run_checkBox);
             this.Controls.Add(this.boxing_checkBox);
@@ -364,5 +377,6 @@
         private System.Windows.Forms.CheckBox boxing_checkBox;
         private System.Windows.Forms.CheckBox run_checkBox;
         private System.Windows.Forms.CheckBox music_checkBox;
+        private System.Windows.Forms.Button imgupload_button;
     }
 }

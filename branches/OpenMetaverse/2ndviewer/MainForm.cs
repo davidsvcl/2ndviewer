@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -65,6 +66,8 @@ namespace _2ndviewer
         private System.Collections.Generic.List<LandmarkList> landmark_array_;
         /// <summary>メッセージボックスを表示(1)/非表示(0)</summary>
         public int confirm_messageBox;
+        /// <summary>作成したプリムによるOnNewPrimイベントが発生するのをまつためのイベントです</summary>
+        public AutoResetEvent primDone_;
 
         /// <summary>
         /// コンストラクタ
@@ -116,7 +119,8 @@ namespace _2ndviewer
             client_.Self.OnScriptQuestion += new AgentManager.ScriptQuestionCallback(Self_OnScriptQuestion);
             client_.Self.OnAlertMessage += new AgentManager.AlertMessageCallback(Self_OnAlertMessage);
             client_.Objects.OnObjectUpdated += new ObjectManager.ObjectUpdatedCallback(Objects_OnObjectUpdated);
-//            client_.Objects.OnNewPrim += new ObjectManager.NewPrimCallback(Objects_OnNewPrim);
+            // OnNewPrimはRenderWindowに実装するため、一時的な実装です
+            client_.Objects.OnNewPrim += new ObjectManager.NewPrimCallback(Objects_OnNewPrim);
 //            client_.Objects.OnObjectPropertiesFamily += new ObjectManager.ObjectPropertiesFamilyCallback(Objects_OnObjectPropertiesFamily);
             client_.Friends.OnFriendOnline += new FriendsManager.FriendOnlineEvent(Friends_OnFriendOnline);
             client_.Friends.OnFriendOffline += new FriendsManager.FriendOfflineEvent(Friends_OnFriendOffline);
@@ -176,6 +180,7 @@ namespace _2ndviewer
             chatForm_.SetClient(client_);
             chatForm_.SetMovementForm(movementForm_);
             chatForm_.SetInventoryForm(inventoryForm_);
+            chatForm_.SetMainForm(this);
             chatForm_.SetNickName(nickName);
             chatForm_.SetNews4Vip(news4vip);
             chatForm_.TabText = "Chat";
@@ -225,6 +230,8 @@ namespace _2ndviewer
             //}
 
             firstOne = 0;
+            primDone_ = new AutoResetEvent(false);
+
             LoginForm loginForm = new LoginForm();
             loginForm.SetClient(client_);
             loginForm.ShowDialog();
@@ -686,6 +693,10 @@ namespace _2ndviewer
         {
             foreach(Group group in groups.Values) {
                 System.Diagnostics.Trace.WriteLine("group name:" + group.Name);
+                if (group.Name == "NAMIDABASHI")
+                {
+                    chatForm_.currentGroupId_ = group.ID;
+                }
                 System.Diagnostics.Trace.WriteLine("group uuid:" + group.ID);
                 client_.Groups.RequestGroupRoles(group.ID);
             }
@@ -705,10 +716,18 @@ namespace _2ndviewer
             }
         }
 
-//        void Objects_OnNewPrim(Simulator simulator, Primitive prim, ulong regionHandle, ushort timeDilation)
-//        {
+        void Objects_OnNewPrim(Simulator simulator, Primitive prim, ulong regionHandle, ushort timeDilation)
+        {
 //            client_.Objects.RequestObjectPropertiesFamily(simulator, prim.ID);
-//        }
+            if ((prim.Flags & PrimFlags.CreateSelected) != 0)
+            {
+                List<uint> primIDs = new List<uint>();
+                primIDs.Add(prim.LocalID);
+                client_.Objects.SetPermissions(client_.Network.CurrentSim, primIDs, PermissionWho.Everyone | PermissionWho.Group | PermissionWho.NextOwner, PermissionMask.All, true);
+                client_.Objects.SetName(client_.Network.CurrentSim, prim.LocalID, "Object_" + prim.LocalID.ToString());
+                primDone_.Set();
+            }
+        }
 
 //        void Objects_OnObjectPropertiesFamily(Simulator simulator, LLObject.ObjectPropertiesFamily properties)
 //        {
